@@ -21,6 +21,7 @@ There are 3 main types of learning that are agreed upon in the literature
 **I propose, based on human and animal behavior, to explore another form of learning: Social learning**
 
 - animals and humans alike learn a significant amount through “observational learning”
+- learning exhibits **network effects** such as parallel innovation, group creativity and teamwork
 - children and puppies use their parents, older siblings and other social group idols as guides and learn from their behavior
 	- if my larger brother burns his hands on the stove, I will not have to do the same mistake to learn it, but I can learn from him
 	- when learning gymnastics or football, watching others perform actions let’s us understand how to perform them ourselves instead of having to go through trial and error ourselves
@@ -31,7 +32,7 @@ Generally, each individual NN can be seen as an enclosed system. Independent of 
 
 What if **networks could observe other networks that are learning in the same realm but have a different history of learning**? Just as a child might get stuck with a certain task, so can a network. But observing a peer who has mastered the task, might help to understand how to solve the task yourself. 
 
-The main difference between neural networks and humans is however the fact that humans can observe each other’s actions but not each other’s thought processes. A NN however could analyze both the input, action and result of another NN as well as the regression weights of the entire NN that has succeeded in the task. 
+The main difference between neural networks and humans is however the fact that humans can observe each other’s actions but not each other’s thought processes. A NN however could analyze both the input, action and result of another NN as well as the regression weights of the entire NN that has succeeded in the task. This might be another interesting way of advancing, however I believe the simple input, action observation is sufficient for an initial research. 
 
 ## Research question
 
@@ -39,7 +40,9 @@ The main difference between neural networks and humans is however the fact that 
 
 Proposed results of the work:
 
--	develop a model to allow networks to observe each other’s inputs, outputs and network states (the weights $w$)
+-	develop a model to allow networks to observe each other’s inputs, outputs (and network states (the weights $w$))
+	-	observe actions by immitation and actions where the NN would behave differently are used as learning examples
+	- 	perform back propagation for different actions and compare results of new weights with previous
 -	simulate a group of networks learning different tasks and observe their interactions
 	-	supervised
 	-	reinforcement
