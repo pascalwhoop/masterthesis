@@ -1,3 +1,15 @@
+## How machines learn in current research
+
+The majority of machine learning focuses on **factored representations** of knowledge and information. This means that one usually handles vectors representing information pieces, made up of several dimensions with either continuous or discrete values. 
+
+A prominant form to learn from examples is called **supervised learning** and it is the process of having a machine learn patterns by providing a (sometimes very large) set of input-output pairs.
+
+
+
+
+---
+*This post is based on the book "Artificial Intelligence, A Modern Approach" by Stuart Russel and Peter Norvig*
+
 ## hypothesis
 
 A hypothesis is a constructed function that attempts to map inputs to correct outputs and must be selected from the hypothesis space.
