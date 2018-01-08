@@ -1,0 +1,40 @@
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning, shapes}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    drect/.style={
+           rectangle,
+           rounded corners,
+           dashed,
+           draw=black, thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+   goval/.style={
+          circle,
+          draw=black, very thick,
+          text width=6.5em,
+          minimum height=2em,
+          text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt},
+    arr/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt
+           },
+    dashedarr/.style={
+            ->,
+            thick,
+            shorten <=2pt,
+            shorten >=2pt,
+            dashed
+    }
+}
