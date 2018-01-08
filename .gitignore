@@ -1,6 +1,8 @@
 Literature/
 tex/MITVersion/
 .DS_STORE
+node_modules/
+
 #latex ignores
 *.pdf
 *.aux
