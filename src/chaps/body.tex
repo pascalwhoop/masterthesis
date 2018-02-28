@@ -1,29 +1,14 @@
 \chapter{Introduction}
 
 \chapter{Methodology}
-
-First I'll perform a literature research into the fields of \ac{AI}, \ac{RL} and Animal Cognition. In the field of AI it's sub fields of supervised and unsupervised learning will be introduced. Here I will focus on the area of \ac{NN} and a form of *learning* called Backpropagation. In the field of \ac{RL} I will focus on the \ac{MDP} framework as well as the \ac{POMDP} subclass. 
-Next follows an introduction of the recent research in using \ac{NN} in \ac{RL} settings to allow for what is now called Deep Reinforcement Learning. This field has seen tremendous success in recent research, allowing for agents that successfully play 
-%TODO ref
-Atari games and the game Go on superhuman levels of performance.
-Finally, I will introduce the specific learning model that will also be used in the development of my own agent, called %TODO
-.
-%some explanation about the field of Animal Cognition and animal learning
-
-After having introduced the basic research of \ac{AI} and \ac{RL}, I will summarize the state of research of Animal Cognition, which focuses on how animals and humans learn, act and remember in their environment. Since humans and animals are the only known form of intelligent life to us as of today, it is intuitive why exploring the exact workings of these examples might help in better understanding how to artificially create intelligence. It is also a basis of the thesis, as many animals show forms of social learning, concepts of teaching and learning through observation.
-%TODO ref
-
-Following the theoretical foundations of the work I will introduce the concept of competitive simulations in research and explain the \ac{PowerTAC} competition, it's parts and how agents (called brokers in the context of \ac{PowerTAC}) make decisions. 
-
-Finally, I will explain how I implemented an agent in the context of \ac{PowerTAC} that is able to learn from other agents in the environment first, before engaging in solo learning through applying techniques of supervised learning combined with heuristics for recognizing other agents skill level %TODO what heuristics? need to develop
-.
-
-%\section{Motivation}
-%\section{Problem Statement}
-%\section{Structure}
+\input{methodology.tex}
 
 \chapter{Artificial Intelligence}
+
+% TODO intro from russel book summarized 
 \section{Learning}
+
+% TODO intro from russel chapter learning 
 \subsection{Supervised Learning}
 \subsection{Unsupervised Learning}
 \section{Neural Networks}
@@ -32,6 +17,8 @@ Finally, I will explain how I implemented an agent in the context of \ac{PowerTA
 \chapter{Reinforcement Learning}
 \section{Policy Search}
 \section{Deep Reinforcement Learning}
+
+%TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN} 
 \section{Proximal Policy Optimization OR(TBD) Deep Q learning}
 
 \chapter{Animal Cognition}
@@ -42,28 +29,10 @@ Finally, I will explain how I implemented an agent in the context of \ac{PowerTA
 \chapter{Competitive Simulations}%as a tool of experimental research into AI
 
 \chapter{Power Trading Agent Competition}
-\section{Architecture}
-\subsection{Wholesale Market}
-\subsection{Retail Market}
-\subsection{Balancing Market}
-
-\section{Broker concepts}
-\subsection{Decision areas}
-\subsection{Decision models}
-\subsection{Past performances}
-
-
-%\section{Community of Knowledge}
+\input{powertac.tex}
 
 \chapter{Implementation}
-\section{Tools}
-\subsection{TensorFlow}
-\section{Connecting Python agents to PowerTAC}
-\section{Parallelizing environments with Kubernetes}
-\section{Agent Models}
-\subsection{Wholesale Market}
-\subsection{Retail Market}
-\subsection{Balancing Market}
+\input{implementation.tex}
 
 \chapter{Results}
 \chapter{Conclusion}
