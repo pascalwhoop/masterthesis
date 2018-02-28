@@ -2,93 +2,93 @@ let SessionLoad = 1
 if &cp | set nocp | endif
 let s:cpo_save=&cpo
 set cpo&vim
-inoremap <silent> <Plug>Tex_Completion :call Tex_Complete("default","text")
-imap <silent> <Plug> <Nop>
-inoremap <silent> <Plug>Tex_LeftRight =Tex_LeftRight()
-inoremap <silent> <Plug>Tex_MathCal =Tex_MathCal()
-inoremap <silent> <Plug>Tex_MathBF =Tex_MathBF()
-inoremap <silent> <Plug>Tex_FastCommandChange :call Tex_ChangeCommand('no')
-inoremap <silent> <Plug>Tex_FastCommandInsert =Tex_DoCommand('no')
-inoremap <silent> <Plug>Tex_FastEnvironmentChange :call Tex_ChangeEnvironments()
 inoremap <silent> <Plug>Tex_FastEnvironmentInsert =Tex_FastEnvironmentInsert("no")
+inoremap <silent> <Plug>Tex_FastEnvironmentChange :call Tex_ChangeEnvironments()
+inoremap <silent> <Plug>Tex_FastCommandInsert =Tex_DoCommand('no')
+inoremap <silent> <Plug>Tex_FastCommandChange :call Tex_ChangeCommand('no')
+inoremap <silent> <Plug>Tex_MathBF =Tex_MathBF()
+inoremap <silent> <Plug>Tex_MathCal =Tex_MathCal()
+inoremap <silent> <Plug>Tex_LeftRight =Tex_LeftRight()
+imap <silent> <Plug> <Nop>
+inoremap <silent> <Plug>Tex_Completion :call Tex_Complete("default","text")
 inoremap <silent> <Plug>IMAP_JumpBack :call IMAP_Jumpfunc('b', 0)
 inoremap <silent> <Plug>IMAP_JumpForward :call IMAP_Jumpfunc('', 0)
 vmap <NL> <Plug>IMAP_JumpForward
 nmap <NL> <Plug>IMAP_JumpForward
 nnoremap <silent>  :CtrlP
-xnoremap , :call ExecMap(',', 'v')
-xnoremap ,pi :call VEnclose('', '', '\begin{picture}', '\end{picture}')
-xnoremap ,mp :call VEnclose('', '', '\begin{minipage}', '\end{minipage}')
-xnoremap <silent> ,lr :call VEnclose('\sbox{', '}', '\begin{lrbox}', '\end{lrbox}')
-xnoremap ,fi :call VEnclose('', '', '\begin{figure}', '\end{figure}')
-xnoremap ,pg :call VEnclose('\paragraph{', '}', '', '')
-xnoremap ,s2 :call VEnclose('\subsubsection{', '}', '', '')
-xnoremap ,ss :call VEnclose('\subsection{', '}', '', '')
-xnoremap ,ch :call VEnclose('\chapter{', '}', '', '')
-xnoremap ,pa :call VEnclose('\part{', '}', '', '')
-xnoremap <silent> ,sl :call VEnclose('', '', '\begin{slide}', '\end{slide}')
-xnoremap <silent> ,ov :call VEnclose('', '', '\begin{overlay}', '\end{overlay}')
-xnoremap <silent> ,no :call VEnclose('', '', '\begin{note}', '\end{note}')
-xnoremap <silent> ,tb :call VEnclose('', '', '\begin{thebibliography}', '\end{thebibliography}')
-xnoremap <silent> ,ve :call VEnclose('', '', '\begin{verse}', '\end{verse}')
-xnoremap <silent> ,vm :call VEnclose('\verb|', '|', '\begin{verbatim}', '\end{verbatim}')
-xnoremap <silent> ,tp :call VEnclose('', '', '\begin{titlepage}', '\end{titlepage}')
-xnoremap ,sp :call VEnclose('\subparagraph{', '}', '', '')
-xnoremap <silent> ,qe :call VEnclose('', '', '\begin{quote}', '\end{quote}')
-xnoremap <silent> ,qn :call VEnclose('', '', '\begin{quotation}', '\end{quotation}')
-xnoremap <silent> ,fr :call VEnclose('{\raggedright ', '}', '\begin{flushright}', '\end{flushright}')
-xnoremap <silent> ,fl :call VEnclose('', '', '\begin{flushleft}', '\end{flushleft}')
-xnoremap <silent> ,fc :call VEnclose('', '', '\begin{filecontents}', '\end{filecontents}')
-xnoremap <silent> ,do :call VEnclose('', '', '\begin{document}', '\end{document}')
-xnoremap <silent> ,ce :call VEnclose('{\centering ', '}', '\begin{center}', '\end{center}')
-xnoremap <silent> ,ap :call VEnclose('', '', '\begin{appendix}', '\end{appendix}')
-xnoremap <silent> ,ab :call VEnclose('', '', '\begin{abstract}', '\end{abstract}')
-xnoremap ,se :call VEnclose('\section{', '}', '', '')
-xnoremap <silent> ,ma :call VEnclose('', '', '\begin{math}', '\end{math}')
-xnoremap <silent> ,es :call VEnclose('', '', '\begin{equation*}', '\end{equation*}')
-xnoremap <silent> ,eq :call VEnclose('', '', '\begin{equation}', '\end{equation}')
-xnoremap <silent> ,dm :call VEnclose('', '', '\begin{displaymath}', '\end{displaymath}')
-xnoremap ,ar :call VEnclose('', '', '\begin{array}', '\end{array}')
-xnoremap <silent> ,ad :call VEnclose('', '', '\begin{aligned}', '\end{aligned}')
-xnoremap <silent> ,as :call VEnclose('', '', '\begin{align*}', '\end{align*}')
-xnoremap <silent> ,al :call VEnclose('', '', '\begin{align}', '\end{align}')
-xnoremap ,tr :call VEnclose('', '', '\begin{tabular}', '\end{tabular}')
-xnoremap <silent> ,tg :call VEnclose('', '', '\begin{tabbing}', '\end{tabbing}')
-xnoremap ,te :call VEnclose('', '', '\begin{table}', '\end{table}')
-xnoremap <silent> ,tl :call VEnclose('', '', '\begin{trivlist}', '\end{trivlist}')
-xnoremap <silent> ,ti :call VEnclose('', '', '\begin{theindex}', '\end{theindex}')
-xnoremap <silent> ,it :call VEnclose('', '', '\begin{itemize}', '\end{itemize}')
-xnoremap <silent> ,en :call VEnclose('', '', '\begin{enumerate}', '\end{enumerate}')
-xnoremap ,de :call VEnclose('', '', '\begin{description}', '\end{description}')
 xnoremap ,li :call VEnclose('', '', '\begin{list}', '\end{list}')
-xnoremap ` :call ExecMap('`', 'v')
-xnoremap <silent> `em :call VEnclose('\emph{', '}', '{\em', '\/}')
-xnoremap <silent> `it :call VEnclose('\textit{', '}', '{\itshape ', '}')
-xnoremap <silent> `sc :call VEnclose('\textsc{', '}', '{\scshape ', '}')
-xnoremap <silent> `sl :call VEnclose('\textsl{', '}', '{\slshape ', '}')
-xnoremap <silent> `up :call VEnclose('\textup{', '}', '{\upshape ', '}')
-xnoremap <silent> `rm :call VEnclose('\textrm{', '}', '{\rmfamily ', '}')
-xnoremap <silent> `sf :call VEnclose('\textsf{', '}', '{\sffamily ', '}')
-xnoremap <silent> `tt :call VEnclose('\texttt{', '}', '{\ttfamily ', '}')
-xnoremap <silent> `md :call VEnclose('\textmd{', '}', '{\mdseries ', '}')
-xnoremap <silent> `bf :call VEnclose('\textbf{', '}', '{\bfseries ', '}')
-xnoremap <silent> `$ :call VEnclose('$', '$', '\[', '\]')
-xnoremap <silent> `{ :call VEnclose('\left\{ ', ' \right\}', '\left\{', '\right\}')
-xnoremap <silent> `[ :call VEnclose('\left[ ', ' \right]', '\left[', '\right]')
+xnoremap ,de :call VEnclose('', '', '\begin{description}', '\end{description}')
+xnoremap <silent> ,en :call VEnclose('', '', '\begin{enumerate}', '\end{enumerate}')
+xnoremap <silent> ,it :call VEnclose('', '', '\begin{itemize}', '\end{itemize}')
+xnoremap <silent> ,ti :call VEnclose('', '', '\begin{theindex}', '\end{theindex}')
+xnoremap <silent> ,tl :call VEnclose('', '', '\begin{trivlist}', '\end{trivlist}')
+xnoremap ,te :call VEnclose('', '', '\begin{table}', '\end{table}')
+xnoremap <silent> ,tg :call VEnclose('', '', '\begin{tabbing}', '\end{tabbing}')
+xnoremap ,tr :call VEnclose('', '', '\begin{tabular}', '\end{tabular}')
+xnoremap <silent> ,al :call VEnclose('', '', '\begin{align}', '\end{align}')
+xnoremap <silent> ,as :call VEnclose('', '', '\begin{align*}', '\end{align*}')
+xnoremap <silent> ,ad :call VEnclose('', '', '\begin{aligned}', '\end{aligned}')
+xnoremap ,ar :call VEnclose('', '', '\begin{array}', '\end{array}')
+xnoremap <silent> ,dm :call VEnclose('', '', '\begin{displaymath}', '\end{displaymath}')
+xnoremap <silent> ,eq :call VEnclose('', '', '\begin{equation}', '\end{equation}')
+xnoremap <silent> ,es :call VEnclose('', '', '\begin{equation*}', '\end{equation*}')
+xnoremap <silent> ,ma :call VEnclose('', '', '\begin{math}', '\end{math}')
+xnoremap ,se :call VEnclose('\section{', '}', '', '')
+xnoremap <silent> ,ab :call VEnclose('', '', '\begin{abstract}', '\end{abstract}')
+xnoremap <silent> ,ap :call VEnclose('', '', '\begin{appendix}', '\end{appendix}')
+xnoremap <silent> ,ce :call VEnclose('{\centering ', '}', '\begin{center}', '\end{center}')
+xnoremap <silent> ,do :call VEnclose('', '', '\begin{document}', '\end{document}')
+xnoremap <silent> ,fc :call VEnclose('', '', '\begin{filecontents}', '\end{filecontents}')
+xnoremap <silent> ,fl :call VEnclose('', '', '\begin{flushleft}', '\end{flushleft}')
+xnoremap <silent> ,fr :call VEnclose('{\raggedright ', '}', '\begin{flushright}', '\end{flushright}')
+xnoremap <silent> ,qn :call VEnclose('', '', '\begin{quotation}', '\end{quotation}')
+xnoremap <silent> ,qe :call VEnclose('', '', '\begin{quote}', '\end{quote}')
+xnoremap ,sp :call VEnclose('\subparagraph{', '}', '', '')
+xnoremap <silent> ,tp :call VEnclose('', '', '\begin{titlepage}', '\end{titlepage}')
+xnoremap <silent> ,vm :call VEnclose('\verb|', '|', '\begin{verbatim}', '\end{verbatim}')
+xnoremap <silent> ,ve :call VEnclose('', '', '\begin{verse}', '\end{verse}')
+xnoremap <silent> ,tb :call VEnclose('', '', '\begin{thebibliography}', '\end{thebibliography}')
+xnoremap <silent> ,no :call VEnclose('', '', '\begin{note}', '\end{note}')
+xnoremap <silent> ,ov :call VEnclose('', '', '\begin{overlay}', '\end{overlay}')
+xnoremap <silent> ,sl :call VEnclose('', '', '\begin{slide}', '\end{slide}')
+xnoremap ,pa :call VEnclose('\part{', '}', '', '')
+xnoremap ,ch :call VEnclose('\chapter{', '}', '', '')
+xnoremap ,ss :call VEnclose('\subsection{', '}', '', '')
+xnoremap ,s2 :call VEnclose('\subsubsection{', '}', '', '')
+xnoremap ,pg :call VEnclose('\paragraph{', '}', '', '')
+xnoremap ,fi :call VEnclose('', '', '\begin{figure}', '\end{figure}')
+xnoremap <silent> ,lr :call VEnclose('\sbox{', '}', '\begin{lrbox}', '\end{lrbox}')
+xnoremap ,mp :call VEnclose('', '', '\begin{minipage}', '\end{minipage}')
+xnoremap ,pi :call VEnclose('', '', '\begin{picture}', '\end{picture}')
+xnoremap , :call ExecMap(',', 'v')
 xnoremap <silent> `( :call VEnclose('\left( ', ' \right)', '\left(', '\right)')
+xnoremap <silent> `[ :call VEnclose('\left[ ', ' \right]', '\left[', '\right]')
+xnoremap <silent> `{ :call VEnclose('\left\{ ', ' \right\}', '\left\{', '\right\}')
+xnoremap <silent> `$ :call VEnclose('$', '$', '\[', '\]')
+xnoremap <silent> `bf :call VEnclose('\textbf{', '}', '{\bfseries ', '}')
+xnoremap <silent> `md :call VEnclose('\textmd{', '}', '{\mdseries ', '}')
+xnoremap <silent> `tt :call VEnclose('\texttt{', '}', '{\ttfamily ', '}')
+xnoremap <silent> `sf :call VEnclose('\textsf{', '}', '{\sffamily ', '}')
+xnoremap <silent> `rm :call VEnclose('\textrm{', '}', '{\rmfamily ', '}')
+xnoremap <silent> `up :call VEnclose('\textup{', '}', '{\upshape ', '}')
+xnoremap <silent> `sl :call VEnclose('\textsl{', '}', '{\slshape ', '}')
+xnoremap <silent> `sc :call VEnclose('\textsc{', '}', '{\scshape ', '}')
+xnoremap <silent> `it :call VEnclose('\textit{', '}', '{\itshape ', '}')
+xnoremap <silent> `em :call VEnclose('\emph{', '}', '{\em', '\/}')
+xnoremap ` :call ExecMap('`', 'v')
 vmap gx <Plug>NetrwBrowseXVis
 nmap gx <Plug>NetrwBrowseX
-nnoremap <silent> <Plug>Tex_LeftRight :call Tex_PutLeftRight()
-vnoremap <silent> <Plug>Tex_MathCal `>a}`<i\mathcal{
-vnoremap <silent> <Plug>Tex_MathBF `>a}`<i\mathbf{
-nnoremap <Plug>Tex_RefreshFolds :call MakeTexFolds(1, 1)
-nnoremap <silent> <Plug>Tex_FastCommandChange :call Tex_ChangeCommand('no')
-vnoremap <silent> <Plug>Tex_FastCommandInsert :call Tex_DoCommand('yes')
-nnoremap <silent> <Plug>Tex_FastCommandInsert i=Tex_DoCommand('no')
-nnoremap <silent> <Plug>Tex_FastEnvironmentChange :call Tex_ChangeEnvironments()
-vnoremap <silent> <Plug>Tex_FastEnvironmentInsert :call Tex_FastEnvironmentInsert("yes")
-nnoremap <silent> <Plug>Tex_FastEnvironmentInsert i=Tex_FastEnvironmentInsert("no")
 nmap <silent> <Plug> i
+nnoremap <silent> <Plug>Tex_FastEnvironmentInsert i=Tex_FastEnvironmentInsert("no")
+vnoremap <silent> <Plug>Tex_FastEnvironmentInsert :call Tex_FastEnvironmentInsert("yes")
+nnoremap <silent> <Plug>Tex_FastEnvironmentChange :call Tex_ChangeEnvironments()
+nnoremap <silent> <Plug>Tex_FastCommandInsert i=Tex_DoCommand('no')
+vnoremap <silent> <Plug>Tex_FastCommandInsert :call Tex_DoCommand('yes')
+nnoremap <silent> <Plug>Tex_FastCommandChange :call Tex_ChangeCommand('no')
+nnoremap <Plug>Tex_RefreshFolds :call MakeTexFolds(1, 1)
+vnoremap <silent> <Plug>Tex_MathBF `>a}`<i\mathbf{
+vnoremap <silent> <Plug>Tex_MathCal `>a}`<i\mathcal{
+nnoremap <silent> <Plug>Tex_LeftRight :call Tex_PutLeftRight()
 vnoremap <silent> <Plug>NetrwBrowseXVis :call netrw#BrowseXVis()
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())
 vnoremap <silent> <Plug>IMAP_JumpBack `<:call IMAP_Jumpfunc('b', 0)
@@ -112,7 +112,7 @@ set wildignore=*/node_modules/*
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
-cd ~/Documents/Code/University/masterthesis/src
+cd ~/Documents/Dropbox/masterthesis/src
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -314,11 +314,51 @@ silent! normal! zE
 79,79fold
 3
 normal! zo
-let s:l = 3 - ((2 * winheight(0) + 24) / 49)
+19
+normal! zo
+20
+normal! zo
+20
+normal! zc
+19
+normal! zc
+26
+normal! zo
+26
+normal! zc
+31
+normal! zo
+31
+normal! zc
+38
+normal! zo
+39
+normal! zo
+39
+normal! zc
+44
+normal! zo
+44
+normal! zc
+38
+normal! zc
+52
+normal! zo
+53
+normal! zo
+53
+normal! zc
+57
+normal! zo
+57
+normal! zc
+52
+normal! zc
+let s:l = 6 - ((5 * winheight(0) + 24) / 49)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-3
+6
 normal! 0
 wincmd w
 argglobal
