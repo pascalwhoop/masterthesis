@@ -11,3 +11,4 @@ ab CPU       \ac{CPU}
 ab TF        \ac{TF}
 ab TPU       \ac{TPU}
 ab SOTA      \ac{SOTA}
+ab PowerTAC  \ac{PowerTAC}
