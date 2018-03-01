@@ -10,6 +10,7 @@ node_modules/
 *.swp
 
 #latex ignores
+*.glsdefs
 *.pdf
 *.aux
 *.glo
