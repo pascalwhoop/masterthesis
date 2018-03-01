@@ -1,5 +1,7 @@
 ab RL        \ac{RL}
-ab DRL	     \ac{Deep-RL}
+ab DRL	     \ac{Deep RL}
+ab DU        \ac{DU}
+ab CHP       \ac{CHP}
 ab NN        \ac{NN}
 ab MDP       \ac{MDP}
 ab POMDP     \ac{POMDP}
