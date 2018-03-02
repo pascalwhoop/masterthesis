@@ -27,7 +27,13 @@ All accounting is managed by the central simulation server as to avoid adversari
 \subsection{Wholesale Market}
 %TODO energy or electricity? What's the "right" word?
 Every broker needs to purchase energy before it can sell it to the customers unless the customers of the broker itself generate sufficient energy to balance its own portfolio. For this, \ac{PowerTAC} offers a wholesale market that operates a \emph{periodic double auction} which represents traditional energy exchanges like those existing in the United States and European markets. Participants in this wholesale market are all brokers as well as a large general entity representing a number of generating facilities, a grid buyer who simulates large-scale demands based on real-world data adjusted based on weather-forecasts and a wholesale buyer who regularly places high-volume, low-price bids. During each time slot, 24 future slots are open for placing bids by the brokers. After the bids have been collected, a clearing price gets calculated which is the intersection between the supply and demand curves. Orders without limit prices are always served first. After the clearing, all uncleared bids and asks are distributed to the brokers to indicate the direction of the markets' demand and supply curves. 
+
 \subsection{Balancing Market}
+The Balancing market is the last and final trading opportunity for agents and in the sense of the game is at $t-0$ meaning that it occurs virtually in parallel to the consume of electricity. Any imbalance during this phase gets corrected for by the \ac{DU} who imposes forced balancing of brokers with an imbalanced portfolio. Brokers with too much supply in their portfolio therefore receive very little reimbursement for it and those whose customers' usage is higher than the estimated amount pay high prices for the additionally supplied energy. 
+
+Brokers who have tariffs with economic control abilities can pass this capacity along to the \ac{DU} who utilizes these capacities to correct the markets imbalances, charging customers' storage devices if an oversupply is present or depleting their devices in the case of an under-supply. It is therefore economically beneficial for brokers to attract customers with such balancing capabilities since it offers a buffer capacity against the balancing costs otherwise incurred through the actions of the \ac{DU} \cite[p.5]{ketter2018powertac} .  
+
+
 
 
 
