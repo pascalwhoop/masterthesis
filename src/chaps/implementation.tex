@@ -1,6 +1,15 @@
 \section{Tools}
-\subsection{TensorFlow}
+
+To develop the functionality of the agent, which is supposed to be mainly driven by deep learning technologies, a number of state-of-the-art tools and frameworks should be used. These include Keras and TensorFlow to allow for easy creation and adaption of the learning models, \ac {GRPC} to communicate with the Java components of the competition and Kubernetes to easily scale several instances across the cloud. By transfering the components into the cloud, it is also possible to use tools such as Google Colab which allows access to a powerful cloud \ac {GPU} without costs 
+\citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
+
+
+\subsection{TensorFlow and Keras}
 \section{Connecting Python agents to PowerTAC}
+
+To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple bridge was provided by the team that allowed external processes to communicate with the system through a bridge via the provided sample-broker. All messages received by the broker are written to a First in First Out pipe on the local file system and a second pipe is created to read messages from the external process. To also allow network based access, I created an alternative which is based on \ac{GRPC} to transmit the messages between the adapter and the final client. This lets many different languages communicate with the adapter via network connections \footnote{https://github.com/powertac/broker-adapter} 
+
+Because the programming language is different from the supplied sample-broker, many of the domain objects need to be redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the server are all annotated so that the xml serializer can translate between the xml and object variants without errors. This helps to recreate a similar functionality for the needed classes in the python environment. If the project was started again today, it might have been simpler to first define a set of message types in a language such as Protocoll Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMS} communication, it is better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse the \ac {XML} that is received.
 \section{Paralleling environments with Kubernetes}
 \section{Agent Models}
 \subsection{Customer Market}
