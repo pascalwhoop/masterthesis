@@ -1,8 +1,10 @@
 ab RL       \ac {RL}
 ab GRPC     \ac {GRPC}
+ab UL       \ac {UL}
+ab SL       \ac {SL}
 ab DRL      \ac {Deep RL}
-ab JMS \ac {JMS}
-ab XML \ac {XML}
+ab JMS      \ac {JMS}
+ab XML      \ac {XML}
 ab DU       \ac {DU}
 ab CHP      \ac {CHP}
 ab NN       \ac {NN}
