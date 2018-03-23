@@ -11,9 +11,82 @@ To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter 
 
 Because the programming language is different from the supplied sample-broker, many of the domain objects need to be redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the server are all annotated so that the xml serializer can translate between the xml and object variants without errors. This helps to recreate a similar functionality for the needed classes in the python environment. If the project was started again today, it might have been simpler to first define a set of message types in a language such as Protocoll Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMS} communication, it is better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse the \ac {XML} that is received.
 \section{Paralleling environments with Kubernetes}
+
 \section{Agent Models}
+
+The general architecture of the agent is split into four components
+
+-- customer market
+
+-- wholesale 
+
+-- balancing 
+
+-- high-level agent \ac {RL} problem
+
+While \citeauthor{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} with all three markets
+integrated into one problem, I believe breaking the problem into disjunct subproblems is a better approach as each of
+them can be looked at in separation and a learning algorithm can be applied to improve performance without needing to
+consider potentially other areas of decision making. One such example is the estimation of fitness for a given tariff in
+a given environment. A tariffs' competitiveness in a given environment is independent of the wholesale or balancing
+trading strategy of the agent since the customers do not care about the profitability of the agent or how often it
+receives balancing penalties.
+
 \subsection{Customer Market}
 
+The goal of the customer market is to get as many subscribers as possible for the most profitable tariffs the broker
+offers on the market. The tariffs offered in the market compete for the limited number of customers available and every
+customer must be subscribed to some tariff. The profitability of tariffs is limited by the base tariff which is offered
+by the simulation as a constant offering creating an upper bound on profitability. 
+
+To succeed in the customer market, the agents needs to be able to generate tariffs that are competitive. This can be
+broken down into two subtasks: Generating valid tariffs and evaluating their competitiveness. A tariff can be
+verified by passing it to the \ac {PowerTAC} server which verifies the tariff. Hence, a \ac {RL} algorithm that is
+tasked with creating competitive tariffs can be given feedback by penalizing non-conclusive tariffs. An invalid tariff
+could be one that contains overlapping rates leading to an ambivalent status. The competitiveness of a tariff depends
+not only on the attributes of the tariff but also on the competition environment. If the broker only competes against
+the default tariffs, even many mediocre tariff offerings would perform well. In an environment with many competitors on
+the other hand, a tariff needs to be well designed to generate profits. 
+
+The agents learning task for the customer market is therefore designed in the following way:
+
+\begin{enumerate}
+    \item Learning to evaluate a tariffs competitiveness in relation to the competitive environment through supervised
+        learning on the historical state logs of previous competitions 
+    \item Running a \ac {RL} algorithm which learns to choose parameters for tariffs that are valid and profitable in a
+        given environment
+    %\item Learning to generate valid tariff specifications through a genetic algorithm strategy, penalizing invalid
+    %tariffs %TODO really, I go genetic?
+\end{enumerate}
+
+\subsubsection{Tariff fitness learning}
+To learn the fitness of a tariff while considering its environment, supervised learning techniques can be applied. To do
+this, features need to be created from the tariffs specifications and its competitive environment. Similar work has been
+done by \citeauthor{cuevas2015distributed} who discretized the tariff market in four variables describing the
+relationships between the competitors and their broker.   
+
+For my broker, because \ac {NN} can handle a large state spaces, I create a more detailed description of the
+environment. I still have to ensure the number of input features is fixed though, so a simple copy of all competing
+tariffs is not a valid input for the environment description. Instead I create the following features from the tariff
+market:
+
+\begin{description}
+    \item[Average Charge per hour of week Timeslot]: According to \\ \texttt{TariffEvaluationHelper.java}, customer
+        models evaluate tariffs on an per-hour basis. This means they are very precise in the evaluation of potential
+        tariff alternatives (before the application of an irrationality factor). Hence, a per-hour precision in the
+        input is needed.
+    \item[Variance of Charge per hour of week Timeslot] Variance of the tariffs charges per each timeslot in a week
+        among all competitors.
+    \item[Average and Variance of periodic payments] Description of the markets periodic payments landscape
+    \item[Average and Variance of one-time payments] Description of the markets one-time payments landscape
+    \item[Average and Variance of Up/Down regulation payments] 0 for tariffs without regulation capabilities
+\end{description}
+
+Because the \ac {PowerTAC} simulation does not return profits of brokers on a per-tariff basis and because the reasons
+for why a broker purchased a specific amount of energy on the wholesale market are not known, it is hard to put a
+profitability value on a brokers tariff if said broker offers more than one tariff on the market. Therefore the
+evaluation of the tariff does not include the profitability of the tariff but merely the competitiveness in regards to
+the attractiveness of the offer from the perspective of the customers
 % large space of decision variables / dimensions
 %
 % how to avoid overwhelming of agent? output layer must be fairly large. 
