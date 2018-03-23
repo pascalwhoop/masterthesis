@@ -1,0 +1,47 @@
+As noted above, supervised learning uses labeled examples to learn to recognize
+future examples that might be of the same kind but not identical. Common
+examples of this form of learning include object recognition in images or
+time-series prediction. One of the most known examples to date is the Imagenet
+classification algorithm by \citeauthor{krizhevsky2012imagenet} which was one of
+the first \ac {NN} based algorithms to break a classificatin high-score on a
+popular image classification database. The goal is to correctly classify images
+according to a set of defined labels. If a picture of a dog is read by the \ac
+{NN}, it needs to be able to classify the fact that a dog is in the picture. In
+areas such as financial trading or electricity demand prediction, it can be
+helpful to be able to predict future patterns based on current and previous
+observations. In the space of machinery, learning to recognize sensor data that
+indicates faulty parts can be used to avoid down-time of machines through
+preemptive replacement during scheduled service intervals. In the online
+marketing industry, recognizing user interests to send appropriate ads benefits
+just as well from the approach as do spam filters that recognize ads and filter
+them out again. %TODO source for application areas
+
+The general problem of supervised learning is as follows:
+
+\begin{enumerate} 
+    \item Generation of a \emph{training set} that holds a set of input-output pairs $(x_1,y_1),(x_2,y_2),...$ 
+    \item Training of algorithm against training set 
+    \item Verification of results against previously unseen \emph{test set} 
+\end{enumerate}
+
+If $y$ can be any of a set of answers, the problem is a \emph{classification}
+problem and if the problem requires the prediction of a potentially infinite
+number of alternatives (e.g. a real number between 1 and 10), it's a
+\emph{regression} problem. The outputs $y_n$, or labels, are created based on an
+underlying true function $f$ which the algorithm tries to learn or approximate
+through a function $h$, the hypothesis. The space of hypothesis is infintely
+large and the general principle is that simpler hypotheses with equal
+performance as more complex ones are to be preferred. By deciding up-front about
+the decision space (e.g. all linear functions) the hypothesis might not be able
+to perfectly match the underlying true function $f$. On the other hand a
+hypothesis chosen from a expressive hypothesis space may generalize very well
+and is easier to understand and implement. 
+
+The tradeoff described above is a key factor when deciding on the \emph{right}
+function to use to solve a supervised learning problem. A linear regression
+model is easier to understand than complex convoluted functions and \ac {NN}
+have often been described as hard to interpret as it is not clear \emph{what}
+they learn. Systems such as decision trees, which make many sequential decisions
+about features of the input in question to arrive at a classification, are easy
+to interpret and might therefore be more appropriate when not only the
+performance of the system is important but also the inner workings of it.
