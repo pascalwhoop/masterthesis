@@ -1,0 +1,57 @@
+
+The previous sections have described learning in respect to the goal of the learning process and the input data that is
+used to learn from. This section explains the forms of learning and focuses on one widely used form called
+backpropagation. 
+
+When looking at \ac {NN} while remembering the definition of learning from earlier, it becomes clear that there are many
+ways a \ac {NN} can change its state. It could:
+
+\begin{enumerate}
+    \item develop new connections
+    \item remove existing connections
+    \item change the connecting weights
+    \item change the threshold values of the activation functions
+    \item change its input function
+    \item develop new neurons
+    \item remove existing neurons \cite[p.60]{kriesel2007brief} 
+\end{enumerate}
+
+Of these many actions, changing the weights is however the most common way to let a \ac {NN} learn. This is because many
+of the other changes in its state can be performed by a specific way of changing the weights. Removing connections is
+equivalent to setting the weight of the connection to 0 and forbidding further adaption afterwards. Equally, adding new
+connections is the same as setting a weight of 0 to something that is not 0. Changing the theshold values can also be
+achieved by modelling them as weights. Changing the input function is uncommon. The addition and removal of neurons
+(i.e. the growing or shrinking of the network itself) is a popular field of research but will not be discussed further
+\cite[p.60]{kriesel2007brief}. 
+
+Learning by changing the weights therefore covers a wide range of possible adaptions to the network structure. When
+looking at a single (sigmoid) perceptron, the changing of the weights of its input values is the same process as that of the
+concept of gradient descent algorithms. Because the activation function is most often \emph{soft}, to ensure
+differentiability and because a hard threshold creates a non-continuous function, the process of fitting the weights to
+minimize loss is called logistic regression \cite[p.729f.]{russell2016artificial}. For a detailed explanation of the gradient
+descent approach, I will refer to the works of \citeauthor{russell2016artificial} as well as
+\citeauthor{Goodfellow-et-al-2016}. 
+
+ 
+
+%logistic regression + gradient descent on a unit based view
+
+The above described concept of learning from labeled examples is intuitive for single-layer \ac {NN}. The output can be
+directly compared to the labels provided by the training set and logistic regression applied to correct the weights of
+the network to reduce the loss. It becomes problematic though, when several layers are inserted between the input and
+the output. The weights of the hidden layers are not included in the labeled examples. This is where the concept of
+\emph{backpropagation} becomes useful. For Figure~\ref{fig:multilayernn}, any error of the weights of the neurons in
+layer $h^1$ influence the values of the output values of layer $h^2$ and $h^3$ (in the case of fully connected layer).
+For any additive loss function (such as $L_2$), the error however is simply the sum of the gradients of the losses of
+the outputs\cite[p.733f.]{russell2016artificial}. 
+
+\begin{equation}
+\frac{\partial}{\partial w} Loss(w) =  \frac{\partial}{\partial w} \vert y-h_w(x) \vert ^2 = \frac{\partial}{\partial w} \sum_k{(y_k - a_k)^2} =  \sum_k{\frac{\partial}{\partial w}(y_k - a_k)^2} 
+    \label{equ:errorssum}
+\end{equation}
+
+where the index k ranges over nodes in the output layer \cite[p.733f.]{russell2016artificial}. This however does not
+solve the issue that the training set doesn't include the expected values for the hidden layers. This is solved by
+back-propagating the error values through the network. % TODO CONTINUE STOP  
+
+%network has e.g. 5 values in its output layer, each output depends on several of the previous layers activation values.  Therefore

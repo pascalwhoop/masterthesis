@@ -2,6 +2,8 @@ ab RL       \ac {RL}
 ab GRPC     \ac {GRPC}
 ab UL       \ac {UL}
 ab SL       \ac {SL}
+ab RNN      \ac {RNN}
+ab LSTM     \ac {LSTM}
 ab DRL      \ac {Deep RL}
 ab JMS      \ac {JMS}
 ab XML      \ac {XML}
