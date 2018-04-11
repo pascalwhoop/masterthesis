@@ -35,11 +35,17 @@ The code linked to the process described above is part of the \texttt{util.state
 After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
 processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
 well as ensure the values that are fed to the \ac {NN} don't negatively impact the learning progress. The overall
-approach follows the recommendations of \citeauthor{Goodfellow-et-al-2016}.  
+approach follows the recommendations of \citet{Goodfellow-et-al-2016}.  
 
 \section{Connecting Python agents to PowerTAC}
 
-To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple bridge was provided by the team that allowed external processes to communicate with the system through a bridge via the provided sample-broker. All messages received by the broker are written to a First in First Out pipe on the local file system and a second pipe is created to read messages from the external process. To also allow network based access, I created an alternative which is based on \ac{GRPC} to transmit the messages between the adapter and the final client. This lets many different languages communicate with the adapter via network connections \footnote{https://github.com/powertac/broker-adapter} 
+To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple
+bridge was provided by the team that allowed external processes to communicate with the system through a bridge via the
+provided sample-broker. All messages received by the broker are written to a First in First Out pipe on the local file
+system and a second pipe is created to read messages from the external process. To also allow network based access, I
+created an alternative which is based on \ac{GRPC} to transmit the messages between the adapter and the final client.
+This lets many different languages communicate with the adapter via network connections
+\footnote{\url{https://github.com/powertac/broker-adapter-grpc} }
 
 Because the programming language is different from the supplied sample-broker, many of the domain objects need to be redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the server are all annotated so that the xml serializer can translate between the xml and object variants without errors. This helps to recreate a similar functionality for the needed classes in the python environment. If the project was started again today, it might have been simpler to first define a set of message types in a language such as Protocoll Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMS} communication, it is better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse the \ac {XML} that is received.
 \section{Paralleling environments with Kubernetes}
@@ -56,15 +62,15 @@ The general architecture of the agent is split into four components
 
 -- high-level agent \ac {RL} problem
 
-While \citeauthor{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} with all three markets
+While \citet{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a \ac {MDP} for ease of implementation) with all three markets
 integrated into one problem, I believe breaking the problem into disjunct subproblems is a better approach as each of
 them can be looked at in separation and a learning algorithm can be applied to improve performance without needing to
 consider potentially other areas of decision making. One such example is the estimation of fitness for a given tariff in
 a given environment. A tariffs' competitiveness in a given environment is independent of the wholesale or balancing
 trading strategy of the agent since the customers do not care about the profitability of the agent or how often it
-receives balancing penalties.
+receives balancing penalties. While the broker might incur large losses if a tariff is too competitive (by offering prices that are below the profitablity line of the broker), such a tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the tariffs to actually offer on the market is a separate problem.
 
-\subsection{Customer Market}
+\subsection{Tariff Market}
 
 The goal of the customer market is to get as many subscribers as possible for the most profitable tariffs the broker
 offers on the market. The tariffs offered in the market compete for the limited number of customers available and every
@@ -91,10 +97,11 @@ The agents learning task for the customer market is therefore designed in the fo
     %tariffs %TODO really, I go genetic?
 \end{enumerate}
 
+%TODO not yet actually realized, still applicable?
 \subsubsection{Tariff fitness learning}
 To learn the fitness of a tariff while considering its environment, supervised learning techniques can be applied. To do
 this, features need to be created from the tariffs specifications and its competitive environment. Similar work has been
-done by \citeauthor{cuevas2015distributed} who discretized the tariff market in four variables describing the
+done by \citet{cuevas2015distributed} who discretized the tariff market in four variables describing the
 relationships between the competitors and their broker.   
 
 For my broker, because \ac {NN} can handle a large state spaces, I create a more detailed description of the
@@ -124,6 +131,26 @@ the attractiveness of the offer from the perspective of the customers
 % how to avoid overwhelming of agent? output layer must be fairly large. 
 %
 % time, energy, money, communication dimensions (and subdimensions)
+\subsubsection{Customer demand estimation}%
+\label{ssub:customer_demand_estimation}
+
+The simplest learning component is the demand estimator. This component has no dependencies onto the other learning components and can easily be trained using historical data. This is due to the fact that the demand of a customer is only dependent on variables that are already provided in the state files of previous simulations. A customer will not use a different amount of energy if the broker implementation changes but all other variables (such as subscribed tariff, weather etc.) remain equal .
+
+To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and labels needs to be created. Because the model may also learn during the course of a running competition (allowing the model to adapt to new customer patterns), a generator based structure should be preferred. This means that a generator exists that creates $x, y$ pairs for the model to train on.
+
+According to the simulation specification, the customer models generate their demand pattern based on their internal structure, broker factors and game factors \cite[]{ketter2018powertac}. The preprocessing pipeline therefore generates feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the label while all other components are part of the features that are used to train the model. The intuitive model class for demand patterns prediction are \ac {RNN} due to the sequential nature of the problem \cite[]{EvalGRU2014}. However, as will later be shown, the implementation of relatively shallow dense classic \ac {NN} also results in decent results. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/UsageEstimator.png}
+	\caption{Demand Estimator structure}
+	\label{fig:DemandEstimator}
+\end{figure}
+
+
+The overall structure of the demand estimator component is shown in Figure~\ref{fig:DemandEstimator}. The model can be both trained offline based on the state files as well as online during the competition. This is possible because in both situations, the environment model of the agent is a continuous representation of the agents knowledge about the world. In fact, during the state file parsing, the environment may even hold information that the agent usually cannot observe in a competition environment. This is also the case for the demand learning, as the state files hold the demand realizations of all customers while the server during the competition only transmits the usage realizations of the customers that are subscribed to the agents tariffs. Regardless, this does not affect the ability to learn from the customers usage patterns in either setting. During a competition, the agent may learn from the realized usage of customers after each time slot is completed. Because this process may require some ressources, it is advantageous to first perform the prediction of the subscribed customers demands for the current time slot to pass this information to the wholesale component before training the model on the received meter readings
+\footnote{The component code can be found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
+
 
 \subsection{Wholesale Market}
 \subsection{Balancing Market}
