@@ -1,0 +1,23 @@
+\ac {RL} is an interesting intersection between supervised and unsupervised learning concepts. On the one hand it does not require large amounts of labelled data to generate successful systems. But it does require some form of feedback and it uses the feedback of an \emph{environment} received by an acting \emph{agent}.
+The general principle of \ac {RL} therefore includes an agent and the environment in which it performs actions. The function that determines the action $a$  taken by the agent in a given state $s$ is called its policy, short $\pi$. The environment then reacts to the action of the agent by returning a new state $s'$ which is evaluated and a corresponding reward $r$ is given to the agent.
+%TODO russel
+%\citep[](russell2016artificial)
+
+As an example, an agent active in the environment of playing Super Mario may receive rewards corresponding to the game score. It may perform all valid moves permitted by the game and the goal is to improve its score. 
+
+To train an agent, the task is usually performed several times and the environment is reset after each iteration to allow for a new learning step.  
+%TODO add atari games reference
+When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives, it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or through explicit rewards for random actions.
+%\citep() %A3C TODO
+
+%TODO already described \ac {MDP}?
+The model describing this process of subsequent states and actions is commonly modelled as a \ac {MDP}. In fact, \ac {RL} is a concept of solving such \ac {MDP} problems assuming no internal model of the environment and without the agent knowing \emph{why} it gets a reward. The concept of \ac {RL} therefore teaches the agent to perform optimally in a given state based on previous experiences. 
+
+There are several forms of learning to solve a \ac {MDP} using \ac {RL} but for the purpose of this thesis I will focus on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$. Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for available actions and others. %TODO not clean paragraph...
+
+
+\section{Policy Search}
+\section{Deep Reinforcement Learning}
+
+%TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN} 
+\section{Proximal Policy Optimization OR(TBD) Deep Q learning}
