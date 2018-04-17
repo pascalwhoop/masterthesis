@@ -65,7 +65,7 @@ The choice of \ac {JSON} as the base communication protocoll might also be intel
 \footnote{\url{https://github.com/powertac/broker-adapter-grpc} }.
 
 Because the programming language is different from the supplied sample-broker, many of the domain objects need to be redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the server are all annotated so that the xml serializer can translate between the xml and object variants without errors. This helps to recreate a similar functionality for the needed classes in the python environment. If the project was started again today, it might have been simpler to first define a set of message types in a language such as Protocoll Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMI} communication, it is better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse the \ac {XML} that is received.
-\section{Paralleling environments with Kubernetes}
+\section{Parallelizing environments with Kubernetes}
 
 \section{Agent Models}
 
@@ -170,4 +170,12 @@ The overall structure of the demand estimator component is shown in Figure~\ref{
 
 
 \subsection{Wholesale Market}
+
+Using \ac {MDP} 
+
+\ac {MDP} is actually with infinite states but for analytical concept, its irrelevant. Important is: Continuous states,
+continuous actions (with some rounding to nearest .02)
+
+theoretically it's a nonstationary \ac {MDP} because it's limited to 24 state transitions before termination (t-0)
+
 \subsection{Balancing Market}
