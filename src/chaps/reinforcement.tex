@@ -1,23 +1,90 @@
-\ac {RL} is an interesting intersection between supervised and unsupervised learning concepts. On the one hand it does not require large amounts of labelled data to generate successful systems. But it does require some form of feedback and it uses the feedback of an \emph{environment} received by an acting \emph{agent}.
-The general principle of \ac {RL} therefore includes an agent and the environment in which it performs actions. The function that determines the action $a$  taken by the agent in a given state $s$ is called its policy, short $\pi$. The environment then reacts to the action of the agent by returning a new state $s'$ which is evaluated and a corresponding reward $r$ is given to the agent.
-%TODO russel
-%\citep[](russell2016artificial)
+The previous chapters have introduced concepts of \ac {SL} , \ac {NN}, backpropagation and \ac {RNN} for time-embedded
+learning tasks. \ac {RL} can be described as an intersection between supervised and unsupervised learning concepts and
+Deep \ac {RL} is the usage of \ac {NN}, especially those with many layers, to perform \ac {RL}.
 
-As an example, an agent active in the environment of playing Super Mario may receive rewards corresponding to the game score. It may perform all valid moves permitted by the game and the goal is to improve its score. 
+On the one hand \ac {RL}  does not require large amounts of labelled data to generate successful systems which is
+beneficial for areas where such data is either expensive to aquire or difficult to clearly label. On the other hand it
+requires some form of feedback. Generally, \ac {RL} \emph{agents} use feedback received from an \emph{environment}.  The
+general principle of \ac {RL} therefore includes an agent and the environment in which it performs actions. The function
+that determines the action $a$  taken by the agent in a given state $s$ is called its policy, usually represented by
+$\pi$.  The environment reacts to the actions of the agent by returning new states $s'$ which are evaluated and a
+corresponding reward $r$ is given to the agent. The reward gives the agent information about how well it performed 
+\citep[p.830f.]{russell2016artificial}.
 
-To train an agent, the task is usually performed several times and the environment is reset after each iteration to allow for a new learning step.  
+This chapter will first introduce the concepts of a \ac {MDP}, then introduce different concepts of \ac {RL} agents,
+describe approaches to encourage exploration of its options and finally describe how \ac {NN} can be used to create
+state-of-the-art agents that can solve complex tasks. The majority of the chapter is based on
+chapters 17 and 21 of \citet[]{russell2016artificial} unless otherwise marked. 
+
+\subsection{Markovian Decision Processes}%
+\label{ssub:markovian_decision_processes}
+
+A common model describing the conceptual process of states and actions followed by new states and new actions of an
+agent and its environment is called a \acf {MDP}. In fact, \ac {RL} is an approach for solving such \ac {MDP} problems
+optimally
+\footnote{Although \ac {RL} can also be applied to non-sequential decision problems, the field has largely focused on
+sequential problems}.
+
+A \ac {MDP} is usually defined by the following components:
+
+\begin{itemize}
+	\item $\mathcal{A}$: Finite set of allowed actions  
+	\item $\mathcal{S}$: Finite set of states
+	\item $P(s' \mid s,a) \forall s \in \mathcal{S}, a \in \mathcal{A}$: Probability of transitioning from state
+	$s$ to state $s'$ when action $a$ is taken
+	\item $\gamma$: Discount factor for each time step, discounting future rewards to allow for long-term and
+		short-term focus
+	\item $R(s)$: Reward function that defines the reward received for transitioning into state $s$
+\end{itemize}
+
+To solve such a problem, an agent needs to be equipped with a policy $\pi$ that allows for corresponding actions to each
+of the states. The type of policy can further be distinguished between \emph{stationary} and \emph{nonstationary}
+policies. The former type refers to policies that recommend the same action for the same state independent of the
+time stetime step. The latter describes those policies which are trying to solve non-finite state spaces and where an
+agent might therefore act differently once time becomes scarce. However, also infinite-horizon \ac {MDP} can have
+terminal states which conceptually mean that the process has ended.
+
+A more complex form of \ac {MDP} is the \ac {POMDP} which involves agents basing their actions on a belief of the
+current state. As the later practical application to the \ac {PowerTAC} competition however can be mapped to a \ac {MDP}
+where the transition probability implicitly represents the partial observability \citep{tactexurieli2016mdp}, this will not be discussed. 
+
+\subsection{Bellman Equation}%
+\label{ssub:bellman_equation}
+
+The Bellman Equation offers a way to describe the utility of each state in an \ac {MDP}. For this, it assumes that the
+utility of a state is the reward for the current state plus the sum of all future rewards discounted by $\gamma$. 
+
+\[
+U(s) = R(s) + \gamma \max_{a\in\mathcal{A}(s)} \sum_{s'}{P(s' \mid s,a)U(s')}
+%TODO numbers on equation?
+\]
+
+In the above equation, the \emph{max} operation selects the optimal action in regard to all possible actions. In a
+discrete action space this would be a selection over all possible actions, in a continuous action space it however can
+become more complex. \ac {NN} based \ac {RL} agents simply invoke their policy network to retrieve the action which the
+agent believes it the one with the highest utility \citep{mnih2013playing}.
+
+
+%As an example, an agent active in the environment of playing Super Mario may receive rewards corresponding to the game
+%score. It may perform all valid moves permitted by the game and the goal is to improve its score. 
+
+%To train an agent, the task is usually performed several times and the environment is reset after each iteration to
+%allow for a new learning step.  
 %TODO add atari games reference
-When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives, it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or through explicit rewards for random actions.
+When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives,
+it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent
+can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or
+through explicit rewards for random actions.
 %\citep() %A3C TODO
 
-%TODO already described \ac {MDP}?
-The model describing this process of subsequent states and actions is commonly modelled as a \ac {MDP}. In fact, \ac {RL} is a concept of solving such \ac {MDP} problems assuming no internal model of the environment and without the agent knowing \emph{why} it gets a reward. The concept of \ac {RL} therefore teaches the agent to perform optimally in a given state based on previous experiences. 
 
-There are several forms of learning to solve a \ac {MDP} using \ac {RL} but for the purpose of this thesis I will focus on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$. Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for available actions and others. %TODO not clean paragraph...
+There are several forms of learning to solve a \ac {MDP} using \ac {RL} but for the purpose of this thesis I will focus
+on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$.
+Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for
+available actions and others. %TODO not clean paragraph...
 
 
-\section{Policy Search}
-\section{Deep Reinforcement Learning}
+\section{Policy Search} \section{Deep Reinforcement Learning}
 
 %TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN} 
 \section{Proximal Policy Optimization OR(TBD) Deep Q learning}
