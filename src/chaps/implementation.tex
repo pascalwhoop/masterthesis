@@ -1,6 +1,10 @@
 \section{Tools}
 
-To develop the functionality of the agent, which is supposed to be mainly driven by deep learning technologies, a number of state-of-the-art tools and frameworks should be used. These include Keras and TensorFlow to allow for easy creation and adaption of the learning models, \ac {GRPC} to communicate with the Java components of the competition and Kubernetes to easily scale several instances across the cloud. By transfering the components into the cloud, it is also possible to use tools such as Google Colab which allows access to a powerful cloud \ac {GPU} without costs 
+To develop the functionality of the agent, which is supposed to be mainly driven by deep learning technologies, a number
+of state-of-the-art tools and frameworks should be used. These include Keras and TensorFlow to allow for easy creation
+and adaption of the learning models, \ac {GRPC} to communicate with the Java components of the competition and
+Kubernetes to easily scale several instances across the cloud. By transfering the components into the cloud, it is also
+possible to use tools such as Google Colab which allows access to a powerful cloud \ac {GPU} without costs
 \citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
 
 
@@ -13,21 +17,17 @@ the simulation is a reasonable approach to boost the ability of several parts of
 is the predictor of customer energy usage, as previous simulations offer large amounts of usage data that can be
 analyzed.
 
-The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant
-data for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files
-are based on events (they hold constructor parameters and method call parameters of previous server instances), these
-events need to be translated into the environment. To learn from these events, most modern frameworks require a training
+The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant data
+for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files are
+based on events (they hold constructor parameters and method call parameters of previous server instances), these events
+need to be translated into the environment. To learn from these events, most modern frameworks require a training
 data-set and a label data-set. Therefore these events are first translated into an environment and at each timestep,
 relevant training samples are extracted. Therefore the overall structure of the translation from state files to training
 data is as follows:
 
-\begin{enumerate}
-    \item Iterate over all local state files
-    \item Iterate over lines in state file
-    \item Apply line to current environment state
-    \item At each time-step, extract relevant samples
-    \item Store training data in separate local files
-\end{enumerate}
+\begin{enumerate} \item Iterate over all local state files \item Iterate over lines in state file \item Apply line to
+current environment state \item At each time-step, extract relevant samples \item Store training data in separate local
+files \end{enumerate}
 
 The code linked to the process described above is part of the \texttt{util.state\_extractor} and
 \texttt{model.environment} modules. The tests in the \texttt{tests} module document the functionality.
@@ -42,50 +42,97 @@ approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
 To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple
 bridge was provided by the team that allowed external processes to communicate with the system through a bridge via the
 provided sample-broker. All messages received by the broker are written to a First in First Out pipe on the local file
-system and a second pipe is created to read messages from the external process. This was the first approach towards opening up the simulation to other languages and development environments. 
+system and a second pipe is created to read messages from the external process. This was the first approach towards
+opening up the simulation to other languages and development environments. 
 
-As I am interested in writing my Agent using certain frameworks which are mainly developed and maintained in Python and because it is helpful to also allow access to the adapter via network interfaces (to allow for distributed execution of the components in e.g. cloud environments), I need to adapt this to allow network based access. In general the following problems need to be solved:
+As I am interested in writing my Agent using certain frameworks which are mainly developed and maintained in Python and
+because it is helpful to also allow access to the adapter via network interfaces (to allow for distributed execution of
+the components in e.g. cloud environments), I need to adapt this to allow network based access. In general the following
+problems need to be solved:
 
-\begin{itemize}
-	\item Java model classes should be reused if possible, automatically generating target language model definitions from the Java source code to avoid duplication of semantically identical information
-	\item Permit future developers using even more languages (such as C, R or Go) with little effort
-	\item Possibly lay the basis for a change of the communication technology of the entire simulation which is more language agnostic.
-\end{itemize}
+\begin{itemize} \item Java model classes should be reused if possible, automatically generating target language model
+	definitions from the Java source code to avoid duplication of semantically identical information \item Permit
+	future developers using even more languages (such as C, R or Go) with little effort \item Possibly lay the basis
+	for a change of the communication technology of the entire simulation which is more language agnostic.
+	\end{itemize}
 
-The first approach is based on \ac{GRPC} to transmit the messages between the Java sample-broker and the final client. For this, each \texttt{handleMessage} method in the three core classes of the sample-broker passes the received message along to the \ac {GRPC} infrastructure. While previous developers have handled these messages in the Java environment, I pass these messages to the ultimate environment by converting them into protobuf messages which are then sent to a connected broker who implements correpsonding handler methods in the target language. The advantage of this approach is that this theoretically allows the maintainers of the project to also adapt this approach the Java clients in general, which would then allow the makeshift Java \emph{bridge} to be avoided. The over-the-wire protocoll is also much more efficient (as the data is sent in a binary format) and the message structre is clearly documented in the \texttt{grpc\_messages.proto} file. The disadvantage is the need to translate each \ac{POJO} into a protobuf message and vice versa. This is however not different from the current XStream implementation which also requires the annotation of class files in Java to declare which properties are serialized and included in the \ac {XML} strings. If th project should adopt the \ac {GRPC} based communcation, the \ac {GRPC} architecture will then allow the server to be adressed by any of the supported languages.
-\footnote{Which as of today are: C++, Java, Python, Go, Ruby, C\#, Node.js, PHP and Dart}
+The first approach is based on \ac{GRPC} to transmit the messages between the Java sample-broker and the final client.
+For this, each \texttt{handleMessage} method in the three core classes of the sample-broker passes the received message
+along to the \ac {GRPC} infrastructure. While previous developers have handled these messages in the Java environment, I
+pass these messages to the ultimate environment by converting them into protobuf messages which are then sent to a
+connected broker who implements correpsonding handler methods in the target language. The advantage of this approach is
+that this theoretically allows the maintainers of the project to also adapt this approach the Java clients in general,
+which would then allow the makeshift Java \emph{bridge} to be avoided. The over-the-wire protocoll is also much more
+efficient (as the data is sent in a binary format) and the message structre is clearly documented in the
+\texttt{grpc\_messages.proto} file. The disadvantage is the need to translate each \ac{POJO} into a protobuf message and
+vice versa. This is however not different from the current XStream implementation which also requires the annotation of
+class files in Java to declare which properties are serialized and included in the \ac {XML} strings. If th project
+should adopt the \ac {GRPC} based communcation, the \ac {GRPC} architecture will then allow the server to be adressed by
+any of the supported languages.  \footnote{Which as of today are: C++, Java, Python, Go, Ruby, C\#, Node.js, PHP and
+Dart}
 
-A second approach is quiet similar to the original bridge but instead of writing the \ac {XML} strings to the local file system, they are passed to the final environment via \ac {GRPC} by simple messages that just serve as a wrapper for the \ac {XML} string. While this is not elegant from a engineering perspective (\ac {GRPC} should be used on a method level and messages should not contain other message formats as strings), it is simple and may lead to quick results. A problem is that the resulting \ac {XML} will then have to be parsed in the Python broker. Before the introduction of other languages, the communication was basically an internal API and broker developers only needed to concern themselves with the handling of the Java \texttt{handleMessage} method . Therefore, no formal descriptions for the structure of the \ac {XML} messages exist. All \ac {XML} parsing would therefore be based on observable structures of the \ac {XML} which can be extracted from the sample-broker logs and all model classes need to be rewritten. Furthermore, agents wanting to use other programming languages would have to reimplement all of this again, with no core reuse possible.
+A second approach is quiet similar to the original bridge but instead of writing the \ac {XML} strings to the local file
+system, they are passed to the final environment via \ac {GRPC} by simple messages that just serve as a wrapper for the
+\ac {XML} string. While this is not elegant from a engineering perspective (\ac {GRPC} should be used on a method level
+and messages should not contain other message formats as strings), it is simple and may lead to quick results. A problem
+is that the resulting \ac {XML} will then have to be parsed in the Python broker. Before the introduction of other
+languages, the communication was basically an internal API and broker developers only needed to concern themselves with
+the handling of the Java \texttt{handleMessage} method . Therefore, no formal descriptions for the structure of the \ac
+{XML} messages exist. All \ac {XML} parsing would therefore be based on observable structures of the \ac {XML} which can
+be extracted from the sample-broker logs and all model classes need to be rewritten. Furthermore, agents wanting to use
+other programming languages would have to reimplement all of this again, with no core reuse possible.
 
-A final approach is the generation of schema definitions from the Java model classes that are transmitted between the brokers and the server. Generally, two human readable over-the-wire structures are reasonable: \ac {XML} and \ac{JSON}. \ac {XML} messages can be formally defined using \ac {XML} Schemas and the \ac{JAXB} project
-\footnote{\url{https://github.com/javaee/jaxb-v2}}
-offers to generate such schemas from Java class definitions. This however did not succeed for the \ac {PowerTAC} model definitions which lead me to create a question on StackOverflow, a discussion platform for programming questions. The resulting answer lead to the ultimate alternative which is the generation of \ac {JSON} schemas which can then be converted into Python class files  
+A final approach is the generation of schema definitions from the Java model classes that are transmitted between the
+brokers and the server. Generally, two human readable over-the-wire structures are reasonable: \ac {XML} and \ac{JSON}.
+\ac {XML} messages can be formally defined using \ac {XML} Schemas and the \ac{JAXB} project
+\footnote{\url{https://github.com/javaee/jaxb-v2}} offers to generate such schemas from Java class definitions. This
+however did not succeed for the \ac {PowerTAC} model definitions which lead me to create a question on StackOverflow, a
+discussion platform for programming questions. The resulting answer lead to the ultimate alternative which is the
+generation of \ac {JSON} schemas which can then be converted into Python class files
 \footnote{\url{https://stackoverflow.com/questions/49630662/convert-java-class-structures-to-python-classes/49777613\#49777613}}.
-The choice of \ac {JSON} as the base communication protocoll might also be intelligent as a future choice two reasons: Firstly, it seems to be the more popular serialization protocol in comparison to \ac {XML} \citep{jsonxml} due to its easy readability and because it is more data efficient. Secondly, \ac {GRPC} can also transmit data in \ac {JSON} form and protobuf messages can easily be printed as \ac {JSON}, making both alternatives more interoperable
+The choice of \ac {JSON} as the base communication protocoll might also be intelligent as a future choice two reasons:
+Firstly, it seems to be the more popular serialization protocol in comparison to \ac {XML} \citep{jsonxml} due to its
+easy readability and because it is more data efficient. Secondly, \ac {GRPC} can also transmit data in \ac {JSON} form
+and protobuf messages can easily be printed as \ac {JSON}, making both alternatives more interoperable
 \footnote{\url{https://github.com/powertac/broker-adapter-grpc} }.
 
-Because the programming language is different from the supplied sample-broker, many of the domain objects need to be redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the server are all annotated so that the xml serializer can translate between the xml and object variants without errors. This helps to recreate a similar functionality for the needed classes in the python environment. If the project was started again today, it might have been simpler to first define a set of message types in a language such as Protocoll Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMI} communication, it is better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse the \ac {XML} that is received.
-\section{Parallelizing environments with Kubernetes}
+Because the programming language is different from the supplied sample-broker, many of the domain objects need to be
+redefined and some code redeveloped. The classes in \ac {PowerTAC} which are transfered between the client and the
+server are all annotated so that the xml serializer can translate between the xml and object variants without errors.
+This helps to recreate a similar functionality for the needed classes in the python environment. If the project was
+started again today, it might have been simpler to first define a set of message types in a language such as Protocoll
+Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMI} communication, it is
+better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse
+the \ac {XML} that is received.  \section{Parallelizing environments with Kubernetes}
 
-\section{Agent Models}
+\section{Learning Components}
 
-The general architecture of the agent is split into four components
+The components of the agent that have learning capabilities include: 
 
--- customer market
+\begin{description} 
+	\item[Customer Market]: Generates actions in respect to the tariff market such as publishing,
+	adapting and revoking tariffs. While the component is expected to have a positive impact on the performance of
+	the broker, it was just implemented with a basic functionality of publishing the same tariffs as a selected
+	competitive broker, mimicking the competing brokers portfolio. It also creates usage predictions for a set of
+	customers for other components.  
+	
+	\item[Wholesale Market]: Places bids and asks for energy in the periodic double
+	auction type market \citep{ketter2018powertac}. The component employs \ac {RL} techniques and uses the
+	predictions generated from the customer market component as an input describing the required capacity.
 
--- wholesale 
+	\item[Balancing Market]: The balancing market component has not been implemented, but it is part of the
+	developed framework for possible future extension.  \end{description}
 
--- balancing 
-
--- high-level agent \ac {RL} problem
-
-While \citep{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a \ac {MDP} for ease of implementation) with all three markets
-integrated into one problem, I believe breaking the problem into disjunct subproblems is a better approach as each of
-them can be looked at in separation and a learning algorithm can be applied to improve performance without needing to
-consider potentially other areas of decision making. One such example is the estimation of fitness for a given tariff in
-a given environment. A tariffs' competitiveness in a given environment is independent of the wholesale or balancing
-trading strategy of the agent since the customers do not care about the profitability of the agent or how often it
-receives balancing penalties. While the broker might incur large losses if a tariff is too competitive (by offering prices that are below the profitablity line of the broker), such a tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the tariffs to actually offer on the market is a separate problem.
+While \citep{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a
+\ac {MDP} for ease of implementation) with all three markets integrated into one problem, I believe breaking the problem
+into disjunct subproblems is a better approach as each of them can be looked at in separation and a learning algorithm
+can be applied to improve performance without needing to consider potentially other areas of decision making. One such
+example is the estimation of fitness for a given tariff in a given environment. A tariffs' competitiveness in a given
+environment is independent of the wholesale or balancing trading strategy of the agent since the customers do not care
+about the profitability of the agent or how often it receives balancing penalties. While the broker might incur large
+losses if a tariff is too competitive (by offering prices that are below the profitablity line of the broker), such a
+tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the tariffs
+to actually offer on the market is a separate problem.
 
 \subsection{Tariff Market}
 
@@ -95,48 +142,42 @@ customer must be subscribed to some tariff. The profitability of tariffs is limi
 by the simulation as a constant offering creating an upper bound on profitability. 
 
 To succeed in the customer market, the agents needs to be able to generate tariffs that are competitive. This can be
-broken down into two subtasks: Generating valid tariffs and evaluating their competitiveness. A tariff can be
-verified by passing it to the \ac {PowerTAC} server which verifies the tariff. Hence, a \ac {RL} algorithm that is
-tasked with creating competitive tariffs can be given feedback by penalizing non-conclusive tariffs. An invalid tariff
-could be one that contains overlapping rates leading to an ambivalent status. The competitiveness of a tariff depends
-not only on the attributes of the tariff but also on the competition environment. If the broker only competes against
-the default tariffs, even many mediocre tariff offerings would perform well. In an environment with many competitors on
-the other hand, a tariff needs to be well designed to generate profits. 
+broken down into two subtasks: Generating valid tariffs and evaluating their competitiveness. A tariff can be verified
+by passing it to the \ac {PowerTAC} server which verifies the tariff. Hence, a \ac {RL} algorithm that is tasked with
+creating competitive tariffs can be given feedback by penalizing non-conclusive tariffs. An invalid tariff could be one
+that contains overlapping rates leading to an ambivalent status. The competitiveness of a tariff depends not only on the
+attributes of the tariff but also on the competition environment. If the broker only competes against the default
+tariffs, even many mediocre tariff offerings would perform well. In an environment with many competitors on the other
+hand, a tariff needs to be well designed to generate profits. 
 
 The agents learning task for the customer market is therefore designed in the following way:
 
-\begin{enumerate}
-    \item Learning to evaluate a tariffs competitiveness in relation to the competitive environment through supervised
-        learning on the historical state logs of previous competitions 
-    \item Running a \ac {RL} algorithm which learns to choose parameters for tariffs that are valid and profitable in a
-        given environment
+\begin{enumerate} \item Learning to evaluate a tariffs competitiveness in relation to the competitive environment
+	through supervised learning on the historical state logs of previous competitions \item Running a \ac {RL}
+	algorithm which learns to choose parameters for tariffs that are valid and profitable in a given environment
     %\item Learning to generate valid tariff specifications through a genetic algorithm strategy, penalizing invalid
-    %tariffs %TODO really, I go genetic?
+	%tariffs %TODO really, I go genetic?
 \end{enumerate}
 
 %TODO not yet actually realized, still applicable?
-\subsubsection{Tariff fitness learning}
-To learn the fitness of a tariff while considering its environment, supervised learning techniques can be applied. To do
-this, features need to be created from the tariffs specifications and its competitive environment. Similar work has been
-done by \citep{cuevas2015distributed} who discretized the tariff market in four variables describing the
-relationships between the competitors and their broker.   
+\subsubsection{Tariff fitness learning} To learn the fitness of a tariff while considering its environment, supervised
+learning techniques can be applied. To do this, features need to be created from the tariffs specifications and its
+competitive environment. Similar work has been done by \citep{cuevas2015distributed} who discretized the tariff market
+in four variables describing the relationships between the competitors and their broker.   
 
 For my broker, because \ac {NN} can handle a large state spaces, I create a more detailed description of the
 environment. I still have to ensure the number of input features is fixed though, so a simple copy of all competing
 tariffs is not a valid input for the environment description. Instead I create the following features from the tariff
 market:
 
-\begin{description}
-    \item[Average Charge per hour of week Timeslot]: According to \\ \texttt{TariffEvaluationHelper.java}, customer
-        models evaluate tariffs on an per-hour basis. This means they are very precise in the evaluation of potential
-        tariff alternatives (before the application of an irrationality factor). Hence, a per-hour precision in the
-        input is needed.
-    \item[Variance of Charge per hour of week Timeslot] Variance of the tariffs charges per each timeslot in a week
-        among all competitors.
-    \item[Average and Variance of periodic payments] Description of the markets periodic payments landscape
-    \item[Average and Variance of one-time payments] Description of the markets one-time payments landscape
-    \item[Average and Variance of Up/Down regulation payments] 0 for tariffs without regulation capabilities
-\end{description}
+\begin{description} \item[Average Charge per hour of week Timeslot]: According to \\
+	\texttt{TariffEvaluationHelper.java}, customer models evaluate tariffs on an per-hour basis. This means they are
+	very precise in the evaluation of potential tariff alternatives (before the application of an irrationality
+	factor). Hence, a per-hour precision in the input is needed.  \item[Variance of Charge per hour of week
+	Timeslot] Variance of the tariffs charges per each timeslot in a week among all competitors.  \item[Average and
+	Variance of periodic payments] Description of the markets periodic payments landscape \item[Average and Variance
+	of one-time payments] Description of the markets one-time payments landscape \item[Average and Variance of
+	Up/Down regulation payments] 0 for tariffs without regulation capabilities \end{description}
 
 Because the \ac {PowerTAC} simulation does not return profits of brokers on a per-tariff basis and because the reasons
 for why a broker purchased a specific amount of energy on the wholesale market are not known, it is hard to put a
@@ -148,25 +189,42 @@ the attractiveness of the offer from the perspective of the customers
 % how to avoid overwhelming of agent? output layer must be fairly large. 
 %
 % time, energy, money, communication dimensions (and subdimensions)
-\subsubsection{Customer demand estimation}%
-\label{ssub:customer_demand_estimation}
+\subsubsection{Customer demand estimation}% \label{ssub:customer_demand_estimation}
 
-The simplest learning component is the demand estimator. This component has no dependencies onto the other learning components and can easily be trained using historical data. This is due to the fact that the demand of a customer is only dependent on variables that are already provided in the state files of previous simulations. A customer will not use a different amount of energy if the broker implementation changes but all other variables (such as subscribed tariff, weather etc.) remain equal .
+The simplest learning component is the demand estimator. This component has no dependencies onto the other learning
+components and can easily be trained using historical data. This is due to the fact that the demand of a customer is
+only dependent on variables that are already provided in the state files of previous simulations. A customer will not
+use a different amount of energy if the broker implementation changes but all other variables (such as subscribed
+tariff, weather etc.) remain equal .
 
-To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and labels needs to be created. Because the model may also learn during the course of a running competition (allowing the model to adapt to new customer patterns), a generator based structure should be preferred. This means that a generator exists that creates $x, y$ pairs for the model to train on.
+To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and
+labels needs to be created. Because the model may also learn during the course of a running competition (allowing the
+model to adapt to new customer patterns), a generator based structure should be preferred. This means that a generator
+exists that creates $x, y$ pairs for the model to train on.
 
-According to the simulation specification, the customer models generate their demand pattern based on their internal structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline therefore generates feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the label while all other components are part of the features that are used to train the model. The intuitive model class for demand patterns prediction are \ac {RNN} due to the sequential nature of the problem \citep[]{EvalGRU2014}. However, as will later be shown, the implementation of relatively shallow dense classic \ac {NN} also results in decent results. 
+According to the simulation specification, the customer models generate their demand pattern based on their internal
+structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline therefore generates
+feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the
+label while all other components are part of the features that are used to train the model. The intuitive model class
+for demand patterns prediction are \ac {RNN} due to the sequential nature of the problem \citep[]{EvalGRU2014}. However,
+as will later be shown, the implementation of relatively shallow dense classic \ac {NN} also results in decent results. 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\linewidth]{img/UsageEstimator.png}
-	\caption{Demand Estimator structure}
-	\label{fig:DemandEstimator}
-\end{figure}
+\begin{figure}[h] \centering \includegraphics[width=0.8\linewidth]{img/UsageEstimator.png} \caption{Demand Estimator
+structure} \label{fig:DemandEstimator} \end{figure}
 
 
-The overall structure of the demand estimator component is shown in Figure~\ref{fig:DemandEstimator}. The model can be both trained offline based on the state files as well as online during the competition. This is possible because in both situations, the environment model of the agent is a continuous representation of the agents knowledge about the world. In fact, during the state file parsing, the environment may even hold information that the agent usually cannot observe in a competition environment. This is also the case for the demand learning, as the state files hold the demand realizations of all customers while the server during the competition only transmits the usage realizations of the customers that are subscribed to the agents tariffs. Regardless, this does not affect the ability to learn from the customers usage patterns in either setting. During a competition, the agent may learn from the realized usage of customers after each time slot is completed. Because this process may require some ressources, it is advantageous to first perform the prediction of the subscribed customers demands for the current time slot to pass this information to the wholesale component before training the model on the received meter readings
-\footnote{The component code can be found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
+The overall structure of the demand estimator component is shown in Figure~\ref{fig:DemandEstimator}. The model can be
+both trained offline based on the state files as well as online during the competition. This is possible because in both
+situations, the environment model of the agent is a continuous representation of the agents knowledge about the world.
+In fact, during the state file parsing, the environment may even hold information that the agent usually cannot observe
+in a competition environment. This is also the case for the demand learning, as the state files hold the demand
+realizations of all customers while the server during the competition only transmits the usage realizations of the
+customers that are subscribed to the agents tariffs. Regardless, this does not affect the ability to learn from the
+customers usage patterns in either setting. During a competition, the agent may learn from the realized usage of
+customers after each time slot is completed. Because this process may require some ressources, it is advantageous to
+first perform the prediction of the subscribed customers demands for the current time slot to pass this information to
+the wholesale component before training the model on the received meter readings \footnote{The component code can be
+found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
 
 
 \subsection{Wholesale Market}
@@ -176,6 +234,19 @@ Using \ac {MDP}
 \ac {MDP} is actually with infinite states but for analytical concept, its irrelevant. Important is: Continuous states,
 continuous actions (with some rounding to nearest .02)
 
+Bellman equation not applicable to continuous spaces. But it is also unique because its a directed acyclic graph (the
+state transition graph) 1, 2, 3, 4, ... 24
+
 theoretically it's a nonstationary \ac {MDP} because it's limited to 24 state transitions before termination (t-0)
+
+DQN --> evaluate the value of a s,a pair
+
+\ac {PPO} --> use DNN for determining what to do in a given state - maximizes "surrogate" (relation between old and new
+policy) while penalizing too extensive reward estimations (to avoid extensive updates to policy)
+
+reward is based on relative price paid in comparison to average price for given time slot. 
+
+Do I implement the env interface defined by OpenAI and let the agent subcomponent imagine it's by itself? --> allows for
+A3C and many other interesting opportunities
 
 \subsection{Balancing Market}

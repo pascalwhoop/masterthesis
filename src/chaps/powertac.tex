@@ -13,21 +13,21 @@ The broker to be developed has to contest in a number of markets and handle a va
 %TIMESLOTS
 The simulation emulates a time span of approximately 60 days with 1h time slot precision and accelerates this to 5 real-world seconds corresponding to each game-hour. The simulation emulates a time span of approximately 60 days with 1h time slot precision and accelerates this to 5 real-world seconds corresponding to each game-hour.
 
-\section{Components}
+\subsection{Components}
 
 The simulation is both technically and logically separated into several components to aid both comprehensibility of the system and yet allow complex simulations of more realistic scenarios. In the following pages, those logical components will be explained. Most of these components are easily mappable into the technical implementation.
 
-\subsection{Distribution Utility}
+\subsubsection{Distribution Utility}
 The \ac{DU} represents an entity that regulates the real-time electric usage and corrects for any imbalances in brokers portfolios by correcting the overall net-balance of the system. Any broker who did not balance it's electric supply and demand incurs costs and is therefore incentivized to always balance its portfolios as good as possible. It also owns the distribution grid and every broker must pay fees for the use of the grid in proportion to the number of the customers it serves \citep[p.10]{ketter2018powertac}. It also offers tariffs and is therefore the equivalent of a \emph{baseline broker} whose tariffs create an upper bound on broker profitability. 
 
-\subsection{Accounting}
+\subsubsection{Accounting}
 All accounting is managed by the central simulation server as to avoid adversarial brokers from tampering with the games rules. Negative balances are usually punished with a 10\% p.a. interest rate while positive balances receive a 5\% p.a. interest rate. This components tracks every brokers financial balance as well as all brokers customer subscriptions and wholesale market positions \citep[p.11]{ketter2018powertac}.
 
-\subsection{Wholesale Market}
+\subsubsection{Wholesale Market}
 %TODO energy or electricity? What's the "right" word? --> ENERGY
 Every broker needs to purchase energy before it can sell it to the customers unless the customers of the broker itself generate sufficient energy to balance its own portfolio. For this, \ac{PowerTAC} offers a wholesale market that operates a \emph{periodic double auction} which represents traditional energy exchanges like those existing in the United States and European markets. Participants in this wholesale market are all brokers as well as a large general entity representing a number of generating facilities, a grid buyer who simulates large-scale demands based on real-world data adjusted based on weather-forecasts and a wholesale buyer who regularly places high-volume, low-price bids. During each time slot, 24 future slots are open for placing bids by the brokers. After the bids have been collected, a clearing price gets calculated which is the intersection between the supply and demand curves. Orders without limit prices are always served first. After the clearing, all uncleared bids and asks are distributed to the brokers to indicate the direction of the markets' demand and supply curves. 
 
-\subsection{Balancing Market}
+\subsubsection{Balancing Market}
 The Balancing market is the last and final trading opportunity for agents and in the sense of the game is at $t-0$ meaning that it occurs virtually in parallel to the consume of electricity. Any imbalance during this phase gets corrected for by the \ac{DU} who imposes forced balancing of brokers with an imbalanced portfolio. Brokers with too much supply in their portfolio therefore receive very little reimbursement for it and those whose customers' usage is higher than the estimated amount pay high prices for the additionally supplied energy. 
 
 Brokers who have tariffs with economic control abilities can pass this capacity along to the \ac{DU} who utilizes these capacities to correct the markets imbalances, charging customers' storage devices if an oversupply is present or depleting their devices in the case of an under-supply. It is therefore economically beneficial for brokers to attract customers with such balancing capabilities since it offers a buffer capacity against the balancing costs otherwise incurred through the actions of the \ac{DU} \citep[p.5]{ketter2018powertac} .  
@@ -36,7 +36,7 @@ Brokers who have tariffs with economic control abilities can pass this capacity 
 
 
 
-\subsection{Customer Market}
+\subsubsection{Customer Market}
 
 The foundation for any broker making profit is a sufficient amount of customers being subscribed to its tariffs. For this to occur, the broker must publish tariffs that are competitive as to attract customers. On the other hand, if the broker offers tariffs that lead to net losses, long term profit will not be possible
 \footnote{While the 2017 competition technically allowed for brokers to remain in the game despite offering highly under priced tariffs that corrupted the simulation results, a proper broker must not pursue such strategies simply because of economical reasoning. %TODO verify 2017 corruption
@@ -57,7 +57,7 @@ The broker has a wide variety of actions at its disposal to create a rich portfo
 
 Some of the above types can also be combined to create complex tariff landscapes for customers to choose from. 
 
-\subsection{Customer models}%
+\subsubsection{Customer models}%
 \label{sub:customer_models}
 
 The final part of the simulation environment is made up by the customer models which simulate real-world customers. Each customer can both produce and consume electricity. Consumers are modeled both by factored and elemental models \citep[p.14]{ketter2018powertac}, allowing for small numbers but detailed patterns and large number averaged patterns respectively. The customers evaluate the offered tariffs based on a number of deterministic functions including the various costs and variants of the offered tariffs multiplied by a \emph{irrationality factor} that allows for a more realistic limited rationality of the actors. Additional assessments such as broker reputation evaluation and energy source preferences are also included in the utility function. 
@@ -66,12 +66,12 @@ Customers do not evaluate every new tariff but only do so irregularly based on a
 
 As previously noted, customers can both consume and produce electricity. While most production is non deterministic and non controllable (i.e. in the case of solar and wind electricity), some are controllable such as \ac{CHP} or bio-gas units \citep[p.16]{ketter2018powertac}. Devices such as electric vehicles or water heaters can also offer regulation actions to brokers to balance their portfolios. A \emph{smart} water heater could refill only minimally after heavy use if usage patterns show that the owners will most likely not use it again for several hours. This way, an additional capacity for energy consumption is created that can be profitable for the customer, as the broker usually charges less for electricity delivered under capacity regulation terms \citep[p.14ff.]{ketter2018powertac}.
 
-\section{Broker concepts}
-\subsection{Decision areas}
-\subsection{Decision models}
-\subsection{Past performances}
+\subsection{Broker concepts}
+\subsubsection{Decision areas}
+\subsubsection{Decision models}
+\subsubsection{Past performances}
 
-\section{Technology concepts}
-subsection{Server technologies}
+\subsection{Technology concepts}
+\subsubsection{Server technologies}
 
 
