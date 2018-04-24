@@ -120,7 +120,7 @@ This is called \emph{asynchronous policy iteration}.
 
 Both variants require the transition function and the reward function to be known to the agent. \ac {RL} research has
 developed several methods that adapt the concepts of the two iteration algorithms for environments with the two unknown
-functions. They are explained in the next three sections. 
+functions. They are explained in the next sections. 
 %It allows for many interesting concepts to be used such as distributed learning, using multiple agents to explore an 
 %environment and learn from all their observations centrally, and  
 
@@ -180,11 +180,10 @@ implement for small, discrete state and action spaces but more complex for conti
 \label{sub:q_learning}
 
 In Section~\ref{sub:policy_and_value_iteration} I have already described how to learn the values of states, given an
-action. This action can also be derived from a policy function.
-In the case of an agent that wants to learn its policy (i.e. learn what a good policy is), this becomes problematic if the
-transition function is not known. An alternative model is called \emph{Q-Learning} which is a form of Temporal
-Difference Learning. It learns an action-utility value
-instead of simply the values. The relationship between this \emph{Q-Value} and the former value of a state is simply
+action. This action can also be derived from a policy function.  In the case of an agent that wants to learn its policy
+(i.e. learn what a good policy is), this becomes problematic if the transition function is not known. An alternative
+model is called \emph{Q-Learning} which is a form of Temporal Difference Learning. It learns an action-utility value
+instead of simply the values. The relationship between this \emph{Q-Value} and the former value of a state is simply 
 \[
 U(s) = \max_{a}Q(s,a)
 \]
@@ -203,6 +202,81 @@ An alternative version is the reduction of the above equation by removing the $\
 consequence: While Q-Learning may be used to learn the Q-Values from recorded state-action pairs, \ac {SARSA} requires
 the action taken to be derived from the current policy function. 
 
-%Policy search and gradient 
+\subsection{Policy Search and Policy Gradient Methods}%
+\label{sub:policy_search_and_policy_gradient_methods}
 
-%latest in applying deep \ac {NN} on \ac {RL} 
+These two approaches are possibly the simplest of the \ac {RL} algorithms. In its simplest form, policy search requires
+the algorithm to start with an initial policy and then adapt this policy until no further gains can be made. While the
+concepts is simple, it may lead to significant performances, if the \emph{choices regarding what to change} are made
+wisely. If the policy is just randomly changed, the results will be equally random. If the policy is changed depending
+on a good interpretation of the environments responses however, this method can offer good performance without the need
+to have a model of how the world works. Such an agent simply takes the current state $s$ as input and uses its policy to
+determine an output action $a = \pi(s)$. The value of a policy is noted as $\rho(\theta)$.
+
+For simplicity, I will assume actions derived from a policy to be continuous as both the later application relies on
+such actions and because the analysis of policy search algorithms becomes more complex in discrete action spaces. When
+both the policy and the environment are deterministic and without noise, policy search algorithms are actually extremely
+effective. The agent can repeat actions in the equivalent states several times, adapting its policy parameters $\theta$ by
+small values and determine the empirical gradient values which allow the agent to perform hill-climbing in the policy
+function. This will converge to a local optimum, hence simply trying different actions allows the agent to improve its
+performance as long as the local optimum has not been reached. 
+
+In real world scenarios however, environments (and also policies) are commonly stochastic. Changing the policy
+parameters $\theta$ by a very small value and comparing results of two instances of executing the policy may lead to
+strong variations in the reward due to the stochasticity of the environment and therefore the noise in the reward
+signal. This is a common problem of statistics and the typical answer is to increase the number of trials until
+statistical significance can be reached. But this is often impractical for real world problems and also not the best
+approach. 
+
+The general idea of modern policy gradient methods therefore follows an approach of using a different function as an
+estimator for the gradient of the policy in a given configuration. A common approach is to use an advantage function
+$\hat{A}_t$ to create an estimator for the policy gradient:
+
+
+\begin{equation*}
+\hat{g} \ =\ \hat{\mathbb{E}}_{t} \ \left[ \nabla _{\theta }\log \pi _{\theta }( a_{t} \ \mid s_{t})\hat{A}_{t}  \right]
+\end{equation*}
+
+where $\hat{A}_t$ describes the advantage of taking one action over another in a given state. It can therefore be
+described as an \emph{actor-critic architecture}, because $A(a_t, s_t) = Q(a_t,s_t) - V(s_t)$, meaning that the
+advantage value is equivalent to the difference in the estimated value of the state itself and the value of performing
+a specific action (derived from the policy) in that state \citep{mnih2016asynchronous} 
+
+\subsection{Deep Learning in Reinforcement Settings}%
+\label{sub:deep_learning_in_reinforcement_settings}
+
+The previous sections have outlined the conceptual approaches for designing learning agents based on various approaches
+for what is essentially a system that tries to act intelligently in respect to its environment. Especially in recent
+years, many breakthroughs have been driven by using \ac {NN} in \ac {RL} settings. \ac {NN} have proven effective as
+parameterized Q-Value estimators, state-value estimators and as policy functions. Most approaches suffer similar
+problems: Data efficiency in respect to the trial number required to learn a desired skill, scalability and robustness
+\citep{proximalpolicyopt}. The reasons for these challenges are obvious: The agents receives minimal feedback and it has
+a hard time mapping its received reward to specific alterations in its behavior (aka credit assignment problem)
+\citep{arulkumaran2017brief}.  
+
+The research has shown many approaches to alleviate these shortcomings: Inverse Reinforcement Learning allows the
+learning of a policy by imitating a trusted expert, allowing faster learning rates through clear signals
+\citep{NG2000InvReinf}. \citet{brockman2016openai} have created the \emph{gym} which allows for coherent benchmarking of
+various approaches against a common set of challenges. \citet{hafner2017agents} have created a setup that allows for
+massive parallel processing of several environments which all contribute to the improvement of a central policy
+function. The implemented algorithm uses \ac {NN} and an advanced form of the advantage based policy methods introduced
+earlier. By this time, the research groups were usually referring to their agents learning progress in the range of
+millions of time steps \citep{proximalpolicyopt}. One common argument for the benefit of \ac {AI} is the ability to
+transfer knowledge learned by one agent to many agents. The structure of \ac {NN} however makes it difficult to transfer
+knowledge between agents with varying hyperparameters. The weights for the neurons cannot simply be copied between
+networks with different structures and due to the complexity of the systems, learning them again from scratch is
+resource intensive.
+
+\citet{matiisen2017teacher} have introduced a concept that helps agents learn faster by breaking complex challenges down
+into several simpler sub tasks, similar to how humans are taught in educational institutes. This allows researchers to
+quickly get new generations of agents up to speed with their predecessors. Another approach to solve this problem of
+repetitive learning has been introduced by \citet{schmitt2018kickstarting}. In their setup, the newly created agent
+transitions from trying to act similar as its \emph{teacher agent} towards trying to improve its performance
+independently. To achieve this, the student agent includes a term that describes the difference between its action and
+the action its teacher would have taken.
+
+In summary, many tweaks to the core concepts allow for improvements in the challenges outlined before. Faster learning given limited
+ressources through bootstrapping, improving wall time by leveraging large-scale architectures through and
+parallelization, transfering knowledge from (human) experts through inverse \ac {RL} etc. A rich landscape of tools is
+in rapid development and to construct an effective agent, it is important to leverage both the specific problem domain
+structure and the available resources. 
