@@ -1,14 +1,120 @@
+The following chapter will describe the concepts and reasons behind various components needed to allow a broker to
+leverage modern reinforcement learning tools in the \ac {PowerTAC} environment. Generally, current state-of-the-art
+algorithms for \ac {RL} are available in Python \citep{baselines}, leveraging both the TensorFlow library and, in one
+project, the Keras high-level abstraction library \citep{plappert2016kerasrl}. 
+
+In general, a considerable amount of work was invested into allowing for successful communication between an agent
+written in Python and the \ac {PowerTAC} systems which are Java based. The research and its results are summarized in
+Section~\ref{sec:connecting_python_agents_to_powertac}. Because of this additional complexity, the thesis was
+restructured to allow for successful contribution to the \ac {RL} field by performing a form of \emph{what-if} 
+analysis in the wholesale market which is described in Section~\ref{sub:wholesale_market}. The Python environment has
+been constructed in a way to allow for future developers to leverage it as a framework for developing a fully capable
+agent that acts in all markets. 
+
+The overall architecture for the agent is composed of three key parts: The environment module which holds all known
+information about the environment of the broker. This is used to enable all learning components. A communcation module
+bridges the environment module and the \ac {PowerTAC} environment to hide communication overhead from the agent code.
+Finally, the agent components module holds all learning components such as the wholesale trader, the demand estimator
+and the tariff manager. In the scope of this thesis, only the demand estimator and the wholesale trader were implemented
+but the framework allows for the additional components to be easily implemented. The architecture is visualized in
+Figure~\ref{fig:agentframework}. 
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/Agent.png}
+    \caption{Broker framework for Python}
+    \label{fig:agentframework}
+\end{figure}
+
 \section{Tools}
 
 To develop the functionality of the agent, which is supposed to be mainly driven by deep learning technologies, a number
-of state-of-the-art tools and frameworks should be used. These include Keras and TensorFlow to allow for easy creation
-and adaption of the learning models, \ac {GRPC} to communicate with the Java components of the competition and
-Kubernetes to easily scale several instances across the cloud. By transfering the components into the cloud, it is also
-possible to use tools such as Google Colab which allows access to a powerful cloud \ac {GPU} without costs
-\citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
+of state-of-the-art tools and frameworks were  used. These include 
+Keras and TensorFlow to allow for easy creation and adaption of the learning models, 
+\ac {GRPC} to communicate with the Java components of the competition and
+\emph{Click} to create a CLI interface that allows the triggering of various components of the broker.
+%TODO IF Kubernetes is used, I need to complete it. But what about CRIU?
+%Kubernetes to easily scale several instances across the cloud. 
+%By transfering the components into the cloud, it is also
+%possible to use tools such as Google Colab which allows access to a powerful cloud \ac {GPU} without costs
+%\citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
 
 
-\subsection{TensorFlow and Keras}
+\subsection{TensorFlow and Keras}%
+\label{sub:tensorflow_and_keras}
+
+TensorFlow is a library developed by Google to facilitate machine learning algorithms. It can leverage both \ac {CPU}
+and \ac {GPU} computing power which can significantly increase performance. It is Open Source, used in various
+technologies and serves as a base technology for many higher level frameworks \citep{tensorflow2015-whitepaper}.
+
+Keras is one of these higher level frameworks that focuses on \ac {NN}. It offers a intuitive \ac{API}, oriented towards
+\ac {NN} terminology, to quickly develop and iterate on various \ac {NN} architectures. It integrates TensorFlow and its
+accompanying UI Tensorboard, which visualizes training, network structure and activation patterns. It also supports
+other base technologies beside TensorFlow, but these will not be discussed. A simple example for a 2 layer Dense \ac
+{NN} written in Keras is shown in Listing~\ref{lst:kerasbasic}.
+
+
+\begin{listing}
+\begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{python}
+from keras.layers import Dense
+
+model.add(Dense(units=64, activation='relu', input_dim=100))
+model.add(Dense(units=10, activation='softmax'))
+model.compile(loss='categorical_crossentropy',
+              optimizer='sgd',
+              metrics=['accuracy'])
+# x_train and y_train are Numpy arrays -- just like Scikit
+model.fit(x_train, y_train, epochs=5, batch_size=32)
+loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128) 
+\end{minted}
+\caption{Basic Keras 2 layer dense NN example}
+\label{lst:kerasbasic}
+\end{listing}
+
+\subsection{Click}%
+\label{sub:click}
+
+Click allows the creation of CLI interfaces in Python. Programms can be customised with parameters and options as well
+as structured into subcommands and groups \citep{clickcli}. This allows for patterns such as \mint{bash}|agent compete
+--continuous| or \mint{bash}|agent learn demand --model dense --tag v2| An annotated function is shown in
+Listing~\ref{lst:click_sample}.
+
+\begin{listing}[h]
+\begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{python}
+@cli.command()
+@click.option('--continuous', default=True)
+def compete(continuous):
+    """take part in a powertac competition"""
+    import communication.powertac_communication_server as server
+    server.serve()
+\end{minted}
+\caption{Click sample declaration}
+\label{lst:click_sample}
+\end{listing}
+
+\subsection{CRIU}%
+\label{sub:criu}
+\ac{CRIU} allows the freezing and storage of an application during runtime. This permits what is an equivalent of a fork
+of the \ac {PowerTAC} simulation in a given point in time. Because \ac{CRIU} is also integrated into Docker, creating
+containers for various components of the competition (i.e. server and brokers) and freezing all of them in a coordinated
+manner is very helpful. This allows for two "what if" scenarios to play out at a given point in time where the results
+can be compared \citep{criu}.
+
+\subsection{Docker}%
+\label{sub:docker}
+
+Docker allows to create isolated, transferable images that include everything an application requires to run. A
+container can be based on various distributions and many containers can run on a single server without much overhead.
+\ac{VM} technologies are often compared to containers, but \ac{VM}s abstract on a different layer. A \ac{VM} simulates
+an entire operating system on top of a layer called the hypervisor. Docker on the other hand only abstracts the
+application layer, letting all containers run in the same kernel and therefore makes use of the existing ressources in a
+more efficient way. Because \ac{CRIU} is integrated into Docker
+\footnote{at the time of writing, CRIU support is experimental in Docker},
+containers can be 
+%TODO continue
+
+
+Docker 
 
 \section{Preprocessing}
 
@@ -37,7 +143,11 @@ processed with Keras. First, some preprocessing can be applied with scikit-learn
 well as ensure the values that are fed to the \ac {NN} don't negatively impact the learning progress. The overall
 approach follows the recommendations of \citep{Goodfellow-et-al-2016}.  
 
-\section{Connecting Python agents to PowerTAC}
+
+\section{Connecting Python agents to PowerTAC}%
+\label{sec:connecting_python_agents_to_powertac}
+
+
 
 To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple
 bridge was provided by the team that allowed external processes to communicate with the system through a bridge via the
@@ -228,6 +338,9 @@ found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_
 
 
 \subsection{Wholesale Market}
+\label{sub:wholesale_market}
+
+
 
 Using \ac {MDP} 
 
@@ -249,4 +362,3 @@ reward is based on relative price paid in comparison to average price for given 
 Do I implement the env interface defined by OpenAI and let the agent subcomponent imagine it's by itself? --> allows for
 A3C and many other interesting opportunities
 
-\subsection{Balancing Market}
