@@ -307,56 +307,59 @@ large losses if a tariff is too competitive (by offering prices that are below t
 such a tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the
 tariffs to actually offer on the market is a separate problem, that balances competitiveness against profitability.
 
-\subsection{Tariff Market}
+\subsection{Customer Market}
+\label{sub:customer_market}
 
-The goal of the customer market is to get as many subscribers as possible for the most profitable tariffs the broker
-offers on the market. The tariffs offered in the market compete for the limited number of customers available and every
-customer must be subscribed to some tariff. The profitability of tariffs is limited by the base tariff which is offered
-by the simulation as a constant offering creating an upper bound on profitability. 
-
-To succeed in the customer market, the agents needs to be able to generate tariffs that are competitive. This can be
-broken down into two subtasks: Generating valid tariffs and evaluating their competitiveness. A tariff can be verified
-by passing it to the \ac {PowerTAC} server which verifies the tariff. Hence, a \ac {RL} algorithm that is tasked with
-creating competitive tariffs can be given feedback by penalizing non-conclusive tariffs. An invalid tariff could be one
-that contains overlapping rates leading to an ambivalent status. The competitiveness of a tariff depends not only on the
-attributes of the tariff but also on the competition environment. If the broker only competes against the default
-tariffs, even many mediocre tariff offerings would perform well. In an environment with many competitors on the other
-hand, a tariff needs to be well designed to generate profits. 
-
-The agents learning task for the customer market is therefore designed in the following way:
-
-\begin{enumerate} \item Learning to evaluate a tariffs competitiveness in relation to the competitive environment
-	through supervised learning on the historical state logs of previous competitions \item Running a \ac {RL}
-	algorithm which learns to choose parameters for tariffs that are valid and profitable in a given environment
-    %\item Learning to generate valid tariff specifications through a genetic algorithm strategy, penalizing invalid
-	%tariffs %TODO really, I go genetic?
-\end{enumerate}
-
-%TODO not yet actually realized, still applicable?
-\subsubsection{Tariff fitness learning} To learn the fitness of a tariff while considering its environment, supervised
-learning techniques can be applied. To do this, features need to be created from the tariffs specifications and its
-competitive environment. Similar work has been done by \citep{cuevas2015distributed} who discretized the tariff market
-in four variables describing the relationships between the competitors and their broker.   
-
-For my broker, because \ac {NN} can handle a large state spaces, I create a more detailed description of the
-environment. I still have to ensure the number of input features is fixed though, so a simple copy of all competing
-tariffs is not a valid input for the environment description. Instead I create the following features from the tariff
-market:
-
-\begin{description} \item[Average Charge per hour of week Timeslot]: According to \\
-	\texttt{TariffEvaluationHelper.java}, customer models evaluate tariffs on an per-hour basis. This means they are
-	very precise in the evaluation of potential tariff alternatives (before the application of an irrationality
-	factor). Hence, a per-hour precision in the input is needed.  \item[Variance of Charge per hour of week
-	Timeslot] Variance of the tariffs charges per each timeslot in a week among all competitors.  \item[Average and
-	Variance of periodic payments] Description of the markets periodic payments landscape \item[Average and Variance
-	of one-time payments] Description of the markets one-time payments landscape \item[Average and Variance of
-	Up/Down regulation payments] 0 for tariffs without regulation capabilities \end{description}
-
-Because the \ac {PowerTAC} simulation does not return profits of brokers on a per-tariff basis and because the reasons
-for why a broker purchased a specific amount of energy on the wholesale market are not known, it is hard to put a
-profitability value on a brokers tariff if said broker offers more than one tariff on the market. Therefore the
-evaluation of the tariff does not include the profitability of the tariff but merely the competitiveness in regards to
-the attractiveness of the offer from the perspective of the customers
+%TODO background?
+%TODO not implemented
+%The goal of the customer market is to get as many subscribers as possible for the most profitable tariffs the broker
+%offers on the market. The tariffs offered in the market compete for the limited number of customers available and every
+%customer must be subscribed to some tariff. The profitability of tariffs is limited by the base tariff which is offered
+%by the simulation as a constant offering creating an upper bound on profitability. 
+%
+%To succeed in the customer market, the agents needs to be able to generate tariffs that are competitive. This can be
+%broken down into two subtasks: Generating valid tariffs and evaluating their competitiveness. A tariff can be verified
+%by passing it to the \ac {PowerTAC} server which verifies the tariff. Hence, a \ac {RL} algorithm that is tasked with
+%creating competitive tariffs can be given feedback by penalizing non-conclusive tariffs. An invalid tariff could be one
+%that contains overlapping rates leading to an ambivalent status. The competitiveness of a tariff depends not only on the
+%attributes of the tariff but also on the competition environment. If the broker only competes against the default
+%tariffs, even many mediocre tariff offerings would perform well. In an environment with many competitors on the other
+%hand, a tariff needs to be well designed to generate profits. 
+%
+%The agents learning task for the customer market is therefore designed in the following way:
+%
+%\begin{enumerate} \item Learning to evaluate a tariffs competitiveness in relation to the competitive environment
+%	through supervised learning on the historical state logs of previous competitions \item Running a \ac {RL}
+%	algorithm which learns to choose parameters for tariffs that are valid and profitable in a given environment
+%    %\item Learning to generate valid tariff specifications through a genetic algorithm strategy, penalizing invalid
+%	%tariffs %TODO really, I go genetic?
+%\end{enumerate}
+%
+%%TODO not yet actually realized, still applicable?
+%\subsubsection{Tariff fitness learning} To learn the fitness of a tariff while considering its environment, supervised
+%learning techniques can be applied. To do this, features need to be created from the tariffs specifications and its
+%competitive environment. Similar work has been done by \citep{cuevas2015distributed} who discretized the tariff market
+%in four variables describing the relationships between the competitors and their broker.   
+%
+%For my broker, because \ac {NN} can handle a large state spaces, I create a more detailed description of the
+%environment. I still have to ensure the number of input features is fixed though, so a simple copy of all competing
+%tariffs is not a valid input for the environment description. Instead I create the following features from the tariff
+%market:
+%
+%\begin{description} \item[Average Charge per hour of week Timeslot]: According to \\
+%	\texttt{TariffEvaluationHelper.java}, customer models evaluate tariffs on an per-hour basis. This means they are
+%	very precise in the evaluation of potential tariff alternatives (before the application of an irrationality
+%	factor). Hence, a per-hour precision in the input is needed.  \item[Variance of Charge per hour of week
+%	Timeslot] Variance of the tariffs charges per each timeslot in a week among all competitors.  \item[Average and
+%	Variance of periodic payments] Description of the markets periodic payments landscape \item[Average and Variance
+%	of one-time payments] Description of the markets one-time payments landscape \item[Average and Variance of
+%	Up/Down regulation payments] 0 for tariffs without regulation capabilities \end{description}
+%
+%Because the \ac {PowerTAC} simulation does not return profits of brokers on a per-tariff basis and because the reasons
+%for why a broker purchased a specific amount of energy on the wholesale market are not known, it is hard to put a
+%profitability value on a brokers tariff if said broker offers more than one tariff on the market. Therefore the
+%evaluation of the tariff does not include the profitability of the tariff but merely the competitiveness in regards to
+%the attractiveness of the offer from the perspective of the customers
 % large space of decision variables / dimensions
 %
 % how to avoid overwhelming of agent? output layer must be fairly large. 
@@ -364,17 +367,21 @@ the attractiveness of the offer from the perspective of the customers
 % time, energy, money, communication dimensions (and subdimensions)
 \subsubsection{Customer demand estimation}% \label{ssub:customer_demand_estimation}
 
-The simplest learning component is the demand estimator. This component has no dependencies onto the other learning
-components and can easily be trained using historical data. This is due to the fact that the demand of a customer is
-only dependent on variables that are already provided in the state files of previous simulations. A customer will not
-use a different amount of energy if the broker implementation changes but all other variables (such as subscribed
-tariff, weather etc.) remain equal .
+This component has no dependencies onto the other learning components and can easily be trained using historical data.
+It is therefore a supervised learning algorithm, matching known information in timestep $t-n$ to a prediction for the
+expected energy usage at timestep $t$. Known information includes: Weather forecasts, historical usages, time, tariff
+and customer metadata. 
+If the customer models change across games (e.g. if a customer suddenly uses 10x the energy on rainy days), the learning
+model will have to learn to adapt to this change. This can be achieved by letting the model both learn from historical
+data initially (i.e. form the state files) and also let it learn online during the competition, based on the new
+customer models.  
 
 To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and
-labels needs to be created. Because the model may also learn during the course of a running competition (allowing the
-model to adapt to new customer patterns), a generator based structure should be preferred. This means that a generator
-exists that creates $x, y$ pairs for the model to train on.
+labels needs to be created. Because the model may also learn during the course of a running competition, a generator based structure should be preferred. This means that a generator
+exists that creates $x, y$ pairs for the model to train on, instead of creating a large batch of learning data ahead of
+the learning processing.
 
+%TODO STOP 
 According to the simulation specification, the customer models generate their demand pattern based on their internal
 structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline therefore generates
 feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the
