@@ -11,6 +11,7 @@ $\pi$.  The environment reacts to the actions of the agent by returning new stat
 corresponding reward $r$ is given to the agent. The reward gives the agent information about how well it performed 
 \citep[p.830f.]{russell2016artificial}.
 
+%TODO still up to date with the following subsections?
 This chapter will first introduce the concepts of a \ac {MDP}, then introduce different concepts of \ac {RL} agents,
 describe approaches to encourage exploration of its options and finally describe how \ac {NN} can be used to create
 state-of-the-art agents that can solve complex tasks. The majority of the chapter is based on
@@ -51,18 +52,23 @@ where the transition probability implicitly represents the partial observability
 \subsection{Bellman Equation}%
 \label{ssub:bellman_equation}
 
-The Bellman Equation offers a way to describe the utility of each state in an \ac {MDP}. For this, it assumes that the
-utility of a state is the reward for the current state plus the sum of all future rewards discounted by $\gamma$. 
+The Bellman Equation offers a way to describe the utility of each state in an \ac {MDP}. For this, it defines the
+utility of a state as the reward for the current state plus the sum of all future rewards discounted by $\gamma$. 
 
 \[
 U(s) = R(s) + \gamma \max_{a\in\mathcal{A}(s)} \sum_{s'}{P(s' \mid s,a)U(s')}
 %TODO numbers on equation?
 \]
 
-In the above equation, the \emph{max} operation selects the optimal action in regard to all possible actions. In a
-discrete action space this would be a selection over all possible actions, in a continuous action space it however can
-become more complex. \ac {NN} based \ac {RL} agents simply invoke their policy network to retrieve the action which the
-agent believes it the one with the highest utility \citep{mnih2013playing}.
+In the above equation, the \emph{max} operation selects the optimal action in regard to all possible actions. The
+Bellman equation is explicitly targeting \emph{discrete} state spaces. If the state transition graph is a cyclic graph
+the solution to the Bellman equation requires some equation system solving. That is because $U(s')$ may depend on $U(s)$
+and the other way around. Further, the \emph{max} operator creates nonlinearity which, for large state spaces, becomes 
+intractable quickly which is the reason for an iterative approach called \emph{Value Iteration}.
+
+%In a discrete action space this would be a selection over all possible actions, in a continuous action space it however
+%can become more complex. \ac {NN} based \ac {RL} agents simply invoke their policy network to retrieve the action which
+%the agent believes it the one with the highest utility \citep{mnih2013playing}.
 
 
 %As an example, an agent active in the environment of playing Super Mario may receive rewards corresponding to the game
@@ -71,20 +77,206 @@ agent believes it the one with the highest utility \citep{mnih2013playing}.
 %To train an agent, the task is usually performed several times and the environment is reset after each iteration to
 %allow for a new learning step.  
 %TODO add atari games reference
-When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives,
-it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent
-can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or
-through explicit rewards for random actions.
+%When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives,
+%it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent
+%can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or
+%through explicit rewards for random actions.
 %\citep() %A3C TODO
 
 
-There are several forms of learning to solve a \ac {MDP} using \ac {RL} but for the purpose of this thesis I will focus
-on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$.
-Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for
-available actions and others. %TODO not clean paragraph...
+%There are several forms of learning to solve a \ac {MDP} using \ac {RL} but for the purpose of this thesis I will focus
+%on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$.
+%Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for
+%available actions and others. %TODO not clean paragraph...
+
+\subsection{Value and Policy Iteration}%
+\label{sub:policy_and_value_iteration}
+
+Value Iteration uses the Bellman equation to iteratively converge towards a correct estimation of each states utility,
+assuming both the transition function $P(s' \ mid s,a) \forall s \in \mathcal{S}$ and the reward function $R(s)$ are
+known to the agent.  
+In the algorithm, the utility of each state is updated based on the \emph{Bellman update} rule:
+\[
+U_{i+1}(s) \gets R(s) + \gamma \max_{a \in \mathcal{A}(s)} \sum_{s'}{P(s' \mid s,a) U_i(s')}
+\]
+This needs to be performed for \emph{each} state during \emph{each} iteration. It is clear how quickly this becomes
+intractable as well when $\gamma$ is reasonably close to 1, meaning that also long-term rewards are taken into
+consideration. 
+
+Practically, the agent however doesn't care much about the values of various states. It cares about making the right
+decisions, using the value of states as a basis for doing so. It is often observed that the policy $\pi$ converges far
+sooner than the utility estimates $U(s)$. This is the basis for the \emph{Policy Iteration} approach which alternates
+between: 
+\begin{enumerate}
+	\item evaluating the current policy $\pi_i$ by calculating $U_i=U^{\pi_i}$, the value of each state if $\pi$ is
+	executed and 
+	\item improving the policy using one-step look-ahead based on $U_i$
+\end{enumerate}
+
+This process stops when the policy is no longer showing any significant improvements in respect to its loss value. It is
+generally also not necessary to always apply the above operations to \emph{every} state. Instead, state values and
+policies can be updated only in respect to newly discovered knowledge regarding specific states or specific actions.
+This is called \emph{asynchronous policy iteration}. 
+
+Both variants require the transition function and the reward function to be known to the agent. \ac {RL} research has
+developed several methods that adapt the concepts of the two iteration algorithms for environments with the two unknown
+functions. They are explained in the next sections. 
+%It allows for many interesting concepts to be used such as distributed learning, using multiple agents to explore an 
+%environment and learn from all their observations centrally, and  
+
+\subsection{Temporal Difference Learning}%
+\label{sub:temporal_difference_learning}
+
+When the underlying transition function is not known, but the agent has the ability to perform many trial runs in the
+environment, an empirical approach can be adapted. For this, the agent performs a number of trials where it acts
+according to a (fixed) policy and observes the rewards it receives. Each string of alternating actions and observations
+is called a trial
+\footnote{in newer \ac {RL} literature this is also called a \emph{trajectory} \citep{proximalpolicyopt, heess2017emergence} }. 
+The update rule for the utility of each state is as follows:
+\[
+U^\pi(s) \gets U^\pi(s) + \alpha(R(s) + \gamma U^\pi(s') - U^\pi(s))
+\]
+
+Where $\alpha$ is the learning rate and $U^\pi$ the utility under the execution of $\pi(s)$ in state $s$. This only
+updates the utilities based on the observed transitions so if the unknown transition function sometimes leads to
+extremely negative rewards through rare transitions, this is unlikely to be captured. However, with sufficiently many
+trials, these rare probabilities will be adequately represented in the utilities for the states. If $\alpha$ is
+continuously reduced appropriately, this will converge to the correct value. 
+
+\subsection{Exploration}%
+\label{sub:exploration}
+
+The above learning approach has one weakness: It is only based on observed utilities. If $\pi$ follows the pattern of
+always choosing the action that leads to the highest expected $U_{i+1}$, i.e.
+\[
+\pi(s) = \max_{a \in \mathcal{A}(s)}P(s' \mid s, a)U(s')
+\]
+then it will never explore possible alternatives and will very quickly get stuck on a rigid action
+pattern mapping each state to a resulting action. To avoid this, the concept of \emph{exploration} has been introduced.
+There are many approaches to encourage exploration. The simplest is to define a factor $\epsilon$ which defines the
+probability of choosing a random action at each step. 
+A more advanced variant is to add a term to the loss function that
+corresponds to negative entropy of the policy $-\beta H(\pi(a \mid s ))$ where $H$ measures the entropy of a series of
+actions. This encourages randomness in the policy but it permits the policy function to determine how this randomness 
+gets to occur \citep{schmitt2018kickstarting}. This entropy based loss also automatically regulates itself: When the
+agent is not at all capable of choosing rewarding actions it reduces its loss through high entropy choices, i.e. lots of
+exploration. Once the agent finds actions for certain states that lead to high rewards, choosing other random actions
+negatively outweighs following the best action. Therefore, it becomes less random and the entropy reduces. If $\beta$ is
+progressively lowered, the impact on the loss is also progressively lowered, allowing the agent to continuously improve
+its loss despite less exploration. 
+Another alternative is the positive weighting of actions in states that have not been tried yet, essentially giving such
+actions an optimistic prior as if they promise higher rewards than the already explored regions. This is easy to
+implement for small, discrete state and action spaces but more complex for continuous spaces. 
+
+% Q Learning and Deep-Q learning
+% Policy Gradient
 
 
-\section{Policy Search} \section{Deep Reinforcement Learning}
+%\subsection{Policy Search} 
+%\subsection{Deep Reinforcement Learning}
+%%TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN} 
+%\subsection{Proximal Policy Optimization OR(TBD) Deep Q learning}
+\subsection{Q Learning}%
+\label{sub:q_learning}
 
-%TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN} 
-\section{Proximal Policy Optimization OR(TBD) Deep Q learning}
+In Section~\ref{sub:policy_and_value_iteration} I have already described how to learn the values of states, given an
+action. This action can also be derived from a policy function.  In the case of an agent that wants to learn its policy
+(i.e. learn what a good policy is), this becomes problematic if the transition function is not known. An alternative
+model is called \emph{Q-Learning} which is a form of Temporal Difference Learning. It learns an action-utility value
+instead of simply the values. The relationship between this \emph{Q-Value} and the former value of a state is simply 
+\[
+U(s) = \max_{a}Q(s,a)
+\]
+so the value of a state is that of the highest Q-Value. The benefit of this approach is that it does not require a model
+of how the world works, it therefore is called a \emph{model-free} method. The update rule for the Q-Values is simply
+the Bellman equation with $U(s)$ and $U(s')$ replaced with $Q(s,a)$ and $Q(s',a')$ respectively. 
+
+The update rules for the Q-Value approach are related to the Temporal Difference Learning rules but include a $\max$
+operator
+\[
+Q(s,a) \gets Q(s,a) + \alpha(R(s) + \gamma \max_{a'}Q(s', a') - Q(s,a))
+\]
+An alternative version is the reduction of the above equation by removing the $\max$ operator. This results in the
+\emph{actual} action being considered instead of the one that the policy believes to be the best. Q-Learning is
+\emph{off-policy} while the latter version, called \ac {SARSA}, is \emph{on-policy}. The distinction has a significant
+consequence: While Q-Learning may be used to learn the Q-Values from recorded state-action pairs, \ac {SARSA} requires
+the action taken to be derived from the current policy function. 
+
+\subsection{Policy Search and Policy Gradient Methods}%
+\label{sub:policy_search_and_policy_gradient_methods}
+
+These two approaches are possibly the simplest of the \ac {RL} algorithms. In its simplest form, policy search requires
+the algorithm to start with an initial policy and then adapt this policy until no further gains can be made. While the
+concepts is simple, it may lead to significant performances, if the \emph{choices regarding what to change} are made
+wisely. If the policy is just randomly changed, the results will be equally random. If the policy is changed depending
+on a good interpretation of the environments responses however, this method can offer good performance without the need
+to have a model of how the world works. Such an agent simply takes the current state $s$ as input and uses its policy to
+determine an output action $a = \pi(s)$. The value of a policy is noted as $\rho(\theta)$.
+
+For simplicity, I will assume actions derived from a policy to be continuous as both the later application relies on
+such actions and because the analysis of policy search algorithms becomes more complex in discrete action spaces. When
+both the policy and the environment are deterministic and without noise, policy search algorithms are actually extremely
+effective. The agent can repeat actions in the equivalent states several times, adapting its policy parameters $\theta$ by
+small values and determine the empirical gradient values which allow the agent to perform hill-climbing in the policy
+function. This will converge to a local optimum, hence simply trying different actions allows the agent to improve its
+performance as long as the local optimum has not been reached. 
+
+In real world scenarios however, environments (and also policies) are commonly stochastic. Changing the policy
+parameters $\theta$ by a very small value and comparing results of two instances of executing the policy may lead to
+strong variations in the reward due to the stochasticity of the environment and therefore the noise in the reward
+signal. This is a common problem of statistics and the typical answer is to increase the number of trials until
+statistical significance can be reached. But this is often impractical for real world problems and also not the best
+approach. 
+
+The general idea of modern policy gradient methods therefore follows an approach of using a different function as an
+estimator for the gradient of the policy in a given configuration. A common approach is to use an advantage function
+$\hat{A}_t$ to create an estimator for the policy gradient:
+
+
+\begin{equation*}
+\hat{g} \ =\ \hat{\mathbb{E}}_{t} \ \left[ \nabla _{\theta }\log \pi _{\theta }( a_{t} \ \mid s_{t})\hat{A}_{t}  \right]
+\end{equation*}
+
+where $\hat{A}_t$ describes the advantage of taking one action over another in a given state. It can therefore be
+described as an \emph{actor-critic architecture}, because $A(a_t, s_t) = Q(a_t,s_t) - V(s_t)$, meaning that the
+advantage value is equivalent to the difference in the estimated value of the state itself and the value of performing
+a specific action (derived from the policy) in that state \citep{mnih2016asynchronous} 
+
+\subsection{Deep Learning in Reinforcement Settings}%
+\label{sub:deep_learning_in_reinforcement_settings}
+
+The previous sections have outlined the conceptual approaches for designing learning agents based on various approaches
+for what is essentially a system that tries to act intelligently in respect to its environment. Especially in recent
+years, many breakthroughs have been driven by using \ac {NN} in \ac {RL} settings. \ac {NN} have proven effective as
+parameterized Q-Value estimators, state-value estimators and as policy functions. Most approaches suffer similar
+problems: Data efficiency in respect to the trial number required to learn a desired skill, scalability and robustness
+\citep{proximalpolicyopt}. The reasons for these challenges are obvious: The agents receives minimal feedback and it has
+a hard time mapping its received reward to specific alterations in its behavior (aka credit assignment problem)
+\citep{arulkumaran2017brief}.  
+
+The research has shown many approaches to alleviate these shortcomings: Inverse Reinforcement Learning allows the
+learning of a policy by imitating a trusted expert, allowing faster learning rates through clear signals
+\citep{NG2000InvReinf}. \citet{brockman2016openai} have created the \emph{gym} which allows for coherent benchmarking of
+various approaches against a common set of challenges. \citet{hafner2017agents} have created a setup that allows for
+massive parallel processing of several environments which all contribute to the improvement of a central policy
+function. The implemented algorithm uses \ac {NN} and an advanced form of the advantage based policy methods introduced
+earlier. By this time, the research groups were usually referring to their agents learning progress in the range of
+millions of time steps \citep{proximalpolicyopt}. One common argument for the benefit of \ac {AI} is the ability to
+transfer knowledge learned by one agent to many agents. The structure of \ac {NN} however makes it difficult to transfer
+knowledge between agents with varying hyperparameters. The weights for the neurons cannot simply be copied between
+networks with different structures and due to the complexity of the systems, learning them again from scratch is
+resource intensive.
+
+\citet{matiisen2017teacher} have introduced a concept that helps agents learn faster by breaking complex challenges down
+into several simpler sub tasks, similar to how humans are taught in educational institutes. This allows researchers to
+quickly get new generations of agents up to speed with their predecessors. Another approach to solve this problem of
+repetitive learning has been introduced by \citet{schmitt2018kickstarting}. In their setup, the newly created agent
+transitions from trying to act similar as its \emph{teacher agent} towards trying to improve its performance
+independently. To achieve this, the student agent includes a term that describes the difference between its action and
+the action its teacher would have taken.
+
+In summary, many tweaks to the core concepts allow for improvements in the challenges outlined before. Faster learning given limited
+ressources through bootstrapping, improving wall time by leveraging large-scale architectures through and
+parallelization, transfering knowledge from (human) experts through inverse \ac {RL} etc. A rich landscape of tools is
+in rapid development and to construct an effective agent, it is important to leverage both the specific problem domain
+structure and the available resources. 

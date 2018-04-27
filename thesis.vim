@@ -10,6 +10,7 @@ ab XML      \ac {XML}
 ab DU       \ac {DU}
 ab CHP      \ac {CHP}
 ab NN       \ac {NN}
+ab SARSA    \ac {SARSA}
 ab MDP      \ac {MDP}
 ab POMDP    \ac {POMDP}
 ab AI       \ac {AI}
