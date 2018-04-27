@@ -1,20 +1,20 @@
 The following chapter will describe the concepts and reasons behind various components needed to allow a broker to
-leverage modern reinforcement learning tools in the \ac {PowerTAC} environment. Generally, current state-of-the-art
-algorithms for \ac {RL} are available in Python \citep{baselines}, leveraging both the TensorFlow library and, in one
-project, the Keras high-level abstraction library \citep{plappert2016kerasrl}. 
+leverage modern reinforcement learning tools in the \ac {PowerTAC} environment. Current state-of-the-art
+algorithms for \ac {RL}, available in Python \citep{baselines}, are used. These leverage both the TensorFlow library and, in one project, the Keras high-level abstraction library \citep{plappert2016kerasrl}. 
 
-In general, a considerable amount of work was invested into allowing for successful communication between an agent
-written in Python and the \ac {PowerTAC} systems which are Java based. The research and its results are summarized in
-Section~\ref{sec:connecting_python_agents_to_powertac}. Because of this additional complexity, the thesis was
+In general, a considerable amount of work was invested enabling communication between an agent
+written in Python and the \ac {PowerTAC} systems which are Java based. The preliminary research and its results are summarized in
+Section~\ref{sec:connecting_python_agents_to_powertac}. Because of this additional complexity, the practical part of the thesis was
 restructured to allow for successful contribution to the \ac {RL} field by performing a form of \emph{what-if} 
 analysis in the wholesale market which is described in Section~\ref{sub:wholesale_market}. The Python environment has
 been constructed in a way to allow for future developers to leverage it as a framework for developing a fully capable
 agent that acts in all markets. 
 
-The overall architecture for the agent is composed of three key parts: The environment module which holds all known
-information about the environment of the broker. This is used to enable all learning components. A communcation module
-bridges the environment module and the \ac {PowerTAC} environment to hide communication overhead from the agent code.
-Finally, the agent components module holds all learning components such as the wholesale trader, the demand estimator
+The overall architecture for the agent is composed of three key modules.First, the environment module, which hosts all known
+information about the environment of the broker. This is used by all learning components. Second, A communication module
+bridges the environment module and the \ac {PowerTAC} environment to hide communication overhead from the agent code,
+letting the learning components access the environment as if it was not remotely defined.
+Third, the agent components module holds all learning components such as the wholesale trader, the demand estimator
 and the tariff manager. In the scope of this thesis, only the demand estimator and the wholesale trader were implemented
 but the framework allows for the additional components to be easily implemented. The architecture is visualized in
 Figure~\ref{fig:agentframework}. 
@@ -33,6 +33,7 @@ of state-of-the-art tools and frameworks were  used. These include
 Keras and TensorFlow to allow for easy creation and adaption of the learning models, 
 \ac {GRPC} to communicate with the Java components of the competition and
 \emph{Click} to create a CLI interface that allows the triggering of various components of the broker.
+
 %TODO IF Kubernetes is used, I need to complete it. But what about CRIU?
 %Kubernetes to easily scale several instances across the cloud. 
 %By transfering the components into the cloud, it is also
@@ -98,9 +99,12 @@ def compete(continuous):
 of the \ac {PowerTAC} simulation in a given point in time. Because \ac{CRIU} is also integrated into Docker, creating
 containers for various components of the competition (i.e. server and brokers) and freezing all of them in a coordinated
 manner is very helpful. This allows for two "what if" scenarios to play out at a given point in time where the results
-can be compared \citep{criu}.
+can be compared \citep{criu}. A typical scenario for the technology is the live migration of running applications across
+server infrastructures. In theory, a checkpoint of an application allows the perfect recreation of the application state
+even after a complete reboot of the machine or the moving of the application to a different host with identical
+environment settings.  
 
-\subsection{Docker}%
+\subsection{Docker}
 \label{sub:docker}
 
 Docker allows to create isolated, transferable images that include everything an application requires to run. A
@@ -110,11 +114,7 @@ an entire operating system on top of a layer called the hypervisor. Docker on th
 application layer, letting all containers run in the same kernel and therefore makes use of the existing ressources in a
 more efficient way. Because \ac{CRIU} is integrated into Docker
 \footnote{at the time of writing, CRIU support is experimental in Docker},
-containers can be 
-%TODO continue
-
-
-Docker 
+containers can be stored to disk using the \emph{checkpoint} feature. 
 
 \section{Preprocessing}
 
@@ -213,18 +213,78 @@ This helps to recreate a similar functionality for the needed classes in the pyt
 started again today, it might have been simpler to first define a set of message types in a language such as Protocoll
 Buffers, the underlying technology of \ac {GRPC}, but because all current systems rely on \ac {JMI} communication, it is
 better to manually recreate these translators. The \ac {XML} parsing libraries provided by Python can be used to parse
-the \ac {XML} that is received.  \section{Parallelizing environments with Kubernetes}
+the \ac {XML} that is received.  
+
+%\section{Parallelizing environments with Kubernetes}
+
+\section{Using Docker to make the competition portable}%
+\label{sec:using_docker_to_make_the_competition_portable}
+
+To run a competition on a local machine, one must install several components: Maven, Java 8 and all of the brokers as
+well as ones own technology stack. If the scale of this set of components exceeds the local computation power available,
+the stack needs to be moved to a machine in a server with sufficient computation power. While tools like Vagrant allow
+the configuration and setup of environments to quickly allow new developers to start working with a set of tools in a
+given project \citep{vagrant} , it requires virtual machines which have significant overhead in comparison to container
+technologies. If the competition is abstracted into docker images, tools like Kubernetes or Docker Compose can quickly
+instantiate a competition on any machine, given it has enough resources and a docker runtime installed \citep{docker}.
+
+To create a Docker image for the server, the \texttt{Dockerfile} listed in Listing~\ref{lst:servertodocker} can be used
+\footnote{All resources regarding the container technologies can be found under \url{https://github.com/pascalwhoop/powertac-kubernetes}.  
+
+\begin{listing}[h]
+	
+\begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{Dockerfile}
+FROM openjdk:alpine
+LABEL maintainer=pascalwhoop
+LABEL name=powertac-server
+
+#adding all the needed dependencies
+RUN apk add --no-cache bash vim git maven python
+
+#download the server-distribution from github
+RUN mkdir data && \
+	git clone https://github.com/powertac/server-distribution
+
+#build once, saves all maven dependencies in image
+RUN cd server-distribution && \
+	mvn -Pcli
+
+WORKDIR /powertac/server-distribution
+COPY bootstrap-data.xml ./
+COPY init.sh ./
+COPY server.properties ./
+
+EXPOSE 8080 61616
+#and start it up
+CMD /powertac/server-distribution/init.sh
+\end{minted}
+\caption{Turning the current server snapshot into a docker image}
+\label{lst:servertodocker}
+\end{listing}
+
+The benefit of this: Tools like Kubernetes or Docker Swarm, both being open source enterprise level container management
+software, seamlessly allow for the creation of 1, 10 or 1000 instances. OpenAI, a deep learning research company, has
+successfully scaled Kubernetes to 2500 nodes to run their deep \ac{RL} learning systems \citep{openai2500}. As
+previously mentioned, Docker also integrates \ac{CRIU} which is required for the creation of snapshots of competition
+states.  
+
+%TODO implement redis as base for communication between components
+%\subsection{Redis and component messaging}%
+%\label{sub:redis_and_messaging}
+
 
 \section{Learning Components}
-
+\label{sec:learning_components}
 The components of the agent that have learning capabilities include: 
 
 \begin{description} 
+	%TODO will i still get to implement this? simply mimick an agents tariffs ... shouldn't be hard
 	\item[Customer Market]: Generates actions in respect to the tariff market such as publishing,
 	adapting and revoking tariffs. While the component is expected to have a positive impact on the performance of
 	the broker, it was just implemented with a basic functionality of publishing the same tariffs as a selected
 	competitive broker, mimicking the competing brokers portfolio. It also creates usage predictions for a set of
-	customers for other components.  
+	customers for other components. Generally, the framework intends a tariff fitness evaluation as well as tariff
+	selection component that weighs both competitiveness and expected profitability.  
 	
 	\item[Wholesale Market]: Places bids and asks for energy in the periodic double
 	auction type market \citep{ketter2018powertac}. The component employs \ac {RL} techniques and uses the
@@ -235,14 +295,17 @@ The components of the agent that have learning capabilities include:
 
 While \citep{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a
 \ac {MDP} for ease of implementation) with all three markets integrated into one problem, I believe breaking the problem
-into disjunct subproblems is a better approach as each of them can be looked at in separation and a learning algorithm
-can be applied to improve performance without needing to consider potentially other areas of decision making. One such
-example is the estimation of fitness for a given tariff in a given environment. A tariffs' competitiveness in a given
-environment is independent of the wholesale or balancing trading strategy of the agent since the customers do not care
-about the profitability of the agent or how often it receives balancing penalties. While the broker might incur large
-losses if a tariff is too competitive (by offering prices that are below the profitablity line of the broker), such a
-tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the tariffs
-to actually offer on the market is a separate problem.
+into disjunct sub-problems is a better approach as each of them can be looked at in separation and a learning algorithm
+can be applied to improve performance without needing to consider potentially other areas of decision making. A
+subsequent algorithm could then be trained to perform the same actions as one unified decision making system according
+to the concepts of \emph{Curriculum Learning}\citep{matiisen2017teacher} and \emph{Transfer Learning}
+\citep{parisotto2015actor}. Such a unified algorithm is not part of this work. 
+To justify this separation of concerns, I refer to the estimation of fitness for a given tariff in a given environment. A tariffs' competitiveness in a
+given environment is independent of the wholesale or balancing trading strategy of the agent since the customers do not
+care about the profitability of the agent or how often it receives balancing penalties. While the broker might incur
+large losses if a tariff is too competitive (by offering prices that are below the profitability line of the broker),
+such a tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the
+tariffs to actually offer on the market is a separate problem, that balances competitiveness against profitability.
 
 \subsection{Tariff Market}
 
