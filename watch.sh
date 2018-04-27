@@ -1,9 +1,11 @@
 #!/bin/bash
 echo "Watching file tree for changed files. Running tests when it occurs"
-
+pkill pdflatex
+pkill latexmk
+./clean_tex.sh
 makepdf() {
     cd src/
-    latexmk -pdf -bibtex main.tex
+    latexmk -pdf -shell-escape -bibtex main.tex
     cd ../
 }
 
