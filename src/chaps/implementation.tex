@@ -369,7 +369,8 @@ tariffs to actually offer on the market is a separate problem, that balances com
 
 This component has no dependencies onto the other learning components and can easily be trained using historical data.
 It is therefore a supervised learning algorithm, matching known information in timestep $t-n$ to a prediction for the
-expected energy usage at timestep $t$. Known information includes: Weather forecasts, historical usages, time, tariff
+expected energy usage at timestep $t$. Because there are several games on record, the historical realized usages are the
+labels for the supervised learning problem. Known information includes: Weather forecasts, historical usages, time, tariff
 and customer metadata. 
 If the customer models change across games (e.g. if a customer suddenly uses 10x the energy on rainy days), the learning
 model will have to learn to adapt to this change. This can be achieved by letting the model both learn from historical
@@ -379,15 +380,17 @@ customer models.
 To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and
 labels needs to be created. Because the model may also learn during the course of a running competition, a generator based structure should be preferred. This means that a generator
 exists that creates $x, y$ pairs for the model to train on, instead of creating a large batch of learning data ahead of
-the learning processing.
+the learning processing, which is otherwise a common practice. Whenever a round completes and new information is
+available, the demand estimator is asked to estimate the demand for all customers subscribed to the tariffs of the
+broker for the next 24 timesteps. These estimations are then saved (i.e. they replace any previous estimations) and the
+wholesale component as well as other components can act on this newly created estimations. 
 
-%TODO STOP 
 According to the simulation specification, the customer models generate their demand pattern based on their internal
-structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline therefore generates
+structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline of the generator therefore generates
 feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the
 label while all other components are part of the features that are used to train the model. The intuitive model class
 for demand patterns prediction are \ac {RNN} due to the sequential nature of the problem \citep[]{EvalGRU2014}. However,
-as will later be shown, the implementation of relatively shallow dense classic \ac {NN} also results in decent results. 
+as will be shown later, the implementation of relatively shallow dense classic \ac {NN} also results in decent results. 
 
 \begin{figure}[h] \centering \includegraphics[width=0.8\linewidth]{img/UsageEstimator.png} \caption{Demand Estimator
 structure} \label{fig:DemandEstimator} \end{figure}
@@ -403,14 +406,38 @@ customers that are subscribed to the agents tariffs. Regardless, this does not a
 customers usage patterns in either setting. During a competition, the agent may learn from the realized usage of
 customers after each time slot is completed. Because this process may require some ressources, it is advantageous to
 first perform the prediction of the subscribed customers demands for the current time slot to pass this information to
-the wholesale component before training the model on the received meter readings \footnote{The component code can be
+the wholesale component before training the model on the received meter readings. While the broker is waiting for the
+server to process a step in the game, it can perform any learning on newly received information. \footnote{The component code can be
 found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
 
+%TODO write final model structure
 
 \subsection{Wholesale Market}
 \label{sub:wholesale_market}
 
+To approach the wholesale trading problem, the definition of the trading problem developed by
+\citet{tactexurieli2016mdp} is assumed. This defines each of the target timeslots as a \ac{MDP} with 24 states before
+termination. As previously mentioned, \citet{tactexurieli2016mdp} define the entire simulation as a unified \ac{MDP}.
+For the wholesale market, I therefore consider a subset variant of this \ac{MDP} where the action space is defined as
+two continuous variables, the energy limit price $P^o_i$ and the energy amount $Q^o_i$. Each target timeslot is regarded as
+an independent \ac{MDP}. The agent progresses through the states towards the terminal state which is the step at which
+the balancing market determines an ultimate balancing charge. The reward for the agent is received at the terminal state
+and is defined as the relation of the average price paid per kWh by the agent in relation to the average market kWh
+price for a given timestep. This removes any bias in the reward introduced by market price fluctuations. To calculate
+the reward, the following function is used:
 
+\begin{equation}
+	\label{eq:Reward function for agent in wholesale trading environment}
+%average price paid per kWh by broker
+\overline{P^{r}} =\frac{\sum ^{1}_{i=24} P^{r}_{i} *Q^{r}_{i}}{\sum ^{1}_{i=24} Q^{r}_{i}}
+\\
+%relationship between average price paid by broker and average market price for target timeslot
+\frac{\overline{P^{r}}}{\overline{P^{m}}}
+
+%TODO encouraging for exploration injecting into rewards
+%TODO DONE
+
+\end{equation}
 
 Using \ac {MDP} 
 
