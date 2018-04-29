@@ -108,6 +108,7 @@ environment settings.
 \subsection{Docker}
 \label{sub:docker}
 
+
 Docker allows to create isolated, transferable images that include everything an application requires to run. A
 container can be based on various distributions and many containers can run on a single server without much overhead.
 \ac{VM} technologies are often compared to containers, but \ac{VM}s abstract on a different layer. A \ac{VM} simulates
@@ -218,8 +219,8 @@ the \ac {XML} that is received.
 
 %\section{Parallelizing environments with Kubernetes}
 
-\section{Using Docker to make the competition portable}%
-\label{sec:using_docker_to_make_the_competition_portable}
+\section{Creating Containers from competition components}
+\label{sec:creating_containers_from_competition_components}
 
 To run a competition on a local machine, one must install several components: Maven, Java 8 and all of the brokers as
 well as ones own technology stack. If the scale of this set of components exceeds the local computation power available,
@@ -409,7 +410,7 @@ customers usage patterns in either setting. During a competition, the agent may 
 customers after each time slot is completed. Because this process may require some ressources, it is advantageous to
 first perform the prediction of the subscribed customers demands for the current time slot to pass this information to
 the wholesale component before training the model on the received meter readings. While the broker is waiting for the
-server to process a step in the game, it can perform any learning on newly received information. \footnote{The component code can be
+server to process a step in the game, it can perform any learning on newly received information \footnote{The component code can be
 found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
 
 %TODO write final model structure
@@ -446,6 +447,7 @@ R(t) = \frac{P^r_{avg}}{P^m_{avg}}
 \end{equation}
 
 %TODO DONE
+
 Using \ac {MDP}
 
 \ac {MDP} is actually with infinite states but for analytical concept, its irrelevant. Important is: Continuous states,
