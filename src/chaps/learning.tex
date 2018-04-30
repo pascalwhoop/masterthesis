@@ -1,34 +1,29 @@
-According to \cite{russell2016artificial}, learning agents are those that
-\emph{improve their performance on future tasks after making observations about
-the world} \cite[p.693]{russell2016artificial}. Learning behavior is present in
-many species most notably humans. To create a learning algorithm means that the
-creator did not have to anticipate every potential variant of an environment
-that the agent is confronted with while still creating an agent that can act
-successfully in such environments. Cognitive Sciences define learning as the
-change of state due to experiences as a necessary requirement and often limit
-the recognition of learning to some observable behavior
-\cite[p.96f.]{cognition1999}. This applies to all known species and the same
-definition can easily be applied to a learning artificial agent. A learning
-agent that doesn't change its behavior is not very helpful and an agent that
+According to \cite{russell2016artificial}, learning agents are those that \emph{improve their performance on future
+tasks after making observations about the world} \cite[p.693]{russell2016artificial}. Learning behavior is present in
+many species most notably humans. To create a learning algorithm means that the creator did not have to anticipate every
+potential variant of an environment that the agent is confronted with while still creating an agent that can act
+successfully in such environments. Cognitive Sciences define learning as the change of state due to experiences as a
+necessary requirement and often limit the recognition of learning to some observable behavior
+\cite[p.96f.]{cognition1999}. This applies to all known species and the same definition can easily be applied to a
+learning artificial agent. A learning agent that doesn't change its behavior is not very helpful and an agent that
 doesn't change its state can hardly have learned something. 
 
-The \ac {AI} community has for many years employed a \emph{loss function} as a
-measure of learning progress. Loss functions describe the difference between the
-actual utility of the right actions versus the results of the agents learned
-actions. The exact loss function might be a mean squared error function or an
-absolute loss depending on the learning algorithm that is used. 
+The \ac {AI} community has for many years employed a \emph{loss function} as a measure of learning progress. Loss
+functions describe the difference between the actual utility of the right actions versus the results of the agents
+learned actions. The exact loss function might be a mean squared error function or an absolute loss depending on the
+learning algorithm that is used. 
 
-Computational learning theory looks at many different problems of learning: How
-to learn through a large number of examples, the effects of learning when the
-agent already knows something, how to learn without examples, how to learn
-through feedback from the environment and how to learn if the origin of the
-feedback is not deterministic \cite[]{russell2016artificial}. In this work, two
-of those problems are of special interest: The ability to learn from previously
-labelled examples and the ability to learn through feedback from the
-environment. The former is called \ac {SL}  and the latter is mostly
-referred to as \ac {RL}. 
+Computational learning theory looks at many different problems of learning: How to learn through a large number of
+examples, the effects of learning when the agent already knows something, how to learn without examples, how to learn
+through feedback from the environment and how to learn if the origin of the feedback is not deterministic
+\cite[]{russell2016artificial}. In this work, two of those problems are of special interest: The ability to learn from
+previously labelled examples and the ability to learn through feedback from the environment. The former is called \acl
+{SL}  and the latter is mostly referred to as \acl {RL}. To understand the difference, it is also important to
+understand algorithms that don't have access to labels for existing data, yet are still able to derive value from the
+information. These belong to the class of \acf {UL}. Although this class is not heavily relied upon in the
+implementation of the actual agent in the later practical implementation, it is crucial for many tasks in machine
+learning such as data exploration or anomality recognition. 
 
-The following sections will cover both mentioned forms of learning and
-Section~\ref{sec:neural_networks} will introduce an architecture that can be
-used as the learning function in these learning problems. Finally,
+The following sections will describe both \acl {SL} and \acl {UL} and Section~\ref{sec:neural_networks} will introduce
+an architecture that can be used as the learning function in these learning problems. Finally,
 Section~\ref{sec:Backpropagation} will explain how exactly \ac {NN} learn. 
