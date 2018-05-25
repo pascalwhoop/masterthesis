@@ -3,6 +3,7 @@ ab ===      %===================================================================
 ab RL       \ac {RL}
 ab GRPC     \ac {GRPC}
 ab UL       \ac {UL}
+ab kWh      \ac {kWh}
 ab SL       \ac {SL}
 ab RNN      \ac {RNN}
 ab LSTM     \ac {LSTM}

@@ -3,6 +3,7 @@ leverage modern reinforcement learning tools in the \ac {PowerTAC} environment. 
 algorithms for \ac {RL}, available in Python \citep{baselines}, are used. These leverage both the TensorFlow library
 and, in one project, the Keras high-level abstraction library \citep{plappert2016kerasrl}.
 
+%TODO what-if yes or no... make a choice dude
 In general, a considerable amount of work was invested enabling communication between an agent
 written in Python and the \ac {PowerTAC} systems which are Java based. The preliminary research and its results are summarized in
 Section~\ref{sec:connecting_python_agents_to_powertac}. Because of this additional complexity, the practical part of the thesis was
@@ -11,14 +12,39 @@ analysis in the wholesale market which is described in Section~\ref{sub:wholesal
 been constructed in a way to allow for future developers to leverage it as a framework for developing a fully capable
 agent that acts in all markets.
 
-The overall architecture for the agent is composed of three key modules.First, the environment module, which hosts all known
-information about the environment of the broker. This is used by all learning components. Second, A communication module
-bridges the environment module and the \ac {PowerTAC} environment to hide communication overhead from the agent code,
-letting the learning components access the environment as if it was not remotely defined.
-Third, the agent components module holds all learning components such as the wholesale trader, the demand estimator
-and the tariff manager. In the scope of this thesis, only the demand estimator and the wholesale trader were implemented
-but the framework allows for the additional components to be easily implemented. The architecture is visualized in
-Figure~\ref{fig:agentframework}.
+The overall architecture of the broker is composed of 5 main components: The communication abstraction, wholesale market
+agent, balancing market agent, tariff market agent and demand predictor. In this implementation, only the wholesale
+market and demand predictor are actively making decisions. Future researchers can make use of the components however. 
+The architecture is visualized in Figure~\ref{fig:agentframework}.
+
+While \citep{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a
+\ac {MDP} for ease of implementation) with all three markets integrated into one problem, I believe breaking the problem
+into distinct sub-problems is a better approach as each of them can be looked at in separation and a learning algorithm
+can be applied to improve performance without needing to consider potentially other areas of decision making. A
+subsequent algorithm could then be trained to perform the same actions as one unified decision making system according
+to the concepts of \emph{Curriculum Learning}\citep{matiisen2017teacher} and \emph{Transfer Learning}
+\citep{parisotto2015actor}. Such a unified algorithm is not part of this work.
+To justify this separation of concerns, I refer to the estimation of fitness for a given tariff in a given environment.
+A tariffs' competitiveness in a given environment is independent of the wholesale or balancing trading strategy of the
+agent since the customers do not care about the profitability of the agent or how often it receives balancing penalties.
+While the broker might incur large losses if a tariff is too competitive (by offering prices that are below the
+profitability line of the broker), such a tariff would theoretically be quiet competitive and should therefore be rated
+as such. The question which of the tariffs to actually offer on the market is a separate problem, that balances
+competitiveness against profitability. Similar arguments can be made for the other components.
+
+I will first describe a number of tools used in the implementation as well as the preprocessing of the existing data
+using both new and existing code. Afterwards I will describe the new communication architecture for non-java clients.
+Finally I will explain the code behind the two implemented learning components, the demand prediction and the wholesale
+trading agent.
+
+%The overall architecture for the agent is composed of three key modules.First, the environment module, which hosts all known
+%information about the environment of the broker. This is used by all learning components. Second, A communication module
+%bridges the environment module and the \ac {PowerTAC} environment to hide communication overhead from the agent code,
+%letting the learning components access the environment as if it was not remotely defined.
+%Third, the agent components module holds all learning components such as the wholesale trader, the demand estimator
+%and the tariff manager. In the scope of this thesis, only the demand estimator and the wholesale trader were implemented
+%but the framework allows for the additional components to be easily implemented. The architecture is visualized in
+%Figure~\ref{fig:agentframework}.
 
 \begin{figure}[]
     \centering
@@ -26,6 +52,7 @@ Figure~\ref{fig:agentframework}.
     \caption{Broker framework for Python}
     \label{fig:agentframework}
 \end{figure}
+
 
 \section{Tools}
 
@@ -146,33 +173,46 @@ An example is given in Section~\ref{sub:implementing_the_communication_with_ac_g
 To learn from the large amount of data already available from previous simulations, parsing the state files provided by
 the simulation is a reasonable approach to boost the ability of several parts of the agent to learn faster. One example
 is the predictor of customer energy usage, as previous simulations offer large amounts of usage data that can be
-analyzed.
+analyzed. 
 
-The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant data
-for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files are
-based on events (they hold constructor parameters and method call parameters of previous server instances), these events
-need to be translated into the environment. To learn from these events, most modern frameworks require a training
-data-set and a label data-set. Therefore these events are first translated into an environment and at each timestep,
-relevant training samples are extracted. Therefore the overall structure of the translation from state files to training
-data is as follows:
+The original approach was to manually parse these files using python and to reconstruct the server state in python.
+While this was successful for the demand component, I discovered the powertac-tools repository which holds similar tools
+based on a combination of python and java components. This repository allows the creation of customer production and
+consumption information in a comma separated file format. The initial approach to parse the files was therefore scrapped
+and replaced with this prebuilt variant that makes use of the powertac-server source code. 
 
-\begin{enumerate}
-    \item Iterate over all local state files
-    \item Iterate over lines in state file
-    \item Apply line to
-        current environment state
-    \item At each time-step, extract relevant samples
-    \item Store training data in separate local
-        %TODO separate vs online/streaming structured approach
-files \end{enumerate}
+While the current demand prediction is solely based on historical demand, this can easily extended (as it has been in
+the python only approach previously mentioned) with weather data, time information and up-to-date tariff information
+\footnote{All preprocessing code has been deleted in commit
+\href{https://github.com/pascalwhoop/broker-python/commit/c54ee7c05585d15462f40e2be6850343e8aea27a}{c54ee7c} in the
+broker-python repository.}.
 
-The code linked to the process described above is part of the \texttt{util.state\_extractor} and
-\texttt{model.environment} modules. The tests in the \texttt{tests} module document the functionality.
 
-After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
-processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
-well as ensure the values that are fed to the \ac {NN} don't negatively impact the learning progress. The overall
-approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
+%The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant data
+%for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files are
+%based on events (they hold constructor parameters and method call parameters of previous server instances), these events
+%need to be applied to the environment. To learn from these events, most modern frameworks require a training
+%data-set and a label data-set. Therefore these events are first applied to the environment and at each timestep,
+%relevant training samples are extracted. Therefore the overall structure of the translation from state files to training
+%data is as follows:
+
+%\begin{enumerate}
+%    \item Iterate over all local state files
+%    \item Iterate over lines in state file
+%    \item Apply line to
+%        current environment state
+%    \item At each time-step, extract relevant samples
+%    \item Store training data in separate local
+%        %TODO separate vs online/streaming structured approach
+%files \end{enumerate}
+%
+%The code linked to the process described above is part of the \texttt{util.state\_extractor} and
+%\texttt{model.environment} modules. The tests in the \texttt{tests} module document the functionality.
+%
+%After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
+%processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
+%well as ensure the values that are fed to the \ac {NN} don't negatively impact the learning progress. The overall
+%approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
 
 
 \section{Connecting Python agents to PowerTAC}%
@@ -180,25 +220,24 @@ approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
 
 
 
-To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter needs to be developed. In 2018, a simple
-bridge was provided by John Collins, a member of the \ac {PowerTAC} team. It allowed external processes to communicate with the system through a bridge via the
-provided sample-broker. All messages received by the broker are written to a First in First Out pipe on the local file
-system and a second pipe is created to read messages from the external process. This was the first approach towards
-opening up the simulation to other languages and development environments.
+To connect an agent based on Python to the \ac{PowerTAC} systems, a new adapter was developed. In early 2018, a simple bridge
+was provided by John Collins, a member of the \ac {PowerTAC} team. It allowed external processes to communicate with the
+system through a bridge via the provided sample-broker. All messages received by the broker were written to a First in
+First Out pipe on the local file system and a second pipe was created to read messages from the external process. This
+was the first approach towards opening up the simulation to other languages and development environments.
 
 
 As I am interested in writing my Agent using certain frameworks which are mainly developed and maintained in Python and
 because it is helpful to also allow access to the adapter via network interfaces (to allow for distributed execution of
-the components in e.g. cloud or container environments), I need to adapt this to allow network based access. In general
-the following problems need to be solved:
+the components in e.g. cloud or container environments), I needed to adapt this to allow network based access. In general
+the following problems needed to be solved:
 
 \begin{itemize}
     \item Java model classes should be reused if possible, automatically generating target language model
         definitions from the Java source code to avoid duplication of semantically identical information
-    \item Permit
-        future developers using even more languages (such as C, R or Go) with little effort
-    \item Possibly lay the basis
-        for a change of the communication technology of the entire simulation which is more language agnostic.
+    \item Permit future developers using even more languages (such as C, R or Go) with little effort
+    \item Possibly lay the basis for a change of the communication technology of the entire simulation which is more
+        language agnostic.
 \end{itemize}
 
 \subsection{Evaluating communication alternatives}%
@@ -292,7 +331,7 @@ and protobuf messages can easily be printed as \ac {JSON}, making both alternati
 
 After adapting the projects scope in response to the mid-thesis coordination with my supervisor, I chose the second
 approach, the pure \ac {GRPC} solution. Because the focus will now be on the wholesale market, only a subset of messages
-need to be translated. This permits the implementation of a subset of message mappers between the \ac {GRPC} and
+need to be mapped. This permits the implementation of a subset of message mappers between the \ac {GRPC} and
 \ac {PowerTAC} entities, reducing the scope while retaining the benefits of a \ac {GRPC} implementation which generally
 can be regarded as the best alternative.
 
@@ -308,8 +347,11 @@ Protocol Buffers in MapStruct is still fresh and many currently required lines o
 
 To ensure the mapping works as expected, the tests for the mapper classes perform a \emph{roundtrip test}. This takes a
 Java class as commonly found in the simulation, converts it into \ac {XML} using the current XStream systems, then
-performs a translation into \ac {GRPC} and back. Finally, this resulting object is translated into \ac {XML} again and
-both \ac {XML} strings are asserted to be equal.
+performs a translation into \ac {GRPC} and back. Finally, this resulting object is serialized into \ac {XML} again and
+both \ac {XML} strings are asserted to be equal. By doing this, many things, several things are tested at once: Is the
+translation working as expected, i.e. does it retain all information of the original objects? Is the mapping of IDs to
+objects still working as expected? Are any values such as dates or time values misrepresented? The roundtrip test allows
+for a generic testing of all object types that covers a large number of possible errors.
 
 \begin{listing}[]
     \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{java}
@@ -334,7 +376,7 @@ public interface OrderbookMapper
   PBOrderbook.Builder map(Orderbook in);
   @Mappings({})
   Orderbook map(PBOrderbook in, @MappingTarget Orderbook out);
-  
+
   //BuilderFactory helper class
 }
     \end{minted}
@@ -349,20 +391,23 @@ sent to the connected python broker code through the \ac {GRPC} adapter. The int
 in Listing~\ref{lst:handlemessageexample}.
 
 \begin{listing}
-\begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{java}
+    \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{java}
 public synchronized void handleMessage(Orderbook orderbook)
   {
     PBOrderbook msg = comm.converter.convert(orderbook);
     comm.marketStub.handlePBOrderbook(msg);
   }
-\end{minted}
-\caption{handleMessage example}
-\label{lst:handlemessageexample}
+    \end{minted}
+    \caption{handleMessage example}
+    \label{lst:handlemessageexample}
 \end{listing}
 
-
-%TODO stop
-
+On the Python side, the messages are now accepted and applied to the brokers knowledge base. This is encapsulated in the
+env module of the broker as described before. Some messages may also be considered as action triggers and are therefore
+shared with all interested components through the publish-subscribe event system. A message signaling a completed
+time slot for example may trigger the broker to learn on the newly observed usage patterns, improve its predictions on
+the expected usages of its customers and evaluate its next steps in the wholesale trading market. To perform such
+actions however, the broker must first be able to compete in a competition.
 
 \section{Creating Containers from competition components}
 \label{sec:creating_containers_from_competition_components}
@@ -374,10 +419,17 @@ the configuration and setup of environments to quickly allow new developers to s
 given project \citep{vagrant} , it requires virtual machines which have significant overhead in comparison to container
 technologies. If the competition is abstracted into docker images, tools like Kubernetes or Docker Compose can quickly
 instantiate a competition on any machine, given it has enough resources and a docker runtime installed \citep{docker}.
+Containerized application infrastructures have recently become quiet popular. Amazon, Google and Microsoft are offering
+services specifically tailored to host containerized applications and it is quiet easy to share created docker images
+through the docker hub platform.
 
 To create a Docker image for the server, the \texttt{Dockerfile} listed in Listing~\ref{lst:servertodocker} can be used
 \footnote{All resources regarding the container technologies can be found under
 \url{https://github.com/pascalwhoop/powertac-kubernetes}}.
+It is also common practice to run the build in one container and move the created executable artifact into another
+container that is solely responsible for executing said artifact. The \emph{alpine} image type is an extremely
+light-weight Linux base that only requires about 5Mb of storage. Container images are therefore quiet light-weight in comparison
+to virtual machines.
 
 \begin{listing}[h]
 
@@ -386,31 +438,24 @@ FROM openjdk:alpine
 LABEL maintainer=pascalwhoop
 LABEL name=powertac-server
 
-#adding all the needed dependencies
-RUN apk add --no-cache bash vim git maven python
+WORKDIR /powertac
+RUN mkdir data
 
-#download the server-distribution from github
-RUN mkdir data && \
-    git clone https://github.com/powertac/server-distribution
-
-#build once, saves all maven dependencies in image
-RUN cd server-distribution && \
-    mvn -Pcli
-
-WORKDIR /powertac/server-distribution
 COPY bootstrap-data.xml ./
 COPY init.sh ./
 COPY server.properties ./
+#assumes a built server jar is in the target folder of this project
+COPY target/server-jar-1.5.1-SNAPSHOT.jar server.jar
 
 EXPOSE 8080 61616
 #and start it up
-CMD /powertac/server-distribution/init.sh
+CMD "/powertac/init.sh"
     \end{minted}
     \caption{Turning the current server snapshot into a docker image}
     \label{lst:servertodocker}
 \end{listing}
 
-The benefit of this: Tools like Kubernetes or Docker Swarm, both being open source enterprise level container management
+This offers another advantage that may become increasingly attractive in the long-term: Tools like Kubernetes or Docker Swarm, both being open source enterprise level container management
 software, seamlessly allow for the creation of 1, 10 or 1000 instances. OpenAI, a deep learning research company, has
 successfully scaled Kubernetes to 2500 nodes to run their deep \ac{RL} learning systems \citep{openai2500}. As
 previously mentioned, Docker also integrates \ac{CRIU} which is required for the creation of snapshots of competition
@@ -420,43 +465,46 @@ states.
 %\subsection{Redis and component messaging}%
 %\label{sub:redis_and_messaging}
 
+\subsection{Inner Python communication}%
+\label{sub:inner_python_communication}
 
-\section{Learning Components}
-\label{sec:learning_components}
-The components of the agent that have learning capabilities include:
+Once the competition environment is running and messages start streaming into the python environment, the various
+components need to be coordinated in an intelligent fashion. Event driven architectures are light-weight and offer
+enough flexibility to coordinate the various components. The server may send a number of \texttt{TariffTransaction}
+messages followed by a \texttt{TimeslotComplete} message that signals the demand estimator it may now calculate new
+forecasts for any customer subscribed to the broker. Once the component has completed the task, instead of directly
+calling another component such as the wholesale trader, it sends a signal via the event system so that any subscribed
+component may react to the event.
 
-\begin{description}
-    %TODO will i still get to implement this? simply mimick an agents tariffs ... shouldn't be hard
-    \item[Customer Market]: Generates actions in respect to the tariff market such as publishing,
-        adapting and revoking tariffs. While the component is expected to have a positive impact on the performance of
-        the broker, it was just implemented with a basic functionality of publishing the same tariffs as a selected
-        competitive broker, mimicking the competing brokers portfolio. It also creates usage predictions for a set of
-        customers for other components. Generally, the framework intends a tariff fitness evaluation as well as tariff
-        selection component that weighs both competitiveness and expected profitability.
 
-    \item[Wholesale Market]: Places bids and asks for energy in the periodic double
-        auction type market \citep{ketter2018powertac}. The component employs \ac {RL} techniques and uses the
-        predictions generated from the customer market component as an input describing the required capacity.
+%TODO END
 
-    \item[Balancing Market]: The balancing market component has not been implemented, but it is part of the
-developed framework for possible future extension.  \end{description}
+%The components of the agent that have learning capabilities include:
+%
+%\begin{description}
+%    %TODO will i still get to implement this? simply mimick an agents tariffs ... shouldn't be hard. The default tariff
+%    %is already sent to the server from within Java, so that is also an option.
+%    \item[Customer Market]: Generates actions in respect to the tariff market such as publishing,
+%        adapting and revoking tariffs. While the component is expected to have a positive impact on the performance of
+%        the broker, it was just implemented with a basic functionality of publishing the same tariffs as a selected
+%        competitive broker, mimicking the competing brokers portfolio. It also creates usage predictions for a set of
+%        customers for other components. Generally, the framework intends a tariff fitness evaluation as well as tariff
+%        selection component that weighs both competitiveness and expected profitability.
+%
+%    \item[Wholesale Market]: Places bids and asks for energy in the periodic double
+%        auction type market \citep{ketter2018powertac}. The component employs \ac {RL} techniques and uses the
+%        predictions generated from the customer market component as an input describing the required capacity.
+%
+%    \item[Balancing Market]: The balancing market component has not been implemented, but it is part of the
+%developed framework for possible future extension.  \end{description}
 
-While \citep{tactexurieli2016mdp} have defined the entire simulation as a \ac {POMDP} (although they interpret it as a
-\ac {MDP} for ease of implementation) with all three markets integrated into one problem, I believe breaking the problem
-into disjunct sub-problems is a better approach as each of them can be looked at in separation and a learning algorithm
-can be applied to improve performance without needing to consider potentially other areas of decision making. A
-subsequent algorithm could then be trained to perform the same actions as one unified decision making system according
-to the concepts of \emph{Curriculum Learning}\citep{matiisen2017teacher} and \emph{Transfer Learning}
-\citep{parisotto2015actor}. Such a unified algorithm is not part of this work.
-To justify this separation of concerns, I refer to the estimation of fitness for a given tariff in a given environment. A tariffs' competitiveness in a
-given environment is independent of the wholesale or balancing trading strategy of the agent since the customers do not
-care about the profitability of the agent or how often it receives balancing penalties. While the broker might incur
-large losses if a tariff is too competitive (by offering prices that are below the profitability line of the broker),
-such a tariff would theoretically be quiet competitive and should therefore be rated as such. The question which of the
-tariffs to actually offer on the market is a separate problem, that balances competitiveness against profitability.
-
-\subsection{Customer Market}
+\section{Customer demand estimation}
 \label{sub:customer_market}
+
+%The customer market component covers the tariff market and the demand prediction tasks. In my implementation, the
+%broker does not perform autonomous tariff creation but instead just publishes the default tariffs. The goal was to focus
+%on the wholesale market and the demand prediction.
+
 
 %TODO background?
 %TODO not implemented
@@ -513,25 +561,66 @@ tariffs to actually offer on the market is a separate problem, that balances com
 % how to avoid overwhelming of agent? output layer must be fairly large.
 %
 % time, energy, money, communication dimensions (and subdimensions)
-\subsubsection{Customer demand estimation}% \label{ssub:customer_demand_estimation}
 
-This component has no dependencies onto the other learning components and can easily be trained using historical data.
-It is therefore a supervised learning algorithm, matching known information in timestep $t-n$ to a prediction for the
-expected energy usage at timestep $t$. Because there are several games on record, the historical realized usages are the
-labels for the supervised learning problem. Known information includes: Weather forecasts, historical usages, time, tariff
-and customer metadata.
+%\subsection{Customer demand estimation}% \label{ssub:customer_demand_estimation}
+%\label{sub:customer_demand_estimation}
+
+The customer demand prediction belongs to the customer market space. In my implementation, I focused on the demand
+prediction and skipped the tariff generation. While there are interesting approaches that can leverage machine learning
+to generate numerous tariff structures, this is left for future work. 
+
+When predicting demand, it is helpful to first perform a preliminary analysis of the structure of the demand patterns.
+This has been done using Jupyter Notebooks and the work can be seen in the \texttt{notebooks} folder in the
+broker-python code repository
+\footnote{\url{https://github.com/pascalwhoop/broker-python/blob/master/notebooks}}.
+Figure~\ref{fig:demandtimelag} shows a clear correlation between the current demand of the market and historical demands with a
+delay of 12,24,36,48,... hours. This degrades however and slowly converges towards no correlation.
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/demand_6.png}
+    \caption{Lag Plot showing the correlation of the population usage data in relation to the time lag}
+    \label{fig:demandtimelag}
+\end{figure}
+
+The analysis also showed large differences in the demand profile of different customers. Some consume several thousand
+\ac {kWh} per time step while most normal consumers only consume small amounts. This however is not directly
+translatable into tariff market actions because some customers are actually just a population model that simulates many
+thousand individuals. These models may create contracts with a number of brokers, breaking the demand of these large
+models down into several small transactions spread across tariffs.
+
+From a technical perspective, this component has no dependencies onto the other learning components and can easily be
+trained using historical data.  It is therefore a supervised learning algorithm, matching known information in timestep
+$t-n$ to a prediction for the expected energy usage at timestep $t$. Because there are several games on record, the
+historical realized usages are the labels for the supervised learning problem. Known information includes: Weather
+forecasts, historical usages, time, tariff and customer metadata. A simplest approach and therefore a baseline to
+measure against is to simply predict the customer to consume the same amount as in the previous time slot. All demand
+prediction loss is measured in mean average error. A linear error is chosen because the economic impact of misjudging a
+demand is also linear. When using such a prediction method as well as a -12h and -24h prediction, the results are as
+seen in Figure~\ref{fig:demand_baseline}. A random prediction based on a neural network being fed random data usually
+levels out at 300 to 400. This gives us a goal range (below -24h prediction) as well as a pattern to avoid which
+basically equals not learning anything.
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/demand_baselines.png}
+    \caption{Demand baselines, -1h blue, -12h pink, -24h green}
+    \label{fig:demand_baseline}
+\end{figure}
+
 If the customer models change across games (e.g. if a customer suddenly uses 10x the energy on rainy days), the learning
 model will have to learn to adapt to this change. This can be achieved by letting the model both learn from historical
 data initially (i.e. form the state files) and also let it learn online during the competition, based on the new
 customer models.
 
 To train a model that predicts the demand amounts of customers under various conditions, a dataset of features and
-labels needs to be created. Because the model may also learn during the course of a running competition, a generator based structure should be preferred. This means that a generator
-exists that creates $x, y$ pairs for the model to train on, instead of creating a large batch of learning data ahead of
-the learning processing, which is otherwise a common practice. Whenever a round completes and new information is
-available, the demand estimator is asked to estimate the demand for all customers subscribed to the tariffs of the
-broker for the next 24 timesteps. These estimations are then saved (i.e. they replace any previous estimations) and the
-wholesale component as well as other components can act on this newly created estimations.
+labels needs to be created. Because the model may also learn during the course of a running competition, a generator
+based structure should be preferred. This means that a generator exists that creates $x, y$ pairs for the model to train
+on, instead of creating a large batch of learning data ahead of the learning processing, which is otherwise a common
+practice. Whenever a round completes and new information is available, the demand estimator is asked to estimate the
+demand for all customers subscribed to the tariffs of the broker for the next 24 timesteps. These estimations are then
+saved (i.e. they replace any previous estimations) and the wholesale component as well as other components can act on
+this newly created estimations.
 
 According to the simulation specification, the customer models generate their demand pattern based on their internal
 structure, broker factors and game factors \citep[]{ketter2018powertac}. The preprocessing pipeline of the generator therefore generates
@@ -540,8 +629,13 @@ label while all other components are part of the features that are used to train
 for demand patterns prediction are \ac {RNN} due to the sequential nature of the problem \citep[]{EvalGRU2014}. However,
 as will be shown later, the implementation of relatively shallow dense classic \ac {NN} also results in decent results.
 
-\begin{figure}[h] \centering \includegraphics[width=0.8\linewidth]{img/UsageEstimator.png} \caption{Demand Estimator
-structure} \label{fig:DemandEstimator} \end{figure}
+\begin{figure}[h] 
+    %TODO export new variant in drawio
+    \centering 
+    \includegraphics[width=0.8\linewidth]{img/UsageEstimator.png} 
+    \caption{Demand Estimator structure} 
+\label{fig:DemandEstimator} 
+\end{figure}
 
 
 The overall structure of the demand estimator component is shown in Figure~\ref{fig:DemandEstimator}. The model can be
@@ -558,17 +652,19 @@ the wholesale component before training the model on the received meter readings
 server to process a step in the game, it can perform any learning on newly received information \footnote{The component code can be
 found under \url{https://github.com/pascalwhoop/broker-python/tree/master/agent_components/demand}}.
 
-%TODO write final model structure
+%TODO write final model structure and plot against intuitive -24h baselines
 
-\subsection{Wholesale Market}
-\label{sub:wholesale_market}
+\section{Wholesale Market}
+\label{sec:wholesale_market}
 
-To approach the wholesale trading problem, the definition of the trading problem developed by
-\citet{tactexurieli2016mdp} is assumed. This defines each of the target timeslots as a \ac{MDP} with 24 states before
+To approach the wholesale trading problem, a subset of the definition of the trading problem developed by
+\citet{tactexurieli2016mdp} is assumed. More specifically, the agent only concerns itself with the activities in the
+wholesale market and does not act or evaluate tariff market or balancing market activities.
+
+They defined each of the target timeslots as a \ac{MDP} with 24 states before
 termination. As previously mentioned, \citet{tactexurieli2016mdp} define the entire simulation as a unified \ac{MDP}.
-For the wholesale market, I therefore consider a subset variant of this \ac{MDP} where the action space is limited to
-wholesale market actions, i.e.
-two continuous variables, the energy limit price $P^o_i$ and the energy amount $Q^o_i$. Each target timeslot is regarded as
+% each timeslot is not considered an independent \ac {MDP} anymore!
+Each target timeslot is regarded as
 an independent \ac{MDP}. The agent progresses through the states towards the terminal state which is the step at which
 the balancing market determines an ultimate balancing charge. The reward for the agent is received at the terminal state
 and is defined as the relation of the average price paid per \ac{kWh} by the agent in relation to the average market
@@ -591,7 +687,14 @@ relationship between the agents average costs and the average market costs is us
     R(t) = \frac{P^r_{avg}}{P^m_{avg}}
 \end{equation}
 
-%TODO DONE
+\begin{markdown}
+
+### WIP 
+
+- adapting the wholesale environment to be  compatible to the OpenAI Gym "Environment" which allows for 
+
+\end{markdown}
+
 
 Using \ac {MDP}
 

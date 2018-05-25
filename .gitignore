@@ -2,6 +2,8 @@ Session.vim
 ipad.vim
 macbook.vim
 _minted-main/
+*.markdown.*
+**/_markdown_main/
 
 
 Literature/
