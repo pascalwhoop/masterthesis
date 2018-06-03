@@ -775,7 +775,13 @@ structure and the available resources.
 
 %TODO alternative sources / implementations like powertac
 % Simulating the effect on the energy efficiency of smart grid technologies.pdf
-In the following chapter, I will introduce the \acl{PowerTAC}. It's simulating a liberalized retail electrical energy
+
+%------------------------------------------------------------------------------- 
+NOTES : 
+    - pretty much complete.
+    - missing: analysis of competing broker behaviors
+%------------------------------------------------------------------------------- 
+In the following chapter, I will introduce the \acf{PowerTAC}. It's simulating a liberalized retail electrical energy
 market where multiple autonomous agents compete in different markets. Firstly, a retail market where agents, or
 \emph{brokers}, compete for numerous end-users through the offering of tariff contracts. Secondly, a wholesale market in
 which brokers buy and sell large amounts of electric energy to match their customers demands. This market allows brokers
@@ -785,7 +791,6 @@ causes an imbalance in the system, giving incentives to the brokers to balance t
 balancing operations. Figure ~\ref{fig:powertacoverview} summarizes this ecosystem.
 
 %TODO have i also explained how the brokers get punished for peaks etc? what about the accounting models.
-
 \begin{figure}[!h]%!h \centering
     \includegraphics[width=0.9\textwidth]{powerTACScenarioOverview.png} \caption{PowerTAC overview of markets}
 \label{fig:powertacoverview} \end{figure}
@@ -797,10 +802,10 @@ The broker to be developed has to contest in a number of markets and handle a va
 modeling the technical underpinnings of the system. It therefore doesn't simulate any hardware but rather focuses on the
 different agents involved in the market.
 
-%TIMESLOTS
-The simulation emulates a time span of approximately 60 days with 1h time slot precision and accelerates this to 5
-real-world seconds corresponding to each game-hour. The simulation emulates a time span of approximately 60 days with 1h
-time slot precision and accelerates this to 5 real-world seconds corresponding to each game-hour.
+Its goal is the exploration of numerous market designs to find designs that give the right incentives to market
+participants, allowing for future energy grids to be distributed, failure tolerant and adaptable. Future grids need to handle the
+changing landscape of energy production, delivery and consume patterns. Consumers need to be incentivized to behave in
+accordance to energy availability. 
 
 
 \subsection{Components}%
@@ -808,23 +813,26 @@ time slot precision and accelerates this to 5 real-world seconds corresponding t
 
 
 
-The simulation is both technically and logically separated into several components to aid both comprehensibility of the
+\ac {PowerTAC} is both technically and logically separated into several components to aid both comprehensibility of the
 system and yet allow complex simulations of more realistic scenarios. In the following pages, those logical components
-will be explained. Most of these components are easily mappable into the technical implementation.
+will be explained. Most of these components are easily mappable into the technical implementation. The technical
+structure will not be explained in detail but can be found under the Github \ac{PowerTAC} organization.
 
-\subsubsection{Distribution Utility} The \ac{DU} represents an entity that regulates the real-time electric usage and
+
+\paragraph{Distribution Utility} The \ac{DU} represents an entity that regulates the real-time electric usage and
 corrects for any imbalances in brokers portfolios by correcting the overall net-balance of the system. Any broker who
 did not balance it's electric supply and demand incurs costs and is therefore incentivized to always balance its
 portfolios as good as possible. It also owns the distribution grid and every broker must pay fees for the use of the
-grid in proportion to the number of the customers it serves \citep[p.10]{ketter2018powertac}. It also offers tariffs and
-is therefore the equivalent of a \emph{baseline broker} whose tariffs create an upper bound on broker profitability.
+grid in proportion to the number of the customers it serves \citep[p.10]{ketter2018powertac}. Fees for the grid are
+constructed in a way to incentivize brokers to not only balance their portfolio but also to avoid high peak demand.
+It further offers tariffs and is therefore the equivalent of a \emph{baseline broker} whose tariffs create an upper bound on broker profitability.
 
-\subsubsection{Accounting} All accounting is managed by the central simulation server as to avoid adversarial brokers
+\paragraph{Accounting} All accounting is managed by the central simulation server as to avoid adversarial brokers
 from tampering with the games rules. Negative balances are usually punished with a 10\% p.a. interest rate while
-positive balances receive a 5\% p.a. interest rate. This components tracks every brokers financial balance as well as
+positive balances receive a 5\% p.a. interest rate. This component tracks every brokers financial balance as well as
 all brokers customer subscriptions and wholesale market positions \citep[p.11]{ketter2018powertac}.
 
-\subsubsection{Wholesale Market}
+\paragraph{Wholesale Market}
 %TODO energy or electricity? What's the "right" word? --> ENERGY
 Every broker needs to purchase energy before it can sell it to the customers unless the customers of the broker itself
 generate sufficient energy to balance its own portfolio. For this, \ac{PowerTAC} offers a wholesale market that operates
@@ -837,7 +845,7 @@ price gets calculated which is the intersection between the supply and demand cu
 always served first. After the clearing, all uncleared bids and asks are distributed to the brokers to indicate the
 direction of the markets' demand and supply curves.
 
-\subsubsection{Balancing Market} The Balancing market is the last and final trading opportunity for agents and in the
+\paragraph{Balancing Market} The Balancing market is the last and final trading opportunity for agents and in the
 sense of the game is at $t-0$ meaning that it occurs virtually in parallel to the consume of electricity. Any imbalance
 during this phase gets corrected for by the \ac{DU} who imposes forced balancing of brokers with an imbalanced
 portfolio. Brokers with too much supply in their portfolio therefore receive very little reimbursement for it and those
@@ -849,19 +857,15 @@ depleting their devices in the case of an under-supply. It is therefore economic
 customers with such balancing capabilities since it offers a buffer capacity against the balancing costs otherwise
 incurred through the actions of the \ac{DU} \citep[p.5]{ketter2018powertac} .
 
+\paragraph{Customer Market}
 
-
-
-
-\subsubsection{Customer Market}
-
-The foundation for any broker making profit is a sufficient amount of customers being subscribed to its tariffs. For
-this to occur, the broker must publish tariffs that are competitive as to attract customers. On the other hand, if the
+The foundation for any brokers ability to generate profit is a sufficient amount of customers being subscribed to its tariffs. For
+this to occur, the broker must publish tariffs that are competitive to attract customers. On the other hand, if the
 broker offers tariffs that lead to net losses, long term profit will not be possible
 \footnote{While the 2017
-    competition technically allowed for brokers to remain in the game despite offering highly under priced tariffs that
-    corrupted the simulation results, a proper broker must not pursue such strategies simply because of economical
-reasoning.}
+    competition technically allowed for brokers to remain in the game despite offering highly under-priced tariffs that
+    corrupted the simulation results, a proper broker must not pursue such strategies simply due to econimic
+reasoning.}.
 
 The broker has a wide variety of actions at its disposal to create a rich portfolio. The simulation offers the
 creation of a variety of tariff types that have variables which are adaptable by the broker. The types include:
@@ -887,7 +891,7 @@ creation of a variety of tariff types that have variables which are adaptable by
 
 Some of the above types can also be combined to create complex tariff landscapes for customers to choose from.
 
-\subsubsection{Customer models}% \label{sub:customer_models}
+\paragraph{Customer models}% \label{sub:customer_models}
 
 The final part of the simulation environment is made up by the customer models which simulate real-world customers.
 Each customer can both produce and consume electricity. Consumers are modeled both by factored and elemental models
@@ -997,16 +1001,23 @@ may now be compensated by running a significant amount of trials ceteris paribus
 
 \subsection{Existing broker concepts}%
 \label{sub:existing_broker_concepts}
-Before designing my own agent, it is obvious to investigate previously developed agents and their design to understand
+Before designing my own agent, it is helpful to investigate previously developed agents and their design to understand
 the current state of research. For this, I have analyzed the papers of the AgentUDE, TacTex and COLDPower, as they
 performed well in previous tournaments. Their architectures, models and performances are summarized in the following
-sections.
+sections. These are based on publications that describe the TacTex, COLDPower and AgentUDE agents of 2015, as these are
+the last publications of these brokers that are available on the \ac {PowerTAC} website. Unfortunatley, the source code
+of these agents has not been made available, which does not allow introspection of the exact inner mechanics. 
+
 
 
 
 
 \subsubsection{Decision areas}%
 \label{ssub:decision_areas}
+Of the three main markets, all agents participate actively in the tariff market, only AgentUDE participates in the
+balancing market and obviously every agent participates in the customer market. The way each agent approaches the
+customer or tariff market is very different however. 
+%TODO STOP GOOD NIGHT
 
 
 
@@ -1016,8 +1027,8 @@ sections.
 \subsubsection{Past performances}%
 \label{ssub:past_performances}
 
-
 \chapter{Implementation}
+\label{cha:implementation}
 
 The following chapter will describe the concepts and reasons behind various components needed to allow a broker to
 leverage modern reinforcement learning tools and algorithm libraries in the \ac{PowerTAC} environment. Current state-of-the-art
