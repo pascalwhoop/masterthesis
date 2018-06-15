@@ -1,9 +1,15 @@
 ab ---      %-------------------------------------------------------------------------------
 ab ===      %===============================================================================
+
+
+
 ab RL       \ac{RL}
+ab ReLu     \ac{ReLu}
 ab GRPC     \ac{GRPC}
 ab UL       \ac{UL}
 ab kWh      \ac{kWh}
+ab mWh      \ac{mWh}
+ab API      \ac{API}
 ab SL       \ac{SL}
 ab RNN      \ac{RNN}
 ab LSTM     \ac{LSTM}
@@ -25,3 +31,7 @@ ab TF       \ac{TF}
 ab TPU      \ac{TPU}
 ab SOTA     \ac{SOTA}
 ab PowerTAC \ac{PowerTAC}
+ab DDPG     \ac{DDPG}
+ab DQN      \ac{DQN}
+ab A3C      \ac{A3C}
+ab NAF      \ac{NAF}
