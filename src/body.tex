@@ -779,7 +779,7 @@ structure and the available resources.
 %------------------------------------------------------------------------------- 
 NOTES : 
     - pretty much complete.
-    - missing: analysis of competing broker behaviors
+    - missing: analysis of competing broker perforances
 %------------------------------------------------------------------------------- 
 In the following chapter, I will introduce the \acf{PowerTAC}. It's simulating a liberalized retail electrical energy
 market where multiple autonomous agents compete in different markets. Firstly, a retail market where agents, or
@@ -1003,29 +1003,69 @@ may now be compensated by running a significant amount of trials ceteris paribus
 \label{sub:existing_broker_concepts}
 Before designing my own agent, it is helpful to investigate previously developed agents and their design to understand
 the current state of research. For this, I have analyzed the papers of the AgentUDE, TacTex and COLDPower, as they
-performed well in previous tournaments. Their architectures, models and performances are summarized in the following
-sections. These are based on publications that describe the TacTex, COLDPower and AgentUDE agents of 2015, as these are
-the last publications of these brokers that are available on the \ac {PowerTAC} website. Unfortunatley, the source code
-of these agents has not been made available, which does not allow introspection of the exact inner mechanics. 
+performed well in previous tournaments and because their creators have published their concepts. Their architectures,
+models and performances are summarized in the following sections. These are based on publications that describe the
+TacTex, COLDPower and AgentUDE agents of 2015, as these are the last publications of these brokers that are available on
+the \ac {PowerTAC} website. Unfortunatley, the source code of these agents has not been made available, which does not
+allow introspection of the exact inner mechanics. 
+
+From what is visible by their shared binaries, all agents are based on java and do not employ any other technologies to
+perform their actions during competitions. 
 
 
+\subsubsection{Tariff market strategies}%
+\label{ssub:tariff_market_strategies}
+
+AgentUDE deploys an agressive but rigid tariff market strategy, offering cheap tariffs at the beginning of the game to
+trigger competing agents to react. It also places high transaction costs on the tariffs, by making use of early
+withdrawl penalties and bonus payments \cite[]{ozdemir2017strategy}. While this may be beneficial for the success in the
+competition, it doesn't translate into real-world scenarios as energy markets are not a round based, finite game. 
+
+TacTex does not target tariff fees such as early withdrawl fees to make a profit. It also doesn't publish tariffs for
+production of energy \cite[]{tactexurieli2016mdp} although this is based on a 2016 paper and it is likely that the developers have improved
+their algorithms in subsequent competitions. TacTex has modelled the entire competition as a \ac{MDP} and included the
+tariff market actions in this model. It selects a tariff from a set of predefined fixed-rate consumption tariffs to
+reduce the action space complexity of the agent. Ultimately though, it uses \ac{RL} to decide on its tariff market
+actions, reducing the possible actions based on domain knowledge.  
+
+COLDPower also deploys \ac{RL} approaches with a Q-Learning based agent choosing from a range of predefined changes to
+its existing tariff portfolio. It can perform the following actions: \emph{maintain, lower, raise, inline, minmax, wide,
+bottom}. These actions describe fixed action strategies that have been constructed based on domain knowledge. The agent
+is not \emph{learning} how to behave in the market on a low level but rather on a more abstract level. It can be
+compared to an \ac{RL} agent that doesn't learn how to perform locomotion to move a controlable body through space but
+rather one that may choose the direction of the walking, without the need to understand \emph{how} to walk. While this
+leads to quick results, it may significantly reduce the possible performance as the solution space is greatly reduced. 
+
+\subsubsection{Wholesale market strategies}%
+\label{ssub:wholesale_market_strategies}
 
 
+AgentUDE considers the wholesale market to include both demand and price prediction. For the demand prediction, AgentUDE
+uses a simple weighted estimation based on the previous time-step and the demand of 24 hours before the target time-step
+\cite[]{ozdemir2015winner}. Their price prediction is more complex and involves a dynamic programming model based on
+\cite[]{tesauro2002strategic} to find \emph{similar hours} in recent history and determine current prices using
+Q-Learning \cite[]{ozdemir2017strategy}. Their \ac{MDP} is constructed in a way that the agent needs to determine the
+limit price that minimizes costs. It only has one action dimension which describes the limit price and its environment
+observation is represented by a belief function $f(s,a)$ which makes it a \ac{POMDP}. The agent uses value iteration to
+solve the Bellman equations, determining the expected price. The ultimate limit prices are then determined based on a
+heuristic that works by offering higher prices for "short-term" purchases and adjusting this to also offer higher prices
+in the case of an expected higher overall trading volume \cite[]{ozdemir2017strategy}. 
 
-\subsubsection{Decision areas}%
-\label{ssub:decision_areas}
-Of the three main markets, all agents participate actively in the tariff market, only AgentUDE participates in the
-balancing market and obviously every agent participates in the customer market. The way each agent approaches the
-customer or tariff market is very different however. 
-%TODO STOP GOOD NIGHT
+TacTex considers the wholesale market actions to be part of the overal complexity reduced \ac{MDP}. It uses a demand
+predictor to determine the \ac{mWh} amount to order and sets this amount as the amount that is placed in the order. The
+predictor is based on the actual customer models of the simulation server itself. While this surely leads to good
+performance, it can be argued whether this is something that actually benefits the research goal. The price predictor is
+a linear regression model based on the bootstrap period, corrected by a bias correction based on the prediction error of
+the last 24 hours \cite[]{tactexurieli2016mdp}.
 
+COLDPower deploys a linear regression model to predict prices and determines the demand by "using the energy demand
+historical information" \cite[]{cuevas2015distributed}. The order is placed accordingly. 
 
-
-\subsubsection{Decision models}%
-\label{ssub:decision_models}
 
 \subsubsection{Past performances}%
 \label{ssub:past_performances}
+%TODO STOP : 
+% some summary on how they performed in comparison to each other in past competitions. 
 
 \chapter{Implementation}
 \label{cha:implementation}
