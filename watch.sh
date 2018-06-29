@@ -5,7 +5,7 @@ pkill latexmk
 ./clean_tex.sh
 makepdf() {
     cd src/
-    latexmk -pdf -shell-escape -bibtex main.tex
+    ./compile.sh
     cd ../
 }
 

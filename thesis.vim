@@ -4,6 +4,7 @@ ab ===      %===================================================================
 
 
 ab RL       \ac{RL}
+ab JSON     \ac{JSON}
 ab ReLu     \ac{ReLu}
 ab GRPC     \ac{GRPC}
 ab UL       \ac{UL}
