@@ -11,7 +11,7 @@
     "@types/watch": "^1.0.0"
   },
   "scripts": {
-"start": "concurrently -c 'red,green,blue' -n 'paper,bibwatch,expose' -p '{name}' 'npm run watch'  'npm run watch-dl-bib' 'npm run watch-expose'",
+    "start": "concurrently -c 'red,green,blue' -n 'paper,bibwatch,expose' -p '{name}' 'npm run watch'  'npm run watch-dl-bib' 'npm run watch-expose'",
     "build": "npm run latexmk",
     "watch": "node_modules/watch/cli.js 'echo \"tex change detected\" && npm run build' --filter=util/watch-filter.js ./src/",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -21,7 +21,6 @@
     "latexmk-expose": "cd src/ && latexmk -pdf -bibtex proposal.tex && cd ../",
     "clean": "rm -rf *.dvi *.blg *.log *.fls *.lof *.toc *.fdb_latexmk *.lot *.bbl *.aux",
     "spelling": "aspell src/proposal.tex && aspell src/chaps/*.tex",
-
     "start-old": "concurrently 'npm run serve' 'npm run screenshot-watch' 'npm run build-watch'"
   },
   "author": "",
