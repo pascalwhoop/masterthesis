@@ -787,7 +787,7 @@ causes an imbalance in the system, giving incentives to the brokers to balance t
 balancing operations. Figure~\ref{fig:powertacoverview} summarizes this ecosystem.
 
 %TODO have i also explained how the brokers get punished for peaks etc? what about the accounting models.
-\begin{figure}[!h]%!h \centering
+\begin{figure}[h]%!h \centering
     \includegraphics[width=0.9\textwidth]{powerTACScenarioOverview.png} \caption{PowerTAC overview of markets}
 \label{fig:powertacoverview} \end{figure}
 
@@ -1401,58 +1401,68 @@ and protobuf messages can easily be printed as \ac{JSON}, making both alternativ
 %better to manually recreate these translators. The \ac{XML} parsing libraries provided by Python can be used to parse
 %the \ac{XML} that is received.
 
-\subsection{Implementing the communication with \ac{GRPC} and MapStruct}%
+\subsection{Communicating  with \ac{GRPC} and MapStruct}%
 \label{sub:implementing_the_communication_with_ac_grpc_and_mapstruct}
 
 After adapting the projects scope in response to the mid-thesis coordination with my supervisor, I chose the second
 approach, the pure \ac{GRPC} solution. Because the focus will now be on the wholesale market, only a subset of messages
 need to be mapped. This permits the implementation of a subset of message mappers between the protobuf and
-\ac{PowerTAC} entities, reducing the scope while retaining the benefits of a \ac{GRPC} implementation which generally
-can be regarded as the best alternative.
+\ac{PowerTAC} entities, reducing the scope while retaining the benefits of a \ac{GRPC} implementation. Since \ac{GRPC}
+is \ac{JSON} compatible, it appears to be the best choice.
 
 Using MapStruct, all messages required for the wholesale learning component are mapped from the simulation core entities
 to the protobuf messages. To map classes, a mapper interface is created for each type. Most simple types can
 automatically be mapped and don't require any adaption. All properties have been named the exact same way as the
 properties of the data holding entities in the \ac{PowerTAC} environment, allowing MapStruct to deduce the
 corresponding properties to map to. Some properties require custom initiation, more specifically those where the \ac
-{PowerTAC} entities don't follow the bean specification for getters and setters. An example is given in
+{PowerTAC} entities don't follow the bean specification for getters and setters or where getters and setters are simply
+not available. An example is given in
 Listing~\ref{lst:mapperexample}. Mappings are defined with the \texttt{@Mappings(\{\})} annotation. Complex compositing
 objects require the other needed Mappers to be defined in the \texttt{@Mapper(uses = \{\ldots\})} annotation. Support for
-protocol buffers in MapStruct is still fresh and many currently required lines of code may soon be redundant.
+protocol buffers in MapStruct is still new  and many currently required lines of code may soon be redundant. Because
+the \ac{PowerTAC} classes often require a generated ID which cannot be set via any setters, any such object can be
+forced to adopt the ID provided from the \ac{GRPC} message via the \texttt{builderSetId} method in the extendable
+abstract class \texttt{AbstractPbPtacMapper}. This method uses reflection to determine if the target object or any of
+its parent classes has a private id property and if so, sets it accordingly. This is necessary due to the restrictive
+property write permissions of most \ac{PowerTAC} domain objects which is again influenced by Java best practices. 
 
 To ensure the mapping works as expected, the tests for the mapper classes perform a \emph{roundtrip test}. This takes a
 Java class as commonly found in the simulation, converts it into \ac{XML} using the current XStream systems, then
 performs a translation into protobuf  and back. Finally, this resulting object is serialized into \ac{XML} again and
-both \ac{XML} strings are asserted to be equal. By doing this, many things, several things are tested at once: Is the
+both \ac{XML} strings are asserted to be equal. By doing this several things are tested at once: Is the
 translation working as expected, i.e.\ does it retain all information of the original objects? Is the mapping of IDs to
-objects still working as expected? Are any values such as dates or time values misrepresented? The roundtrip test allows
-for a generic testing of all object types that covers a large number of possible errors.
+objects still working as expected? Are any values such as dates or time values misrepresented? Are any values missing? The roundtrip test allows
+for a generic testing of all object types that covers a large number of possible errors. It also avoids having to
+rewrite test code for every type conversion.
 
 \begin{listing}[]
     \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{java}
-@Mapper(uses = {
-    OrderbookMapper.BuilderFactory.class,
-    InstantMapper.class,
-    TimeslotMapper.class,
-    OrderbookOrderMapper.class
+@Mapper(uses = { 
+        InstantMapper.class,
+        TimeslotMapper.class,
+        OrderbookOrderMapper.class
 
-},
-    collectionMappingStrategy =
-        CollectionMappingStrategy.ADDER_PREFERRED,
-    nullValueCheckStrategy = ALWAYS)
-public interface OrderbookMapper
-    extends AbstractPbPtacMapper<PBOrderbook, Orderbook>
-{
+})
+@Service
+public abstract class OrderbookMapper{
 
-  OrderbookMapper INSTANCE =
-    Mappers.getMapper(OrderbookMapper.class);
+    @Mappings({})
+    public abstract PBOrderbook.Builder map(Orderbook in);
 
-  @Mappings({})
-  PBOrderbook.Builder map(Orderbook in);
-  @Mappings({})
-  Orderbook map(PBOrderbook in, @MappingTarget Orderbook out);
+    @Mappings({})
+    abstract Orderbook map(PBOrderbook in, 
+                           @MappingTarget Orderbook out);
 
-  //BuilderFactory helper class
+    PBOrderbook.Builder builder() {
+        return PBOrderbook.newBuilder();
+    }   
+
+    @ObjectFactory
+    Orderbook build(PBOrderbook in) {
+        Orderbook out = new Orderbook(in.getTimeslot(), 
+        in.getClearingPrice(), new Instant(in.getDateExecuted()));
+        return builderSetId(in, out);
+    }   
 }
     \end{minted}
     \caption{Mapper for Orderbook class}
@@ -1467,22 +1477,26 @@ in Listing~\ref{lst:handlemessageexample}.
 
 \begin{listing}
     \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{java}
-public synchronized void handleMessage(Orderbook orderbook)
-  {
-    PBOrderbook msg = comm.converter.convert(orderbook);
-    comm.marketStub.handlePBOrderbook(msg);
-  }
+//...
+@Autowired
+private MarketBootstrapDataMapper marketbootstrapDataMapper;
+
+public synchronized void handleMessage(MarketBootstrapData data)
+{
+  comm.marketStub.handlePBMarketBootstrapData(
+  marketbootstrapDataMapper.map(data).build()
+  );
+}
     \end{minted}
     \caption{handleMessage example}
     \label{lst:handlemessageexample}
 \end{listing}
 
 On the Python side, the messages are now accepted and applied to the brokers knowledge base. This is encapsulated in the
-env module of the broker as described before. Some messages may also be considered as action triggers and are therefore
-shared with all interested components through the publish-subscribe event system. A message signaling a completed
+env module of the broker as described before. Messages can be considered as action triggers and are therefore
+shared with all subscribed components through the publish-subscribe event system. A message signaling a completed
 time slot for example may trigger the broker to learn on the newly observed usage patterns, improve its predictions on
-the expected usages of its customers and evaluate its next steps in the wholesale trading market. To perform such
-actions however, the broker must first be able to compete in a competition.
+the expected usages of its customers and evaluate its next steps in the wholesale trading market. 
 
 \section{Creating Containers from competition components}
 \label{sec:creating_containers_from_competition_components}
@@ -1495,22 +1509,24 @@ While tools like Vagrant allow
 the configuration and setup of environments to quickly allow new developers to start working with a set of tools in a
 given project \citep{vagrant} , it requires virtual machines which have significant overhead in comparison to container
 technologies. Furthermore, these virtual machines do not support \ac{GPU} accelerated computing, the main platform of
-modern machine learning. If the competition and its components are abstracted into docker images, tools like Kubernetes or Docker Compose
-can quickly instantiate a
-competition on any machine or cluster, given it has enough resources and a docker runtime installed \citep{docker}. It
-also allows broker developers to increase their broker complexity without loosing the ability to easily share it with
-other developers.
+modern machine learning. If the competition and its components are abstracted into docker images, tools like Kubernetes
+or Docker Compose can quickly instantiate a competition on any machine or cluster, given it has enough resources and a
+docker runtime installed \citep{docker}. It also allows broker developers to increase their broker complexity without
+loosing the ability to easily share it with other developers. One broker already depends on R, a common statistics tool
+and programming language. A container can abstract this dependency (and any other such dependency) by including it in
+the distributed image which is self-contained and can be run on any docker host.
 
-Generally, containerized application infrastructures have recently become quiet popular. Amazon, Google and Microsoft are offering
+Generally, containerized application infrastructures have become quiet popular. Amazon, Google and Microsoft are offering
 services specifically tailored to host containerized applications and it is easy to share created docker images
 through the docker hub platform.
 
-To create a Docker image for the server, the \texttt{Dockerfile} listed in Listing~\ref{lst:servertodocker} can be used\footnote{All resources regarding the container technologies can be found under
+To create a Docker image for the server, the \texttt{Dockerfile} listed in Listing~\ref{lst:servertodocker} can be
+used\footnote{All resources regarding the container technologies can be found under
 \url{https://github.com/pascalwhoop/powertac-kubernetes}}.
 It is also a good practice to run the build in one container and move the created executable artifact into another
-container which only holds the runtime and the artifact. The \emph{alpine} image type is an extremely
-light-weight Linux base that only requires about 5Mb of storage. Container images are therefore light-weight in comparison
-to virtual machines.
+container which only holds the runtime and the artifact. The \emph{alpine} image type is a light-weight Linux base that
+only requires about 5Mb of storage. As can be seen, container images and processes are therefore light-weight in
+comparison to virtual machines.
 
 \begin{listing}[h]
 
@@ -1824,15 +1840,19 @@ handle_timeslot():
 
 To approach the wholesale trading problem, a subset of the definition of the trading problem developed by
 \citet{tactexurieli2016mdp} is assumed. More specifically, the agent only concerns itself with the activities in the
-wholesale market and does not act or evaluate tariff market or balancing market activities.
+wholesale market and does not act or evaluate tariff market or balancing market activities. This is due to the
+separation of concern approach described earlier. 
 
-They defined each of the target time slots as a \ac{MDP} with 24 states before termination. Termination occurs when
-there are no further trading opportunities for a time slot and the \ac{DU} applies the final balancing fee to the
-time slot. Brokers that have predicted their usage precisely and traded matching amounts of energy in the wholesale
-market require less balancing than those that either suffer bad forecasting or are not capable to place orders
-successfully before the trading is closed. The reward function may be composed in different ways but the most generic
-consideration is the profit achieved by the broker for the given time slot. Because this reward design suffers strong
-noise from the market price fluctuations, different reward functions may be preferred as discussed later.
+\subsection{\ac{MDP} modelling comparison}%
+\label{sub:mdp_modelling_comparison}
+
+\citet{tactexurieli2016mdp} defined each of the target time slots as a \ac{MDP} with 24 states before termination.
+Termination occurs when there are no further trading opportunities for a time slot and the \ac{DU} applies the final
+balancing fee to the time slot. Brokers that have predicted their usage precisely and traded matching amounts of energy
+in the wholesale market require less balancing than those that either suffer bad forecasting or are not capable to place
+orders successfully before the trading is closed. The \ac{RL} reward function may be composed in different ways but a
+very intuitive approach is to use the profit achieved by the broker for the given time slot. Because this reward design
+suffers strong noise from the market price fluctuations, different reward functions may be preferred as discussed later.
 
 An alternative approach for modeling the wholesale market would be to consider the entire game a single \ac{MDP} where
 the agent has to make 24 decisions per slot and receives rewards each step for the completed slot. The environment would
@@ -1855,6 +1875,57 @@ agent would observe 24 environments in parallel and generate 24, largely indepen
 to match each input block to an output action, as the input for time slot 370 has little effect on the action that
 should be taken in time slot 380. In a separated \ac{MDP}, each environment observation would only hold the data needed
 for the specific time slot rather than information about earlier and later slots as well.
+
+\subsection{\ac{MDP} design and implementation}%
+\label{sub:mdp_design_and_implementation}
+
+After experimenting with the concept of considering the entire simulation as a single \ac{MDP}
+\footnote{\url{https://github.com/pascalwhoop/broker-python/blob/5876c2d5044102d3fbff4bde48b5febfdb15a84f/agent_components/wholesale/mdp.py}}
+but not seeing any successful learning, the separated approach was chosen. 
+
+To separate the messaging from the \ac{MDP} logic, as well as to separate the 24 environment in parallel complexity
+from the individual \ac{MDP}, several layers of abstraction were introduced. First, all relevant messages are
+subscribed to in the \texttt{WholesaleEnvironmentManager} using the publish subscribe pattern. Individual messages are
+then passed along to the corresponding active \ac{MDP} and new environments are created for every newly activated
+timeslot. The environments receive a reference to the \ac{RL} agent during creation so that they can pass their
+observations to it and request actions as well as trigger learning cycles on received rewards. The message flow is
+depicted in Figure~\ref{fig:ws_msg_flow}.
+
+% doesn't fit on the page without cutting off the right side...
+%\begin{listing}
+%    \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{python}
+%def subscribe(self):
+%  """Subscribe to any newly incoming messages from the server"""
+%  disp.connect(self.handle_market_transaction, signal=PB_MARKET_TRANSACTION)
+%  disp.connect(self.handle_timeslot_update, signal=PB_TIMESLOT_UPDATE)
+%  disp.connect(self.handle_cleared_trade, signal=PB_CLEARED_TRADE)
+%  disp.connect(self.handle_predictions, signal=COMP_USAGE_EST)
+%  disp.connect(self.handle_tariff_transaction, signal=PB_TARIFF_TRANSACTION)
+%  disp.connect(self.handle_market_bootstrap_data, signal=PB_MARKET_BOOTSTRAP_DATA)
+%    \end{minted}
+%    \caption{Environment manager listening to all relevant message types}
+%    \label{lst:subscribeenvmanager}
+%\end{listing}
+
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/WholesaleComponent.png}
+    \caption{Wholesale component message flow}
+    \label{fig:ws_msg_flow}
+\end{figure}
+
+The environment now expects the agent to expose an \ac{API} that includes two calls: \texttt{forward} and
+\texttt{backward}. This pattern has been adopted from the keras-rl and tensorforce libraries. The reason is simple:
+While most libraries put the agent in the center of processing flow, the \ac{PowerTAC} broker will be stepped by the
+server and therefore the \ac{RL} agent itself has no control flow authority. The forward and backward methods are
+directly aligned with the keras-rl framework and easily applicable to the tensorforce \texttt{act} and
+\texttt{atomic_observe} methods of their agent implementations. The \texttt{PowerTacWholesaleAgent} class just defines a
+few methods that need to be implemented by a developer that intends to create a new algorithm for the wholesale trading
+scenario. In my case, I created the \texttt{TensorforceAgent} class which holds several configurations for a number of
+architectures. In tensorforce, architectures for the neural networks are defined in json files which allows the creation
+of several agent types without changing the execution code. 
+
 
 \begin{markdown}
     %TODO turn into text after exam in july
