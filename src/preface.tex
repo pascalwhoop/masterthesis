@@ -1,0 +1,30 @@
+\chapter{Preface}
+
+This thesis was planned and discussed in the winter of 17/18. On February 1st, the work phase of six months started.
+Within these six months, I discovered many previously unknown or unforeseen complexities. These include the
+communication technologies developed to permit a complete python based broker and a large variety of API approaches
+within the RL agent libraries currently available. While I have invested a significant amount of effort into the
+development of the required components, I always intended to build something that may be reused in the future instead of
+being discarded after my thesis was graded. This lead me to the decision of implementing a best practice based
+communication instead of a quick minimal approach and led me to try and write my python code in a way that will let
+future broker developers reuse it as a framework for their broker implementations. 
+
+As of July, I was not able to complete my research question and reach the intended target of evaluating a variety of
+neural network architectures that let a RL learn from other agents in its environment. Because of university
+regulations, changing a thesis title is not permitted. And while my research question was not answered, I believe I have
+contributed something valuable for the PowerTAC community. With my implementation, current state-of-the-art neural
+network algorithms and especially reinforcement agent implementations can be used to act in the PowerTAC competition.
+While I was not able to complete this in time and offer valubale, testable results, it is nonetheless now possible to
+work on a broker and to focus on the core problems of RL learning problems: Environment observation filtering, NN input
+preprocessing, reward function definition, NN architecture experimentation etc. With the created Docker images,
+developers are quickly able to start a competition with multiple brokers and future participants may be encouraged to
+adopt the Docker based distribution of their agents to include more advanced technologies in their broker
+implementations without placing a burden on others to manage these dependencies.   
+
+When reading the thesis, please be aware that the title does not match the contents as one would expect. If I had more
+time to work on this project, by the time I handed in my thesis I was at the point where I could have started developing
+and experimenting with a number of  RL agent implementations and to make the project complete. Unfortunately, I fell
+into the same trap that many software engineers and entire project teams fall into: Underestimating the complexity of
+the project which leads to either loss in quality, time overruns or budget overruns. I recognize this mistake but I
+cannot fix it today. I hope the thesis is still valuable to anyone who reads it and maybe the next graduate theses will
+continue where I left off. 

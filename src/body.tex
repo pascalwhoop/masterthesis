@@ -135,7 +135,7 @@ boosted performance of reinforcement learning algorithms within a competitive si
 First, I will perform a literature research into the fields of \ac{AI}, \ac{RL} and competitive simulations in energy
 markets. In the field of AI
 it's sub fields of \ac{SL}  and \ac{UL}  will be introduced. Here I will focus on the area of \ac{NN} and a way to let
-tem learn through Backpropagation. In the field of \ac{RL} I will focus on the \ac{MDP} framework as well as the
+them learn through Backpropagation. In the field of \ac{RL} I will focus on the \ac{MDP} framework as well as the
 \ac{POMDP} subclass.  Next follows an introduction of the recent research in using \ac{NN} in \ac{RL} settings to allow
 for what is now called Deep Reinforcement Learning. This field has seen tremendous success in recent research, allowing
 for agents that successfully play Atari games and the game Go on superhuman levels of performance
@@ -229,7 +229,7 @@ Computational learning theory looks at different problems of learning: How to le
 examples, the effects of learning when the agent already knows something, how to learn without examples, how to learn
 through feedback from the environment and how to learn if the origin of the feedback is not deterministic
 \cite[]{russell2016artificial}. In this work, two of those problems are of special interest: The ability to learn from
-previously labelled examples and the ability to learn through feedback from the environment. The former is called \acl
+previously labeled examples and the ability to learn through feedback from the environment. The former is called \acl
 {SL}  and the latter is mostly referred to as \acl {RL}. To understand the difference, it is also important to
 understand algorithms that don't have access to labels for existing data, yet are still able to derive value from the
 information. These belong to the class of \acf {UL}. Although this class is not heavily relied upon in the
@@ -392,8 +392,8 @@ ways a \ac{NN} can change its state. It could:
 Of these many actions, changing the weights is however the most common way to let a \ac{NN} learn. This is because many
 of the other changes in its state can be performed by a specific way of changing the weights. Removing connections is
 equivalent to setting the weight of the connection to 0 and forbidding further adaption afterwards. Equally, adding new
-connections is the same as setting a weight of 0 to something that is not 0. Changing the theshold values can also be
-achieved by modelling them as weights. Changing the input function is uncommon. The addition and removal of neurons
+connections is the same as setting a weight of 0 to something that is not 0. Changing the threshold values can also be
+achieved by modeling them as weights. Changing the input function is uncommon. The addition and removal of neurons
 (i.e.\ the growing or shrinking of the network itself) is a popular field of research but will not be discussed further
 \cite[p.60]{kriesel2007brief}.
 
@@ -484,8 +484,8 @@ The previous chapters have introduced concepts of \ac{SL} , \ac{NN}, backpropaga
 learning tasks. \ac{RL} can be described as an intersection between supervised and unsupervised learning concepts and
 Deep \ac{RL} is the usage of \ac{NN}, especially those with many layers, to perform \ac{RL}.
 
-On the one hand \ac{RL}  does not require large amounts of labelled data to generate successful systems which is
-beneficial for areas where such data is either expensive to aquire or difficult to clearly label. On the other hand it
+On the one hand \ac{RL}  does not require large amounts of labeled data to generate successful systems which is
+beneficial for areas where such data is either expensive to acquire or difficult to clearly label. On the other hand it
 requires some form of feedback. Generally, \ac{RL} \emph{agents} use feedback received from an \emph{environment}.  The
 general principle of \ac{RL} therefore includes an agent and the environment in which it performs actions. The function
 that determines the action $a$  taken by the agent in a given state $s$ is called its policy, usually represented by
@@ -520,7 +520,7 @@ A \ac{MDP} is usually defined by the following components:
 \end{itemize}
 
 To solve such a problem, an agent needs to be equipped with a policy $\pi$ that allows for corresponding actions to each
-of the states. The type of policy can further be distinguished between \emph{stationary} and \emph{nonstationary}
+of the states. The type of policy can further be distinguished between \emph{stationary} and \emph{non stationary}
 policies. The former type refers to policies that recommend the same action for the same state independent of the
 time step. The latter describes those policies which are trying to solve non-finite state spaces and where an
 agent might therefore act differently once time becomes scarce. However, also infinite-horizon \ac{MDP} can have
@@ -543,7 +543,7 @@ utility of a state as the reward for the current state plus the sum of all futur
 In the above equation, the \emph{max} operation selects the optimal action in regard to all possible actions. The
 Bellman equation is explicitly targeting \emph{discrete} state spaces. If the state transition graph is a cyclic graph
 the solution to the Bellman equation requires some equation system solving. That is because $U(s')$ may depend on $U(s)$
-and the other way around. Further, the \emph{max} operator creates nonlinearity which, for large state spaces, becomes
+and the other way around. Further, the \emph{max} operator creates non linearity which, for large state spaces, becomes
 intractable quickly which is the reason for an iterative approach called \emph{Value Iteration}.
 
 %In a discrete action space this would be a selection over all possible actions, in a continuous action space it however
@@ -755,8 +755,8 @@ to improve its performance independently. To achieve this, the student agent inc
 difference between its action and the action its teacher would have taken.
 
 In summary, many tweaks to the core concepts allow for improvements in the challenges outlined before. Faster learning given limited
-ressources through bootstrapping, improving wall time by leveraging large-scale architectures through and
-parallelization, transfering knowledge from (human) experts through inverse \ac{RL} etc. A rich landscape of tools is
+resources through bootstrapping, improving wall time by leveraging large-scale architectures through and
+parallelization, transferring knowledge from (human) experts through inverse \ac{RL} etc. A rich landscape of tools is
 in rapid development and to construct an effective agent, it is important to leverage both the specific problem domain
 structure and the available resources.
 
@@ -786,7 +786,7 @@ changes in their forecast models. Lastly, the balancing market which places rela
 causes an imbalance in the system, giving incentives to the brokers to balance their own portfolios prior to the
 balancing operations. Figure~\ref{fig:powertacoverview} summarizes this ecosystem.
 
-%TODO have i also explained how the brokers get punished for peaks etc? what about the accounting models.
+%TODO have i also explained how the brokers get punished for peaks etc? What about the accounting models.
 \begin{figure}[h]%!h \centering
     \includegraphics[width=0.9\textwidth]{powerTACScenarioOverview.png} \caption{PowerTAC overview of markets}
 \label{fig:powertacoverview} \end{figure}
@@ -811,8 +811,8 @@ accordance to energy availability.
 
 \ac {PowerTAC} is both technically and logically separated into several components to aid both comprehensibility of the
 system and yet allow complex simulations of more realistic scenarios. In the following pages, those logical components
-will be explained. Most of these components are easily mappable into the technical implementation. The technical
-structure will not be explained in detail but can be found under the Github \ac{PowerTAC} organization.
+will be explained. Most of these components are easily mapable into the technical implementation. The technical
+structure will not be explained in detail but can be found under the GitHub \ac{PowerTAC} organization.
 
 
 \paragraph{Distribution Utility} The \ac{DU} represents an entity that regulates the real-time electric usage and
@@ -859,7 +859,7 @@ The foundation for any brokers ability to generate profit is a sufficient amount
 this to occur, the broker must publish tariffs that are competitive to attract customers. On the other hand, if the
 broker offers tariffs that lead to net losses, long term profit will not be possible\footnote{While the 2017
     competition technically allowed for brokers to remain in the game despite offering highly under-priced tariffs that
-    corrupted the simulation results, a proper broker must not pursue such strategies simply due to econimic
+    corrupted the simulation results, a proper broker must not pursue such strategies simply due to economic
 reasoning.}.
 
 The broker has a wide variety of actions at its disposal to create a rich portfolio. The simulation offers the
@@ -930,14 +930,14 @@ These techniques are described below
 \ac{PowerTAC} allows developers to download large amounts of historical game records. Several hundred games are
 available for 2017 alone, ranging in number of competing brokers to simulate different market settings. The
 \texttt{powertac-tools} repository makes it convenient to download all  of them and analyze them for specific data,
-providng csv files for further analysis. I created records for all games downloadable for 2017 to let the broker train on
+providing csv files for further analysis. I created records for all games downloadable for 2017 to let the broker train on
 the datasets. For the wholesale trader, two data types are of interest initially, although further data may be provided
 to improve the algorithms performance. The customer usage analysis\footnote{\texttt{CustomerProductionConsumption.java}}
 provides a historical dataset to create a
 hypothetical portfolio for the learning \ac{RL} agent. To design a \ac{RL} environment, the broker needs a realistic
-portfolio of required energy. Therefore, a subset of the customers may be choosen to pose as the brokers portfolio.
+portfolio of required energy. Therefore, a subset of the customers may be chosen to pose as the brokers portfolio.
 While in a real simulation setting, the customers constantly join and leave brokers tariffs, this offline environment
-approximation assumes a static portfolio. Furthermore, the marketprices analysis\footnote{\texttt{MktPriceStats.java}} gives a historical record of all market closings for each game. In this
+approximation assumes a static portfolio. Furthermore, the market prices analysis\footnote{\texttt{MktPriceStats.java}} gives a historical record of all market closings for each game. In this
 environment approximation, the market prices don't get influenced by the brokers placement of ask or bid orders. This is
 unrealistic if the broker represents any significant percentage of the overall market but may be a good approximation if
 the portfolio of the broker is only covering a small percentage of the market. Ultimately, this environment allows for
@@ -966,13 +966,13 @@ such analysis, the next technique is required.
 \label{ssub:counterfactual_analysis}
 
 Many real-world problems are approachable with \ac{RL} agent research. What makes \ac{PowerTAC} and other simulations
-interestig is the ability to perform counterfactual steps. A counterfactual event is one that is not aligned with what
+interesting is the ability to perform counterfactual steps. A counterfactual event is one that is not aligned with what
 is actually true. In a real scenario, the phrase \emph{"Alan Turing would have not solved the Enigma encryption if he
 had been fed one apple a day by his mother every morning"} is against what is actually true and therefore cannot
 possibly be verified. In the \ac{PowerTAC} simulation, this is very different. Because the entire state of the server is
 recorded in its state files, it can be reproduced exactly. Unfortunately, the brokers do not offer such ability to
 reproduce their state. A level of randomness is inherent in their decision making. If a statement were to be: \emph{"Had
-the broker offered tariff X in timestep 1200, it would have won the competition"}, it is not possible to reproduce the
+the broker offered tariff X in time slot 1200, it would have won the competition"}, it is not possible to reproduce the
 state of the server from the state files alone to verify this hypothesis.
 
 With a technology that allows for \emph{snapshotting} of memory space in Linux, it is possible to create a snapshot of
@@ -984,7 +984,7 @@ If the network can determine points within a \ac{MDP} where a number of actions 
 increase in future rewards, the agent may decide to try all or a subset of the possible actions to determine which of
 the alternative actions leads to the highest rewards. The concept would therefore be a bit different from usual \ac{MDP}
 models. It would allow the agent to submit a range of actions and ask the environment to give back a range of
-alternative scenarios and rewards. While this is still susceptible to random behavior \emph{after} the snapshot occured,
+alternative scenarios and rewards. While this is still susceptible to random behavior \emph{after} the snapshot occurred,
 it is guaranteed to be the exact same state at the point where multiple actions are considered. Remaining uncertainty
 may now be compensated by running a significant amount of trials ceteris paribus.
 
@@ -999,7 +999,7 @@ the current state of research. For this, I have analyzed the papers of the Agent
 performed well in previous tournaments and because their creators have published their concepts. Their architectures,
 models and performances are summarized in the following sections. These are based on publications that describe the
 TacTex, COLDPower and AgentUDE agents of 2015, as these are the last publications of these brokers that are available on
-the \ac {PowerTAC} website. Unfortunatley, the source code of these agents has not been made available, which does not
+the \ac {PowerTAC} website. Unfortunately, the source code of these agents has not been made available, which does not
 allow introspection of the exact inner mechanics. 
 
 From what is visible by their shared binaries, all agents are based on java and do not employ any other technologies to
@@ -1009,14 +1009,14 @@ perform their actions during competitions.
 \subsubsection{Tariff market strategies}%
 \label{ssub:tariff_market_strategies}
 
-AgentUDE deploys an agressive but rigid tariff market strategy, offering cheap tariffs at the beginning of the game to
+AgentUDE deploys an aggressive but rigid tariff market strategy, offering cheap tariffs at the beginning of the game to
 trigger competing agents to react. It also places high transaction costs on the tariffs, by making use of early
-withdrawl penalties and bonus payments \cite[]{ozdemir2017strategy}. While this may be beneficial for the success in the
+withdrawal penalties and bonus payments \cite[]{ozdemir2017strategy}. While this may be beneficial for the success in the
 competition, it doesn't translate into real-world scenarios as energy markets are not a round based, finite game. 
 
-TacTex does not target tariff fees such as early withdrawl fees to make a profit. It also doesn't publish tariffs for
+TacTex does not target tariff fees such as early withdrawal fees to make a profit. It also doesn't publish tariffs for
 production of energy \cite[]{tactexurieli2016mdp} although this is based on a 2016 paper and it is likely that the developers have improved
-their algorithms in subsequent competitions. TacTex has modelled the entire competition as a \ac{MDP} and included the
+their algorithms in subsequent competitions. TacTex has modeled the entire competition as a \ac{MDP} and included the
 tariff market actions in this model. It selects a tariff from a set of predefined fixed-rate consumption tariffs to
 reduce the action space complexity of the agent. Ultimately though, it uses \ac{RL} to decide on its tariff market
 actions, reducing the possible actions based on domain knowledge.  
@@ -1025,7 +1025,7 @@ COLDPower also deploys \ac{RL} approaches with a Q-Learning based agent choosing
 its existing tariff portfolio. It can perform the following actions: \emph{maintain, lower, raise, inline, minmax, wide,
 bottom}. These actions describe fixed action strategies that have been constructed based on domain knowledge. The agent
 is not \emph{learning} how to behave in the market on a low level but rather on a more abstract level. It can be
-compared to an \ac{RL} agent that doesn't learn how to perform locomotion to move a controlable body through space but
+compared to an \ac{RL} agent that doesn't learn how to perform locomotion to move a controllable body through space but
 rather one that may choose the direction of the walking, without the need to understand \emph{how} to walk. While this
 leads to quick results, it may significantly reduce the possible performance as the solution space is greatly reduced. 
 
@@ -1044,7 +1044,7 @@ solve the Bellman equations, determining the expected price. The ultimate limit 
 heuristic that works by offering higher prices for "short-term" purchases and adjusting this to also offer higher prices
 in the case of an expected higher overall trading volume \cite[]{ozdemir2017strategy}. 
 
-TacTex considers the wholesale market actions to be part of the overal complexity reduced \ac{MDP}. It uses a demand
+TacTex considers the wholesale market actions to be part of the overall complexity reduced \ac{MDP}. It uses a demand
 predictor to determine the \ac{mWh} amount to order and sets this amount as the amount that is placed in the order. The
 predictor is based on the actual customer models of the simulation server itself. While this surely leads to good
 performance, it can be argued whether this is something that actually benefits the research goal. The price predictor is
@@ -1130,11 +1130,11 @@ To develop the functionality of the agent, which is supposed to be mainly driven
 of state-of-the-art tools and frameworks were  used. These include
 Keras and TensorFlow to allow for easy creation and adaption of the learning models,
 \ac{GRPC} to communicate with the Java components of the competition and
-\emph{Click} to create a CLI interface that allows the triggering of various components of the broker.
+\emph{Click} to create a \ac{CLI} interface that allows the triggering of various components of the broker.
 
 %TODO IF Kubernetes is used, I need to complete it. But what about CRIU?
 %Kubernetes to easily scale several instances across the cloud.
-%By transfering the components into the cloud, it is also
+%By transferring the components into the cloud, it is also
 %possible to use tools such as Google Colab which allows access to a powerful cloud \ac{GPU} without costs
 %\citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
 
@@ -1148,7 +1148,7 @@ technologies and serves as a base technology for many higher level frameworks \c
 
 Keras is one of these higher level frameworks that focuses on \ac{NN}. It offers a intuitive \ac{API}, oriented towards
 \ac{NN} terminology, to quickly develop and iterate on various \ac{NN} architectures. It integrates TensorFlow and its
-accompanying UI Tensorboard, which visualizes training, network structure and activation patterns. It also supports
+accompanying \ac{UI} Tensorboard, which visualizes training, network structure and activation patterns. It also supports
 other base technologies beside TensorFlow, but these will not be discussed. A simple example for a 2 layer Dense \ac
 {NN} written in Keras is shown in Listing~\ref{lst:kerasbasic}.
 
@@ -1174,8 +1174,8 @@ loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
 \label{sub:click}
 
 %TODO cite only name, year missing, not correct?
-Click allows the creation of CLI interfaces in Python. Programms can be customised with parameters and options as well
-as structured into subcommands and groups \citep{clickcli}. This allows for patterns such as \texttt{agent compete
+Click allows the creation of CLI interfaces in Python. Programs can be customized with parameters and options as well
+as structured into sub commands and groups \citep{clickcli}. This allows for patterns such as \texttt{agent compete
 --continuous} or \texttt{agent learn demand --model dense --tag v2}. An annotated function is shown in
 Listing~\ref{lst:click_sample}.
 
@@ -1210,8 +1210,8 @@ Docker creates isolated, transferable images that include everything an applicat
 container can be based on various distributions and many containers can run on a single server without much overhead.
 \ac{VM} technologies are often compared to containers, but \ac{VM}s abstract on a different layer. A \ac{VM} simulates
 an entire operating system on top of a layer called the hypervisor. Docker on the other hand only abstracts the
-application layer, letting all containers run in the same kernel and therefore makes use of the existing ressources in a
-more efficient way. Nontheless, it allows the creation of portable infrastructure components. This may be helpful, if
+application layer, letting all containers run in the same kernel and therefore makes use of the existing resources in a
+more efficient way. Nonetheless, it allows the creation of portable infrastructure components. This may be helpful, if
 brokers become more complex, requiring more technologies, or simply to allow new developers to quickly get started with
 a competition environment. 
 %Because \ac{CRIU} is integrated into Docker\footnote{at the time of writing, CRIU support is experimental in Docker},
@@ -1221,7 +1221,8 @@ a competition environment.
 \label{sub:grpc}
 
 \acf {GRPC} is a remote procedure call framework developed by Google Inc. It allows various languages and technologies to
-communicate with each other through a common binary format called \emph{protocoll buffers} or short \emph{protobuf}. All communication can be encrypted via SSL, offering
+communicate with each other through a common binary format called \emph{protocol buffers} or short \emph{protobuf}. All
+communication can be encrypted via \ac{SSL}, offering
 security and authentication. Over-the-wire data representation can either be binary or \ac{JSON}
 \citep[]{grpc}. The benefits over the
 current implementation are described in Section~\ref{sub:grpc_based_communication}. It is used by many machine learning
@@ -1243,7 +1244,7 @@ An example is given in Section~\ref{sub:implementing_the_communication_with_ac_g
 
 
 
-\section{Preprocessing}
+\section{Preprocessing existing data}
 \label{sec:preprocessing}
 
 To learn from the large amount of data already available from previous simulations, parsing the state files provided by
@@ -1259,7 +1260,8 @@ parsing all information in one central loop. The initial approach to parse the f
 and replaced with this prebuilt variant that makes use of the powertac-server source code. 
 
 While the current demand prediction is solely based on historical demand, this can easily extended (as it has been in
-the python only approach previously mentioned) with weather data, time information and up-to-date tariff information\footnote{All preprocessing code has been deleted in commit
+the python only approach previously mentioned) with weather data, time information and up-to-date tariff
+information\footnote{All preprocessing code has been deleted in commit
     \href{https://github.com/pascalwhoop/broker-python/commit/c54ee7c05585d15462f40e2be6850343e8aea27a}{c54ee7c} in the
 broker-python repository.}.
 
@@ -1370,8 +1372,8 @@ redistribute information to all participants for any public information.
 The disadvantage is the need to translate each \ac{POJO} into a protobuf message and
 vice versa. This is however not different from the current XStream implementation which also requires the annotation of
 class files in Java to declare which properties are serialized and included in the \ac{XML} strings. If the project
-should adopt the \ac{GRPC} based communication, the \ac{GRPC} architecture will then allow the server to be addressed byany of the supported languages\footnote{Which as of today are: C++, Java, Python, Go, Ruby, C\#, Node.js, PHP and
-Dart}. Using MapStruct as a mapping tool also makes the mapping structured and by performing roundtrip tests of the
+should adopt the \ac{GRPC} based communication, the \ac{GRPC} architecture will then allow the server to be addressed by any of the supported languages\footnote{Which as of today are: C++, Java, Python, Go, Ruby, C\#, Node.js, PHP and
+Dart}. Using MapStruct as a mapping tool also makes the mapping structured and by performing round trip tests of the
 transformed elements, it can be assured that the transformations between protobuf messages and \ac{POJO} perform as
 expected\footnote{\url{https://github.com/pascalwhoop/grpc-adapter/blob/master/adapter/src/test/java/org/powertac/grpc/mappers/AbstractMapperTest.java\#L54}}.
 
@@ -1426,12 +1428,12 @@ abstract class \texttt{AbstractPbPtacMapper}. This method uses reflection to det
 its parent classes has a private id property and if so, sets it accordingly. This is necessary due to the restrictive
 property write permissions of most \ac{PowerTAC} domain objects which is again influenced by Java best practices. 
 
-To ensure the mapping works as expected, the tests for the mapper classes perform a \emph{roundtrip test}. This takes a
+To ensure the mapping works as expected, the tests for the mapper classes perform a \emph{round trip test}. This takes a
 Java class as commonly found in the simulation, converts it into \ac{XML} using the current XStream systems, then
 performs a translation into protobuf  and back. Finally, this resulting object is serialized into \ac{XML} again and
 both \ac{XML} strings are asserted to be equal. By doing this several things are tested at once: Is the
 translation working as expected, i.e.\ does it retain all information of the original objects? Is the mapping of IDs to
-objects still working as expected? Are any values such as dates or time values misrepresented? Are any values missing? The roundtrip test allows
+objects still working as expected? Are any values such as dates or time values misrepresented? Are any values missing? The round trip test allows
 for a generic testing of all object types that covers a large number of possible errors. It also avoids having to
 rewrite test code for every type conversion.
 
@@ -1698,7 +1700,7 @@ prediction loss is measured in mean squared error.
 %levels out at 300 to 400. This gives a goal range (below -24h prediction) as well as a pattern to avoid which
 %basically equals not learning anything.
 Several standard architectures were tried, however none significantly outperformed a simple heuristic approach such as
-guessing the demand to be equivalent to that of 24 hours ago. A later analysis\footnote{see jupyter notebooks for Demand
+guessing the demand to be equivalent to that of 24 hours ago. A later analysis\footnote{see Jupyter notebooks for Demand
 Estimator}
 revealed why this occurs. The neural networks architectures are having trouble handling both very large and very small
 customer patterns. When training a neural network for each customer individually, the performance is much higher. This
@@ -1738,7 +1740,7 @@ in Figure~\ref{fig:imgcombined_model}, a comparison with the baseline and more e
 spikes. It doesn't seem to understand that there is a natural maximum to the usage pattern, which is understandable for
 a continuous model. It also doesn't capture the reduced usage on every 7th day as can be seen via the flat hump
 in the brown realized curve. An \ac{LSTM} model is usually considered to be successful with these kinds if problems but
-my experiments did not succeed. A comparsion between the baseline, a vanilla feed-forward and an \ac{LSTM} model is sown
+my experiments did not succeed. A comparison between the baseline, a vanilla feed-forward and an \ac{LSTM} model is sown
 in Figure~\ref{fig:baseline_dense}
 
 \begin{figure}[]
@@ -1843,7 +1845,7 @@ To approach the wholesale trading problem, a subset of the definition of the tra
 wholesale market and does not act or evaluate tariff market or balancing market activities. This is due to the
 separation of concern approach described earlier. 
 
-\subsection{\ac{MDP} modelling comparison}%
+\subsection{\ac{MDP} modeling comparison}%
 \label{sub:mdp_modelling_comparison}
 
 \citet{tactexurieli2016mdp} defined each of the target time slots as a \ac{MDP} with 24 states before termination.
@@ -1871,10 +1873,10 @@ such as \ac{DQN}, \ac{SARSA} or \ac{A3C} are not easily applied to such large ac
 are written to be applied to discrete action spaces
 \cite[]{baselines}. \ac{PowerTAC} trading is in its purest form a
 continuous action space, allowing the agent to define both amount and price for a target time slot. Furthermore, the
-agent would observe 24 environments in parallel and generate 24, largely independent, trading decisions. The network would have to learn
-to match each input block to an output action, as the input for time slot 370 has little effect on the action that
-should be taken in time slot 380. In a separated \ac{MDP}, each environment observation would only hold the data needed
-for the specific time slot rather than information about earlier and later slots as well.
+agent would observe 24 environments in parallel and generate 24, largely independent, trading decisions. The network
+would have to learn to match each input block to an output action, as the input for time slot 370 has little effect on
+the action that should be taken in time slot 380. In a separated \ac{MDP}, each environment observation would only hold
+the data needed for the specific time slot rather than information about earlier and later slots as well.
 
 \subsection{\ac{MDP} design and implementation}%
 \label{sub:mdp_design_and_implementation}
@@ -1883,12 +1885,16 @@ After experimenting with the concept of considering the entire simulation as a s
 \footnote{\url{https://github.com/pascalwhoop/broker-python/blob/5876c2d5044102d3fbff4bde48b5febfdb15a84f/agent_components/wholesale/mdp.py}}
 but not seeing any successful learning, the separated approach was chosen. 
 
-To separate the messaging from the \ac{MDP} logic, as well as to separate the 24 environment in parallel complexity
+To separate the messaging from the \ac{MDP} logic, as well as to separate the 24 environments parallelism complexity
 from the individual \ac{MDP}, several layers of abstraction were introduced. First, all relevant messages are
 subscribed to in the \texttt{WholesaleEnvironmentManager} using the publish subscribe pattern. Individual messages are
 then passed along to the corresponding active \ac{MDP} and new environments are created for every newly activated
-timeslot. The environments receive a reference to the \ac{RL} agent during creation so that they can pass their
-observations to it and request actions as well as trigger learning cycles on received rewards. The message flow is
+time slot. The \texttt{WholesaleEnvironmentManager} therefore abstracts the multiplicity complexity from the individual
+\ac{MDP}s.   The environments
+receive a reference to the \ac{RL} agent during creation so that they can pass their observations to it and request
+actions as well as trigger learning cycles on received rewards. This means that each individual \ac{MDP} is not aware of
+other instances. While this reduces complexity, it also hinders the ability of the learning agent to consider its impact
+of trading in time slot $t$ on any future time slots. The message flow is
 depicted in Figure~\ref{fig:ws_msg_flow}.
 
 % doesn't fit on the page without cutting off the right side...
@@ -1915,30 +1921,41 @@ depicted in Figure~\ref{fig:ws_msg_flow}.
     \label{fig:ws_msg_flow}
 \end{figure}
 
-The environment now expects the agent to expose an \ac{API} that includes two calls: \texttt{forward} and
+The environment expects the agent to expose an \ac{API} that includes two calls: \texttt{forward} and
 \texttt{backward}. This pattern has been adopted from the keras-rl and tensorforce libraries. The reason is simple:
 While most libraries put the agent in the center of processing flow, the \ac{PowerTAC} broker will be stepped by the
 server and therefore the \ac{RL} agent itself has no control flow authority. The forward and backward methods are
-directly aligned with the keras-rl framework and easily applicable to the tensorforce \texttt{act} and
-\texttt{atomic_observe} methods of their agent implementations. The \texttt{PowerTacWholesaleAgent} class just defines a
-few methods that need to be implemented by a developer that intends to create a new algorithm for the wholesale trading
+directly aligned with the keras-rl framework and easily applicable to the tensorforce \texttt{act()} and
+\texttt{atomic\_observe()} methods of their agent implementations. The abstract \texttt{PowerTacWholesaleAgent} class just defines a
+few methods that need to be implemented by a developer to create a new algorithm for the wholesale trading
 scenario. In my case, I created the \texttt{TensorforceAgent} class which holds several configurations for a number of
-architectures. In tensorforce, architectures for the neural networks are defined in json files which allows the creation
-of several agent types without changing the execution code. 
+architectures. I also created a \texttt{BaselineAgent} which simply trades the prediction energy amount for generous
+market prices. This is useful to compare performance of a learned algorithm with a very intuitive trading scheme and to
+serve, as the name suggests, as a baseline.
 
+In tensorforce, architectures for the neural networks are defined in \texttt{.json} files which allows the creation
+of several agent types without changing the execution code. The configurations that come with the framework have been
+copied to the brokers project. 
+
+\subsection{Agent design experimentation}%
+\label{sub:agent_design_experimentation}
+
+The \ac{RL} agent implementation is responsible for preprocessing the observation data. This enables developers to act
+on more or less information according to their chosen technology without having to remodify the \ac{MDP} code or the
+\texttt{WholesaleEnvironmentManager}. The agents \texttt{forward} and \texttt{backward} functions both take the entire
+known data of the \ac{MDP} as parameters. In the agent, the observation data gets reduced and normalized to avoid common
+issues with \ac{NN} such as slow learning or gradient explosions. The tensorforce implementation currently takes the
+previous 168 time slot price averages, all prior forecasts as well as all prior purchases for the target time slot. These
+216 values are flattened into a one-dimensional input array and fed to the agent as a observation. 
 
 \begin{markdown}
     %TODO turn into text after exam in july
     #### SOME NOTES 
     
-    - implemented the "simple" variant with never resetting but just got noisy results. Intuitive because the agent gets
-    all these inputs and needs to understand that each output pair of the 24x2 outputs means a separate state.
-    unnecessary to learn that. no clear "gradient towards improvement"
-    - implemented the separate MDP concept. Have a plethora of possible input values
     - large part is both the choosing of the input and how to normalize it so the agent can work with it. 
     - framework allows passing agent anything (the entire env) and then the individual agent can select and preprocess
     as it sees fit
-    - utility functions hold cross-agent-impl preprcessing tools
+    - utility functions hold cross-agent-impl preprocessing tools
     - started with offline learning to increase development turnaround rate. simulation assumes the agent doesn't
     influence the prices of the market, clearing is just dependent on the action of the agent and the market price that
     is recorded. 
@@ -1983,6 +2000,7 @@ values. This means, the agent can be trained with perfect predictions all the wa
 
 
 
+%TODO what implements?
 implements the \ac{API} proposed by the OpenAI gym project \cite[]{brockman2016openai}.  Each time slot is
 processed sequentially, before the next is started. The process is therefore changed from the competitions 24 parallel
 trades paradigm to 24 sequential trades for ts $x$ followed by 24 trades for ts $x+1$. For each step per episode, an
@@ -2066,4 +2084,4 @@ Keras though.
 \chapter{Conclusion}%
 \label{cha:conclusion}
 
-here be dragons
+Here be dragons
