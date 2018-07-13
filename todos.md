@@ -16,9 +16,13 @@
 
 ## Coding
 - try bandit style: agent just learns what price to bid, not how much.
+- try some preprocessing variants 
 - "walk backwards" from bandit to continuous action space
 - try with more input types / preprocess better
-- draw.io graphic on wholesale components
 - clean up WholesaleObservationSpace vs simply passing the environment (text l 1944 )
 
-- 
+- always bidding the same in all market slots? Not normal? "asking for large volumne"
+
+## DONE
+
+- draw.io graphic on wholesale components
