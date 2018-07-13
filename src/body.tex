@@ -964,7 +964,9 @@ state of the server from the state files alone to verify this hypothesis.
 With a technology that allows for \emph{snapshotting} of memory space in Linux, it is possible to create a snapshot of
 the server state and all its participants running on the same machine. A broker developer may therefore include the
 ability to create a snapshot of the entire environment state to evaluate a number of alternative actions at any point
-within the game instead of having to rerun an entire simulation. This means, a \ac{RL} agent can learn not simply
+within the game instead of having to rerun an entire simulation. This approach does not require all broker developers to
+support this feature. Instead, the mentioned technology allows the recreation of \emph{any} process in the operating
+system to be recreated and to be in the exact same state as the original. This means, a \ac{RL} agent can learn not simply
 through performing full episodes within a learning session, slightly altering its behavior randomly within each episode.
 If the network can determine points within a \ac{MDP} where a number of actions are available and any one may lead to an
 increase in future rewards, the agent may decide to try all or a subset of the possible actions to determine which of
@@ -2177,26 +2179,74 @@ Keras though.
 \chapter{Conclusion}%
 \label{cha:conclusion}
 
- 
+In the beginning of this work, I have described the research progress in \ac{AI} and how new \ac{NN} based systems are able to solve
+problems, previously only solvable by humans. I have also indicated the obvious incentive to apply these new
+techniques to important contemporary problems, focusing on future energy markets as one such problem. \ac{PowerTAC}, a
+simulation of these markets was introduced as a core research initiative that attempts to explore this problem field by
+letting many researchers compete in a competitive setting and simulate profit-oriented market participants. Because
+future market participants will not shy away from using \ac{AI} technologies to improve their competitiveness,
+\ac{PowerTAC} contenders must also be enabled to pursue these technologies to realistically represent future markets. To
+enable new competition participants to quickly catch up and to generally enable the use of \ac{NN} technologies, I
+decided to pursue the question whether imitation based \ac{RL} may be deployable in the \ac{PowerTAC} setting.
+
+When reviewing my work, it is obvious that I have not fully answered my original research question. Several researchers
+have shown that learning from other agents is possible with \ac{NN} in \ac{RL} environments as described in
+Chapter~\ref{cha:background}. During the course of my thesis, new research by \citet{schmitt2018kickstarting}  has also
+shown how significant learning performance can be improved when allowing new agent implementations to learn from
+existing agents.
+To adapt the \ac{PowerTAC} environment to a state where these research results can be applied however, required large
+amounts of software engineering work. This caused me to not reach the ultimate goal, the application of these \ac{SOTA} 
+algorithms to the \ac{PowerTAC} wholesale trading environment. While I have not answered the original question, I have
+contributed a large amount of the work required to make answering it possible.
+
+\ac{PowerTAC} uses different base technologies than contemporary \ac{RL} research problems and I have extended this to
+Python and other languages through the \ac{GRPC} message adapter. This new communication layer also offers some
+significant performance improvements, reducing the over-the-wire size by 70\% and making serialization of objects 44x
+faster. 
+
+\ac{RL} agents require many trials to converge towards a useful policy and through the historical data \ac{MDP}
+approximation as well as the containerization of the \ac{PowerTAC} components, I have made it easier and more efficient
+to quickly train an \ac{RL} agent for several thousand steps. The container abstraction allows for an easy instantiating
+of several competitions at once with different or equal configuration parameters. It also allows for easy portability of
+competing brokers. 
+
+Participants can add a number of technologies to their docker image as well as binary files such as \ac{NN} weights and
+configurations. This allows the entire competition to expand beyond the realms of Java without placing a burden on other
+teams to manage not only their own dependencies but also those of the other brokers. It also permits the simulation
+organizers to easily host the entire competition runtime on a central server cluster instead of every team connecting to
+this server remotely which may avoid many of the current complexity sources such as connectivity issues and mandatory
+time synchronization.
+
+The concept of counterfactual analysis, which has been described conceptually but not further described in the thesis
+has been shown to work with the \ac{PowerTAC} environment\footnote{\url{https://www.youtube.com/watch?v=10iqP9Zdi4U}}
+and an adapted \ac{PowerTAC}
+server\footnote{\url{https://github.com/pascalwhoop/powertac-server/commit/1f0455929e7062faf8617cd5ca6e6a138f250382}}
+allows a broker to control this behavior to simulate such a counterfactual scenario.
+
+Finally, my Python based broker implementation may be used as a base for future developers that wish to also use these
+new technologies in their brokers. It serves as base implementation that may be extended and improved by others to build
+better and more sophisticated brokers that make use of all the \ac{AI} technologies that are continuously created by
+researchers. I have shown the ability to build a broker using TensorFlow, Keras and TensorForce technologies. The
+broker, albeit not exhibiting outstanding performance yet, acts based on decisions derived from \ac{NN} based \ac{RL}
+policies and usage predictors. Clearly, a lot of work remains to be done to see if these technologies can exceed current
+performances. 
+
+% FUTURE OUTLOOK / research
+
+Future research may now look at using the \ac{NN} technologies of recent years to compete in the \ac{PowerTAC}
+competition. The \ac{PowerTAC} competition server itself may be adapted to incorporate the \ac{GRPC} based communication
+as a secondary protocol available to brokers. This would eliminate the need for the intermediate adapter. Because
+\ac{NN} are able to incorporate large input data into their functions, all components of a broker may now make use of a
+larger number of input dimensions to improve their performance. The initial demand predictor already showed promising
+results, completely ignoring weather, customer metadata, market data etc. 
+
+In summary, this work offers a large contribution to bringing together the socially and economically important field of
+energy markets and recent developments in \ac{AI} research. While a breakthrough has not been achieved, nothing suggests
+that future work won't be able to show great success with the path laid out. \ac{NN} keep succeeding in a variety of
+contexts and smart energy markets will not succeed without smart participants and components, carefully embedded in a
+market model that incentivizes everyone to cooperate in a way that benefits the population as a whole. 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Here be dragons
