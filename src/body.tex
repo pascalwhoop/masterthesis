@@ -428,9 +428,9 @@ data. Generally they are suitable for many applications where the data has some 
 A \ac{RNN}, therefore computes its output based on the weights $w_i$, commonly noted as $\theta$, it's current input
 $x^t$ and it's previous hidden units internal states $h^{t-1}$.
 
-\[
+\begin{equation}
     h^t = f(h^{t-1}, x^t, \theta)
-\]
+\end{equation}
 
 The network generally learns to use $h^t$ to encode previously seen aspects relevant to the current task, although this
 is inherently lossy as the previous number of inputs (i.e.\ $\mid t-1\mid$) is arbitrary. Figure~\ref{fig:rnn_concept}
@@ -910,18 +910,18 @@ discrepancy becomes even more significant. For the \ac{RL} based wholesale tradi
 applied to boost its learning performance prior to having it interact with a live environment.  These techniques are
 described below.
 
-\subsubsection{Offline record based wholesale environment approximation}%
+\subsubsection{Offline wholesale environment approximation}%
 \label{ssub:offline_record_based_wholesale_environment_approximation}
 
 \ac{PowerTAC} allows developers to download large amounts of historical game records. Several hundred games are
-available for 2017 alone, all with different broker participants and broker counts. The
-\texttt{powertac-tools} repository makes it convenient to download all  of them and analyze them for specific data,
-providing csv files for further analysis. I created records using the powertac-tools project for all games downloadable for 2017 to let the broker train on
-the datasets.  The customer usage analysis\footnote{\texttt{CustomerProductionConsumption.java}}
-provides a historical dataset to create a
-hypothetical portfolio for the learning \ac{RL} agent. To design a \ac{RL} environment, the broker needs a realistic
-portfolio of required energy. Therefore, a subset of the customers may be chosen to pose as the brokers portfolio. While in a real simulation setting, the customers constantly join and leave brokers tariffs, this offline environment
-approximation would assume a static portfolio. Furthermore, the market prices
+available for 2017 alone, all with different broker participants and broker counts. The \texttt{powertac-tools}
+repository makes it convenient to download all  of them and analyze them for specific data, providing csv files for
+further analysis. I created records using the powertac-tools project for all games downloadable for 2017 to let the
+broker train on the datasets.  The customer usage analysis\footnote{\texttt{CustomerProductionConsumption.java}}
+provides a historical dataset to create a hypothetical portfolio for the learning \ac{RL} agent. To design a \ac{RL}
+environment, the broker needs a realistic portfolio of required energy. Therefore, a subset of the customers may be
+chosen to pose as the brokers portfolio. While in a real simulation setting, the customers constantly join and leave
+brokers tariffs, this offline environment approximation would assume a static portfolio. Furthermore, the market prices
 analysis\footnote{\texttt{MktPriceStats.java}} gives a historical record of all market closings for each game. In a
 historical data based environment approximation, the market prices don't get influenced by the brokers placement of ask
 or bid orders. This is unrealistic if the broker represents any significant percentage of the overall market but may be
@@ -931,7 +931,7 @@ market. The disadvantage is the fact that it's an approximation of the later sim
 improvement is due to the agent not having to wait for the server to inform it about a new open time slot. Instead, the
 timeslot gets artificially stepped whenever the wholesale trader has completed its trades.
 
-\subsubsection{Learning from historical actions of teacher agents}%
+\subsubsection{Learning from recorded teacher agent actions}%
 \label{ssub:learning_from_historical_actions_of_teacher_agents}
 
 The \ac{RL} agent may in addition to a fixed portfolio be taught to imitate the recorded behavior of a teacher broker
@@ -1045,12 +1045,38 @@ historical information" \cite[]{cuevas2015distributed}. The order is placed acco
 
 \subsubsection{Past performances}%
 \label{ssub:past_performances}
-%TODO STOP :
-% some summary on how they performed in comparison to each other in past competitions.
-% summary pages 2017 http://powertac.org/log_archive/PowerTAC_2017_finals.html
-%               2016 http://powertac.org/log_archive/PowerTAC_2016_finals.html
-% also in-depth graphs of the balances from data, polished up with some python
 
+To analyze the performance, all cash statistics of the final rounds of year 2017 were analyzed. TacTex did not
+participate in the 2017 competition and is therefore excluded in this analysis. Their last participation was in 2015
+where they ended up in second place. The improvements made to the previously mentioned agents between their latest
+publications and their current performances are Unfortunately not determinable.
+
+When looking at the overall performance profiles (see Figure~\ref{fig:cash_vals_across_games}) of the top 6 brokers of
+the 2017 finals, it becomes obvious that most brokers are performing rather bad most of the time. Only SPOT, fimtac and
+AgentUDE managed to consistently stay close to zero or in the case of AgentUDE even above 0 cash balance. When
+inspecting the tariff transactions closer (see Figure~\ref{fig:allttxucline}, it becomes clear that only AgentUDE
+achieves this through actually being successful in the market. SPOT only acts in the market initially and then quickly
+looses many of its customers. Fimtac keeps a small continuous customer base throughout most games. AgentUDE on the other
+hand trades actively in the market, having a solid number of customers subscribed to it.  COLDPower also trades actively
+but its financial results are not as satisfying, loosing significant amounts of money each week and also not being able
+to sustain its continous income towards the end of the games.  
+
+Generally, AgentUDE can be seen as the peer with the most consistent and stable performance. Their broker acts in all
+parts of the simulation and makes use of various strategies, including tariff optimisation and balancing capacity. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/all-ttx-uc-line.png}
+    \caption{Tariff TX credit values across all games in the 2017 finals (rolling average)}
+    \label{fig:allttxucline}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/cash_vals_across_games.png}
+    \caption{Cash values across all games in the 2017 finals (median, 0.25 percentile, 0.75 percentile)}
+    \label{fig:cash_vals_across_games}
+\end{figure}
 
 \chapter{Implementation}
 \label{cha:implementation}
