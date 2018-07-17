@@ -9,22 +9,34 @@ being discarded after my thesis was graded. This lead me to the decision of impl
 communication instead of a quick minimal approach and led me to try and write my python code in a way that will let
 future broker developers reuse it as a framework for their broker implementations. 
 
+Why not just write another broker in Java? I believe PowerTAC answers an important question of our time. But I also
+believe there are not enough people working on this field and it doesn't receive the attention it should. Thousands of
+researchers and those who want to become one are working on getting AI agents to become better at Atari games or playing
+Doom. While the underlying technology advancements are fantastic, the application area is of no use to humanity. I
+wanted to apply these new technologies to a problem that matters and do so in a way that will create artifacts that
+others can build upon to outperform my solutions quickly. I wanted to create a bridge between the researchers of RL
+implementations of recent years and their large community and the exciting field of energy markets. PowerTAC offers
+another "game" to play with, another environment to let agents compete in. But it is an environment which actually
+generates value when explored.
+
 As of July, I was not able to complete my research question and reach the intended target of evaluating a variety of
 neural network architectures that let a RL learn from other agents in its environment. Because of university
-regulations, changing a thesis title is not permitted. And while my research question was not answered, I believe I have
-contributed something valuable for the PowerTAC community. With my implementation, current state-of-the-art neural
+regulations, changing a thesis title is not permitted. And while my research question was not answered, I believe I
+still contributed something valuable to the PowerTAC community. With my implementation, current state-of-the-art neural
 network algorithms and especially reinforcement agent implementations can be used to act in the PowerTAC competition.
-While I was not able to complete this in time and offer valubale, testable results, it is nonetheless now possible to
-work on a broker and to focus on the core problems of RL learning problems: Environment observation filtering, NN input
-preprocessing, reward function definition, NN architecture experimentation etc. With the created Docker images,
-developers are quickly able to start a competition with multiple brokers and future participants may be encouraged to
-adopt the Docker based distribution of their agents to include more advanced technologies in their broker
-implementations without placing a burden on others to manage these dependencies.   
+Python developers can come and join the competition.
+And while I was not able to create a well performing broker in time and compete with the current participants of the
+competition, it is nonetheless now possible for others to work on a broker that deploys \ac{NN} technologies and to focus on the core problems of RL learning
+problems: Environment observation filtering, NN input preprocessing, reward function definition, NN architecture
+experimentation etc. With the created Docker images, developers are quickly able to start a competition with multiple
+brokers and future participants may be encouraged to adopt the Docker based distribution of their agents to include more
+advanced technologies in their broker implementations without placing a burden on others to manage these dependencies.
+The new communication layer may be adopted by the competition maintainers to improve performance and to enable other
+platforms to be used for writing brokers.   
 
-When reading the thesis, please be aware that the title does not match the contents as one would expect. If I had more
-time to work on this project, by the time I handed in my thesis I was at the point where I could have started developing
-and experimenting with a number of  RL agent implementations and to make the project complete. Unfortunately, I fell
-into the same trap that many software engineers and entire project teams fall into: Underestimating the complexity of
-the project which leads to either loss in quality, time overruns or budget overruns. I recognize this mistake but I
-cannot fix it today. I hope the thesis is still valuable to anyone who reads it and maybe the next graduate theses will
-continue where I left off. 
+When reading the thesis, please be aware that the title does not match the contents as one would expect. Adding a simple
+"Towards" at the beginning of the title would make it a perfect fit again. Unfortunately, I fell into the same trap that
+many software engineers and entire project teams fall into: Underestimating the complexity of the project which leads to
+either loss in quality, time overruns or budget overruns. I chose quality of the work I completed over making it work
+once but being useless for anyone else afterwards. I hope the thesis is still valuable to anyone who reads it and maybe
+upcoming graduate theses will continue where I left off. 

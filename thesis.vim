@@ -7,6 +7,7 @@ ab RL       \ac{RL}
 ab CLI      \ac{CLI}
 ab UI       \ac{UI}
 ab SSL      \ac{SSL}
+ab SELF     \ac{SELF}
 ab JSON     \ac{JSON}
 ab ReLu     \ac{ReLu}
 ab GRPC     \ac{GRPC}
