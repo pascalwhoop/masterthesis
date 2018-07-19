@@ -4,6 +4,7 @@ macbook.vim
 _minted-main/
 *.markdown.*
 **/_markdown_main/
+appendix/
 
 
 Literature/

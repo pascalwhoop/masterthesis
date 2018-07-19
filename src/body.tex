@@ -450,11 +450,12 @@ Such recurrent systems, while theoretically able to hold information across inpu
 \emph{vanishing gradient problem}. A network that sequentially processes 20 samples is not easily capable to hold useful
 information within its state from the early beginning to then act upon it later in the sequence. This is a common
 problem for translation: Sentences often have structures where the first word influences the meaning of the final one.
-The network processes each word at a time, quickly loosing the information that was inherent in the first word because it
+The network processes each word at a time, diluting the information that is representing the first word because it
 is covered with noise from the other (potentially irrelevant) words. \citet{Hochreiter:1997:LSM:1246443.1246450}
 developed the \ac{LSTM} model to solve this problem. Each unit in the network is actually a group of gates that act in
-harmony to store information in a recurrent cell. 
-%TODO STOP --> write the gates needed for the recurrent cell stuff.
+harmony to store information in a recurrent cell. \ac{LSTM} implementations differ between libraries but generally, they
+follow the same core concepts. Modern, tensorflow-based implementations offer \ac{GPU} acceleration which significantly
+increases performance and allows for distributed calculation.
 
 
 \section{Reinforcement Learning}
@@ -472,7 +473,6 @@ $\pi$.  The environment reacts to the actions of the agent by returning new stat
 corresponding reward $r$ is given to the agent. The reward gives the agent information about how well it performed
 \citep[p.830f.]{russell2016artificial}.
 
-%TODO still up to date with the following subsections?
 This section will first introduce the concepts of a \ac{MDP}, then introduce different concepts of \ac{RL} agents,
 describe approaches to encourage exploration of its options and finally describe how \ac{NN} can be used to create
 state-of-the-art agents that can solve complex tasks. The majority of the chapter is based on
@@ -534,18 +534,16 @@ intractable quickly which is the reason for an iterative approach called \emph{V
 
 %To train an agent, the task is usually performed several times and the environment is reset after each iteration to
 %allow for a new learning step.
-%TODO add atari games reference
 %When thinking about such an agent, it becomes obvious that without some explicit incentive to explore new alternatives,
 %it may be contempt with whatever success it achieves and then always perform the same action. To avoid this, the agent
 %can either be forced to try new alternative actions (through forcing random actions in a certain percentage of cases) or
 %through explicit rewards for random actions.
-%\citep() %A3C TODO
 
 
 %There are several forms of learning to solve a \ac{MDP} using \ac{RL} but for the purpose of this thesis I will focus
 %on explaining how policy search algorithms work. Their goal is to find a good policy $\pi$ given a certain state $s$.
 %Alternatives to this approach are concepts that try to learn expected future reward for future possible states, for
-%available actions and others. %TODO not clean paragraph...
+%available actions and others. 
 
 \subsection{Value and Policy Iteration}%
 \label{sub:policy_and_value_iteration}
@@ -628,10 +626,6 @@ implement for small, discrete state and action spaces but more complex for conti
 % Policy Gradient
 
 
-%\subsection{Policy Search}
-%\subsection{Deep Reinforcement Learning}
-%%TODO paper deep \ac{RL} > mixing R.L and deep \ac{NN}
-%\subsection{Proximal Policy Optimization OR(TBD) Deep Q learning}
 \subsection{Q Learning}%
 \label{sub:q_learning}
 
@@ -742,7 +736,6 @@ structure and the available resources.
 \section{PowerTAC: A Competitive Simulation}%
 \label{sec:powertac_a_competitive_simulation}
 
-%TODO alternative sources / implementations like powertac
 % Simulating the effect on the energy efficiency of smart grid technologies.pdf
 
 %-------------------------------------------------------------------------------
@@ -763,7 +756,6 @@ market which places relatively high costs on any broker that causes an imbalance
 brokers to balance their own portfolios prior to the balancing operations. Figure~\ref{fig:powertacoverview} summarizes
 this ecosystem.
 
-%TODO have i also explained how the brokers get punished for peaks etc? What about the accounting models.
 \begin{figure}[h]%!h \centering
     \includegraphics[width=1.0\textwidth]{powerTACScenarioOverview.png}
     \caption{PowerTAC overview of markets}
@@ -847,7 +839,11 @@ direction of the markets' demand and supply curves.
 sense of the game is at $t-0$ meaning that it occurs virtually in parallel to the consume of electricity. Any imbalance
 during this phase gets corrected for by the \ac{DU} who imposes forced balancing of brokers with an imbalanced
 portfolio. Brokers with too much supply in their portfolio therefore receive very little reimbursement for it and those
-whose customers' usage is higher than the estimated amount pay high prices for the additionally supplied energy.
+whose customers' usage is higher than the estimated amount pay high prices for the additionally supplied energy. The
+\ac{DU} also distributes the cost for the grid infrastructure according to the peak demand distribution among all
+brokers. This is based on the assumption that the grid infrastructure has a static capacity that is required to support
+the scale it does due to the peak transmission demands. Brokers are therefore incentivized to create portfolios that
+don't exhibit large deltas between different hours of the day or days of the week.
 
 Brokers who have tariffs with economic control abilities can pass this capacity along to the \ac{DU} who utilizes these
 capacities to correct the markets imbalances, charging customers' storage devices if an oversupply is present or
@@ -992,7 +988,6 @@ alternative scenarios and rewards. While this is still susceptible to random beh
 it is guaranteed to be the exact same state at the point where multiple actions are considered. Remaining uncertainty
 may now be compensated by running a significant amount of trials ceteris paribus.
 
-%TODO graphic
 
 
 
@@ -1082,7 +1077,7 @@ To analyze the performance, all cash statistics of the final rounds of year 2017
 participate in the 2017 competition and is therefore excluded in this analysis. Their last participation was in 2015
 where they ended up in second place. The improvements made to the previously mentioned agents between their latest
 publications and their current performances are Unfortunately not determinable.
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \includegraphics[width=1.0\linewidth]{img/cash_vals_across_games.png}
     \caption{Cash values across all games in the 2017 finals (median, 0.25 percentile, 0.75 percentile)}
@@ -1098,7 +1093,7 @@ looses many of its customers. Fimtac keeps a small continuous customer base thro
 hand trades actively in the market, having a solid number of customers subscribed to it.  COLDPower also trades actively
 but its financial results are not as satisfying, loosing significant amounts of money each week and also not being able
 to sustain its continuous income towards the end of the games.
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \includegraphics[width=1.0\linewidth]{img/all-ttx-uc-line.png}
     \caption{Tariff TX credit values across all games in the 2017 finals (rolling average)}
@@ -1116,7 +1111,6 @@ leverage modern reinforcement learning tools and algorithm libraries in the \ac{
 algorithms for \ac{RL}, available mostly in Python \citep{baselines}, are used. These leverage both the TensorFlow and
 Keras high-level abstraction library \citep{plappert2016kerasrl}.
 
-%TODO what-if yes or no... make a choice dude
 %In general, a considerable amount of work was invested enabling communication between an agent
 %written in Python and the \ac{PowerTAC} systems which are Java based. The preliminary research and its results are summarized in
 %Section~\ref{sec:connecting_python_agents_to_powertac}. Because of this additional complexity, the practical part of the thesis was
@@ -1176,11 +1170,9 @@ Keras and TensorFlow to allow for easy creation and adaption of the learning mod
 \ac{GRPC} to communicate with the Java components of the competition and
 \emph{Click} to create a \ac{CLI} interface that allows the triggering of various components of the broker.
 
-%TODO IF Kubernetes is used, I need to complete it. But what about CRIU?
 %Kubernetes to easily scale several instances across the cloud.
 %By transferring the components into the cloud, it is also
 %possible to use tools such as Google Colab which allows access to a powerful cloud \ac{GPU} without costs
-%\citep[]{GoogleColabOnline2018} .%TODO remove Google Inc in brackets
 
 
 \subsection{TensorFlow and Keras}%
@@ -1213,6 +1205,22 @@ loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
     \caption{Basic Keras 2 layer dense NN example}
     \label{lst:kerasbasic}
 \end{listing}
+
+\subsection{Tensorforce and kerasl-rl}%
+\label{sub:tensorforce_and_kerasl_rl}
+
+Tensorforce and kerasl-rl are both relatively young libraries that intend to offer a high-level \ac{API} for building
+\ac{RL} agents. Keras-rl, as the name suggests, is based on the keras library and includes a number of \ac{RL} agent
+implementations such as Deep Q-Learning (discrete and continuous) and \ac{SARSA} \cite[]{plappert2016kerasrl}. Over the
+last few months, the progress of the project has been rather slow though and Tensorforce offers a rich alternative.
+Although not based on the high-level keras library, it offers configuration of architectures and hyperparameters via
+\ac{JSON} files. Due to large changes in the TensorFlow library between versions 1.6 and 1.8, it is scheduled to be
+replaced by a new framework "YARL", but the \ac{API} will be similar\footnote{Information received during private
+    correspondence with the authors, see also
+\url{https://github.com/pascalwhoop/broker-python/issues/5}}. While I initially implemented my \ac{RL} trials with
+keral-rl, I quickly switched to tensorforce due to its higher flexibility, better documentation, stronger developer
+activity and most importantly, because it allows for a reversal of process flow control as is needed for the
+\ac{PowerTAC} environment. 
 
 \subsection{Click}%
 \label{sub:click}
@@ -1293,56 +1301,6 @@ An example is given in Section~\ref{sub:implementing_the_communication_with_ac_g
 
 
 
-
-\section{Preprocessing existing data}
-\label{sec:preprocessing}
-
-%TODO decide if splitting to clearly DEMAND / WHOLESALE impl
-
-To learn from the large amount of data already available from previous simulations, parsing the state files provided by
-the simulation is a reasonable approach to boost the ability of several parts of the agent to learn faster. One example
-is the predictor of customer energy usage, as previous simulations offer large amounts of usage data that can be
-analyzed.
-
-A first approach was to manually parse these files and reconstruct the server state in python.
-While this was successful for the demand component, I then discovered the powertac-tools repository which holds similar tools
-based on a combination of python and java components. This repository allows the creation of customer production and
-consumption information in a comma separated file format. Each tool creates a csv file with a specific focus instead of
-parsing all information in one central loop. The initial approach to parse the files was therefore scrapped
-and replaced with this prebuilt variant that makes use of the powertac-server source code.
-
-While the current demand prediction is solely based on historical demand, this can easily extended (as it has been in
-the python only approach previously mentioned) with weather data, time information and up-to-date tariff
-information\footnote{All preprocessing code has been deleted in commit
-    \href{https://github.com/pascalwhoop/broker-python/commit/c54ee7c05585d15462f40e2be6850343e8aea27a}{c54ee7c} in the
-broker-python repository.}.
-
-
-%The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant data
-%for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files are
-%based on events (they hold constructor parameters and method call parameters of previous server instances), these events
-%need to be applied to the environment. To learn from these events, most modern frameworks require a training
-%data-set and a label data-set. Therefore these events are first applied to the environment and at each time slot,
-%relevant training samples are extracted. Therefore the overall structure of the translation from state files to training
-%data is as follows:
-
-%\begin{enumerate}
-%    \item Iterate over all local state files
-%    \item Iterate over lines in state file
-%    \item Apply line to
-%        current environment state
-%    \item At each time slot, extract relevant samples
-%    \item Store training data in separate local
-%        %TODO separate vs online/streaming structured approach
-%files \end{enumerate}
-%
-%The code linked to the process described above is part of the \texttt{util.state\_extractor} and
-%\texttt{model.environment} modules. The tests in the \texttt{tests} module document the functionality.
-%
-%After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
-%processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
-%well as ensure the values that are fed to the \ac{NN} don't negatively impact the learning progress. The overall
-%approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
 
 
 \section{Connecting Python agents to PowerTAC}%
@@ -1741,6 +1699,64 @@ translatable into tariff market actions because some customers are actually just
 thousand individuals. Usage is not reported as individuals but rather as a sum. These models may create contracts with a
 number of brokers, breaking the demand of these large models down into several small transactions spread across tariffs.
 
+This section describes the development of the demand estimator using \ac{NN} technologies. It also describes the issues
+I ran into when designing this model, which are common issues when designing prediction models using \ac{NN}.
+
+\subsection{Preprocessing existing data}
+\label{sub:preprocessing}
+
+%TODO decide if splitting to clearly DEMAND / WHOLESALE impl
+
+To learn from the large amount of data already available from previous simulations, parsing the state files provided by
+the simulation is a reasonable approach to boost the ability of several parts of the agent to learn faster. It is
+especially ideal for the predictor, as it is a supervised problem.
+
+A first approach was to manually parse these files and reconstruct the server state in python.
+While this was successful for the demand component, I then discovered the powertac-tools repository which holds similar tools
+based on a combination of python and java components. This repository allows the creation of customer production and
+consumption information in a comma separated file format. Each tool creates a csv file with a specific focus instead of
+parsing all information in one central loop. The initial approach to parse the files was therefore scrapped
+and replaced with this prebuilt variant that makes use of the powertac-server source code. 
+
+While the current demand prediction is solely based on historical demand, this can easily extended (as it has been in
+the python only approach previously mentioned) with weather data, time information and up-to-date tariff
+information\footnote{All preprocessing code has been deleted in commit
+    \href{https://github.com/pascalwhoop/broker-python/commit/c54ee7c05585d15462f40e2be6850343e8aea27a}{c54ee7c} in the
+broker-python repository.}.
+
+
+
+%The general architecture of the agent follows the idea of a core \emph{environment} module that holds all relevant data
+%for a game. Tariffs, rates, customers, transactions and other data is stored in this module. Since the state files are
+%based on events (they hold constructor parameters and method call parameters of previous server instances), these events
+%need to be applied to the environment. To learn from these events, most modern frameworks require a training
+%data-set and a label data-set. Therefore these events are first applied to the environment and at each time slot,
+%relevant training samples are extracted. Therefore the overall structure of the translation from state files to training
+%data is as follows:
+
+%\begin{enumerate}
+%    \item Iterate over all local state files
+%    \item Iterate over lines in state file
+%    \item Apply line to
+%        current environment state
+%    \item At each time slot, extract relevant samples
+%    \item Store training data in separate local
+%        %TODO separate vs online/streaming structured approach
+%files \end{enumerate}
+%
+%The code linked to the process described above is part of the \texttt{util.state\_extractor} and
+%\texttt{model.environment} modules. The tests in the \texttt{tests} module document the functionality.
+%
+%After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
+%processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
+%well as ensure the values that are fed to the \ac{NN} don't negatively impact the learning progress. The overall
+%approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
+
+\subsection{Model design phase}%
+\label{sub:model_design}
+
+
+
 From a dependency perspective, this component has no dependencies onto the other learning components and can easily be
 trained using historical data. It is therefore a supervised learning algorithm, matching known information in time slot
 $t-n$ to a prediction for the expected energy usage at time slot $t$. Because there are several games on record, the
@@ -1845,8 +1861,11 @@ delay for predicting 200 customers, which would almost cover the entire games cu
     \label{fig:DemandEstimator}
 \end{figure}
 
-Once the general concept of the learning model was decent, a surrounding architecture had to be built to allow this
-network to both learn and predict live in a game setting.
+\subsection{Integrating the model into the python broker}%
+\label{sub:integrating_the_model_into_the_python_broker}
+
+Once the general concept of the learning model was decent, the model had to be integrated into the broker framework and
+a surrounding architecture had to be built to allow this network to both learn and predict live in a game setting.
 The overall structure of the demand estimator component is shown in Figure~\ref{fig:DemandEstimator}. The model can be
 both trained offline based on the state files as well as online during the competition. This is possible because in both
 situations, the environment model of the agent is a continuous representation of the agents knowledge about the world.
@@ -2035,15 +2054,16 @@ values. This means, the agent can be trained with perfect predictions all the wa
 \subsection{Reward functions}%
 \label{sub:reward_functions}
 
-Well crafted reward functions are elementary for any non-trivial \ac{RL} environment. While the Atari agents often receive their
-reward directly from the game as many games include a game point counter \cite[]{mnih2013playing}, \ac{PowerTAC}
-technically simulates a real-world energy market which means the score equals the brokers profit. But the profit is
-dependent on a number of factors and therefore hardly a good choice for a reward proxy. Using the purchase prices of the energy purchased is
-also noisy, as it depends on the supply and demand of the entire market. Generally, the broker attempts to purchase
-energy at a good price and a good price can be defined as one that is better than that of other participants in the market. A reward function
-based on the relation between the average price paid by the broker and the average price paid by the overall market
-therefore describes how well the agent did in comparison to the others and therefore removes the market price
-fluctuation noise from the reward values.
+Well crafted reward functions are elementary for any non-trivial \ac{RL}
+environment\cite[p.469ff.]{sutton2018reinforcement}. While the Atari agents often receive their reward directly from the
+game as many games include a game point counter \cite[]{mnih2013playing}, \ac{PowerTAC} technically simulates a
+real-world energy market which means the score equals the brokers profit. But the profit is dependent on a number of
+factors and therefore hardly a good choice for a reward proxy. Using the purchase prices of the energy purchased is also
+noisy, as it depends on the supply and demand of the entire market. Generally, the broker attempts to purchase energy at
+a good price and a good price can be defined as one that is better than that of other participants in the market. A
+reward function based on the relation between the average price paid by the broker and the average price paid by the
+overall market therefore describes how well the agent did in comparison to the others and therefore removes the market
+price fluctuation noise from the reward values.
 
 To calculate this reward, all the purchases of the agent as well as all market clearings are averaged for a given target
 time slot.
@@ -2240,7 +2260,7 @@ Keras though.
 %between -1 and 1. 'tanh' activation functions used --> explains the bouncing limits. something inside of the network
 %makes it bounce so strongly.
 
-chapter{Conclusion}%
+\chapter{Conclusion}%
 \label{cha:conclusion}
 
 In the beginning of this work, I have described the research progress in \ac{AI} and how new \ac{NN} based systems are able to solve
