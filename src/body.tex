@@ -20,7 +20,7 @@
 %Intro long
 % - energy grids of the future background research (PTac)
 %     - key components of such an intelligent agent (prediction, actions --> \ac{SL} and \ac{RL} )
-% - research in \ac{SL} and \ac{RL} has seen huge improvements in recent years, thanks to \ac{NN}
+% - research in \ac{SL} and \ac{RL} has seen huge improvements in recent years, thanks to neural network
 % - agents/brokers in the field of PTac haven't been seeing much of these improvements
 % - also an issue of "adopting what has been learned by previous agents (transfer learning issues)"
 % -
@@ -63,10 +63,9 @@ data learning such as image recognition, audio and text based language recogniti
 playing Go
 \cite[]{arulkumaran2017brief}.
 
-There are other important problem fields that can also benefit from these technologies, one being global energy markets.
+There are other important problem fields that can also benefit from these technologies, one of them being global energy markets.
 These are expected to shift radically in the upcoming decades, adapting to new problems related to global warming,
-distributed and alternative energy sources, intelligent coordination systems, cybersecurity  and electric vehicles
-\cite[p.10ff.]{mitei2011}. New problem solving techniques are required to solve such \emph{wicked problems}, because
+distributed and alternative energy sources, intelligent coordination systems, cybersecurity  and electric vehicles\cite[p.10ff.]{mitei2011}. New problem solving techniques are required to solve such \emph{wicked problems}, because
 they depend on numerous factors such as economic, social, political and technical factors.
 \cite[]{ketter2015competitive}.
 
@@ -80,10 +79,10 @@ management systems are adapted to more efficiently make use of the energy they r
 On a macro scale, the problem is just as complex, albeit less salient.  Electricity grids were conventionally not built
 to contain \emph{energy buffers}. Electricity always needed to be produced to match demand. This is expected to change
 over the coming years due to an increasing number of electric vehicles and smart appliances. In addition, decentralized
-solar energy production changes the demand curve of macro-level energy supply. California is currently suffering a large
+solar energy production changes the demand curve of macro-level energy supply. California is currently facing a large
 supply of energy during sunny summer days while lacking energy when wind and solar energy output less due to lack of
 wind or sunshine. This puts previously unseen stress on the grid systems which were constructed to deliver steady amounts
-of energy from few sources to many consumers instead of having many small producers distributed throughout the system.
+of energy from a few sources to many consumers instead of having many small producers distributed throughout the system.
 Furthermore, large conventional power plants struggle to adapt quickly to change in demand patterns
 \cite[]{roberts_2016}.
 
@@ -101,33 +100,32 @@ intelligent contract design, commodity trading and general simulation and softwa
 Brokers can be developed by anyone and the competition has been organized for several years now. This means that some
 broker developers have years of experience while others have not participated in a single competition. Each simulation
 takes approximately two to three hours to complete and each time slot takes five seconds. Previous researchers have
-identified the problem as a \ac{POMDP}, a common model of \ac {RL} literature \cite[]{tactexurieli2016mdp}. Deep \ac{NN}
+identified the problem as a \ac{POMDP}, a common model of \ac {RL} literature \cite[]{tactexurieli2016mdp}. Deep neural network
 architectures have proven to be successful in solving games in a variety of instances. It is therefore intuitive to
-attempt and apply such architectures to the problems posed by the \ac{PowerTAC} simulation. Unfortunately, most such
+attempt to apply such architectures to the problems posed by the \ac{PowerTAC} simulation. Unfortunately, most such
 implementations are only available in Python \cite[]{baselines, plappert2016kerasrl, schaarschmidt2017tensorforce}  and
 \ac{PowerTAC} is almost exclusively based on Java. An extension of the current communication protocols to other
 languages may therefore benefit the reach of the simulation and motivate newcomers to join the competition with
-their Python based \ac{NN} architectures.
+their Python based neural network architectures.
 
 Finally, a sub field of \ac{RL} research has identified a problem in the transfer of knowledge from previously trained
-networks to newly developed iterations. Because \ac{NN} are mostly black boxes to researchers
-\cite[]{yosinski2015understanding}, it is difficult to extract knowledge and transfer this to another architecture. The
-learned weights of a \ac{NN} can not easily be transferred between models, especially when architectures fundamentally
+networks to newly developed iterations. Because neural networks are mostly black boxes to researchers
+\cite[]{yosinski2015understanding}, it is difficult to extract knowledge and to transfer this to another architecture. The
+learned weights of a neural network can not easily be transferred between models, especially when architectures fundamentally
 differ in their hyperparameters. The field of transfer learning has shown new approaches for solving this problem.
 Agents with access to previously developed models may pass their observations to the \emph{teacher agent} and initially
-attempt to align their decisions to those that their teacher would do \cite[]{schmitt2018kickstarting}. More general
+attempt to align their decisions to those that their teacher would do \cite[]{schmitt2018kickstarting}. High level 
 problem solving agents may be trained by first training several small narrow focus agent networks on sub problems and
-then training the general agent on the actions of the narrow focus agents \cite[]{parisotto2015actor}. For problems
-where a reward function is difficult to
-construct, \emph{inverse reinforcement learning} can be used to train an agent to behave similar to an observable
-expert. The policy function of the agent shows good performance despite lacking a specific reward function
-\cite[]{NG2004Apprentice}.
+then applying transfer learning to transfer the knowledge from the narrow focus agents to the generic high level
+agent\cite[]{parisotto2015actor}. For problems where a reward function is difficult to construct, \emph{inverse
+reinforcement learning} can be used to train an agent to behave similar to an observable expert. The policy function of
+the agent shows good performance despite lacking a specific reward function \cite[]{NG2004Apprentice}.
 
-In summary, \ac{NN} are an interesting technology to solve complex problems and energy markets stand to benefit from
+In summary, neural networks are an interesting technology to solve complex problems and energy markets stand to benefit from
 their usage. To ensure beneficial results, \ac{PowerTAC} simulates complex markets before implementing them in the real
 world. \ac{PowerTAC} focuses on brokers as intermediaries between end consumers and wholesale markets to reduce
-complexity and decentralize which also aids resilience. To allow current and future teams competing in the \ac{PowerTAC}
-competition to easily deploy \ac{NN} technologies and to allow new brokers in the \ac{PowerTAC} competition to quickly
+complexity and to decentralize which also aids resilience. To allow current and future teams competing in the \ac{PowerTAC}
+competition to easily deploy neural network technologies and to allow new brokers in the \ac{PowerTAC} competition to quickly
 catch up to previously developed competitor brokers, extending the technology scope of the competition and enabling
 learning transfer methods and their underlying deep architectures for the problem scope of \ac{PowerTAC}
 may be beneficial. The research question for this work therefore goes as follows:
@@ -136,8 +134,8 @@ may be beneficial. The research question for this work therefore goes as follows
     how? Can imitation allow for boosted performance of reinforcement learning algorithms within a competitive simulation
 environment?}
 
-To answer the question, a lot of foundation work has to be done. First, the competition needs to be able to interface
-with the technologies required by modern \ac{NN} frameworks. Then a problem mapping needs to occur that maps the
+To answer the questions, a lot of foundation work has to be done. First, the competition needs to be able to interface
+with the technologies required by modern neural network frameworks. Then a problem mapping needs to occur that maps the
 \ac{PowerTAC} problems to a structure that the frameworks and libraries can work with. Finally, the current research
 methods for learning transfer need to be applied to the \ac{PowerTAC} environment.
 
@@ -146,9 +144,9 @@ methods for learning transfer need to be applied to the \ac{PowerTAC} environmen
 \label{sec:methodology}
 First, I will perform a literature research into the fields of \ac{AI}, \ac{RL} and the \ac{PowerTAC} competitive
 simulation for energy markets. In the field of AI
-it's sub fields of \ac{SL} and \ac{UL} will be introduced. Here I will focus on the area of \ac{NN} and a way to let
+its sub fields of \ac{SL} and \ac{UL} will be introduced. Here,  I will focus on the area of neural networks and a way to let
 them learn through Backpropagation. In the field of \ac{RL} I will focus on the \ac{MDP} framework as well as the
-\ac{POMDP} subclass.  Next follows an introduction of the recent research in using \ac{NN} in \ac{RL} settings to allow
+\ac{POMDP} subclass.  Next follows an introduction of the recent research in using neural networks in \ac{RL} settings to allow
 for what is now called Deep Reinforcement Learning. This field has seen success in recent research, allowing
 for agents that successfully play Atari games, 3D games and the game Go on superhuman levels of performance
 \citep{proximalpolicyopt, silver2016mastering}.
@@ -163,7 +161,7 @@ make decisions are analyzed. This includes an analysis of previous agents soluti
 
 Following the theoretical background, the main technologies used are briefly explained. Afterwards, the implementation of two
 important decision areas, wholesale trading and demand predicting, is summarized. Both implementations outline the
-ability to use current research results from the \ac{NN} and \ac{RL} research community to apply them to the
+ability to use current research results from the neural network and \ac{RL} research community to apply them to the
 \ac{PowerTAC} problem set.
 
 Finally, a conclusion is drawn and the limits and weaknesses as well as recommended further research is discussed.
@@ -172,10 +170,9 @@ Finally, a conclusion is drawn and the limits and weaknesses as well as recommen
 \label{cha:background}
 
 This chapter will introduce the two underlying research fields, \ac{AI} and the \ac{PowerTAC} simulation. The broad
-field of \ac{AI} will be separated into three sections: An \ac{AI} introduction, \ac{NN} and \ac{RL} introduction,
-\ac{NN} and \ac{RL}. \ac{PowerTAC} will be discussed by introducing it, comparing it to similar work and analyzing its
+field of \ac{AI} will be separated into three sections: An introduction to the fields of \ac{AI}, neural networks and \ac{RL}. 
+\ac{PowerTAC} will be discussed by introducing it, comparing it to similar work and analyzing its
 components and some dominant past broker implementations.
-
 
 \section{Artificial Intelligence}%
 \label{sec:artificial_intelligence}
@@ -232,7 +229,7 @@ learning such as data exploration or anomaly recognition.
 
 The following sections will describe both \acl {SL} and \acl {UL} and Section~\ref{sec:neural_networks} will introduce
 an architecture that can be used as the learning function in these learning problems. Finally,
-Section~\ref{sec:Backpropagation} will explain how exactly \ac{NN} learn.
+Section~\ref{sec:Backpropagation} will explain how exactly neural networks learn.
 
 \subsubsection{Supervised Learning}
 
@@ -244,7 +241,7 @@ Section~\ref{sec:Backpropagation} will explain how exactly \ac{NN} learn.
 As noted above, supervised learning uses labeled examples to learn to recognize future examples that might be of the
 same kind but not identical. Common examples of this form of learning include object recognition in images or
 time-series prediction. One of the most known examples to date is the Imagenet classification algorithm by
-\cite[]{krizhevsky2012imagenet} which was one of the first \ac{NN} based algorithms to break a classification high-score
+\cite[]{krizhevsky2012imagenet} which was one of the first neural network based algorithms to break a classification high-score
 on a popular image classification database. The goal is to correctly classify images according to a set of defined
 labels. If a picture of a dog is read by the \ac {NN}, it needs to be able to classify the fact that a dog is in the
 picture. In areas such as financial trading or electricity demand prediction, it can be helpful to be able to predict
@@ -271,7 +268,8 @@ might not be able to perfectly match the underlying true function $f$. On the ot
 expressive hypotheses space may generalize very well and is easier to understand and implement.
 
 The tradeoff described above is a key factor when deciding on the \emph{right} function to use to solve a supervised
-learning problem. A linear regression model is easier to understand than complex convoluted functions and \ac{NN} have
+learning problem. A linear regression model is easier to understand than complex convoluted functions and neural
+networks have
 often been described as hard to interpret as it is not clear \emph{what} they learn. Systems such as decision trees,
 which make many sequential decisions about features of the input in question to arrive at a classification, are easy to
 interpret and might therefore be more appropriate when not only the performance of the system is important but also the
@@ -316,8 +314,8 @@ is given in Figure~\ref{fig:perceptron}.
     \label{fig:perceptron}
 \end{figure}
 
-A neural network is a collection of such neuron components, often layered. The properties of the neurons as well
-as the overall network properties are called \emph{hyperparameters} and describe the overall architecture of the \ac{NN}.
+A neural network  is a collection of such neuron components, often layered. The properties of the neurons as well
+as the overall network properties are called \emph{hyperparameters} and describe the overall architecture of the neural network.
 
 A common architecture is the \emph{feed-forward network} which holds several layers of sets of neurons. Each set has no
 connection within itself but its activation output is fed into the next layers neurons. It is a directed
@@ -326,7 +324,7 @@ the input in some form of memory. An alternative is a \emph{\acl {RNN} } which i
 hold state. The former network is often used for image classification problems while the latter is used for
 time-series analysis and natural language processing.
 
-When looking at \ac{NN} one important decision is the number of layers. In fact, the history of \acl{NN} has shown
+When looking at neural networks one important decision is the number of layers. In fact, the history of \acl{NN} has shown
 three key phases of progress, the first phase which included simple single-layer networks, the second which included one
 \emph{hidden layer} and the third phase, today, which uses networks that benefit of several hidden layers. A hidden
 layer is a number of neurons between the input layer and the output layer. This allows the network to generate complex
@@ -358,8 +356,8 @@ The previous sections have described learning in respect to the goal of the lear
 used to learn from. This section explains the forms of learning and focuses on one widely used form called
 backpropagation.
 
-When looking at \ac{NN} while remembering the definition of learning from earlier, it becomes clear that there are many
-ways a \ac{NN} can change its state. It could:
+When looking at neural networks while remembering the definition of learning from earlier, it becomes clear that there are many
+ways a neural network can change its state. It could:
 
 \begin{enumerate}
     \item develop new connections
@@ -371,7 +369,7 @@ ways a \ac{NN} can change its state. It could:
     \item remove existing neurons \cite[p.60]{kriesel2007brief}
 \end{enumerate}
 
-Of these many actions, changing the weights is the most common way to let a \ac{NN} learn. This is because many
+Of these many actions, changing the weights is the most common way to let a neural network learn. This is because many
 of the other changes in its state can be performed by a specific way of changing the weights. Removing connections is
 equivalent to setting the weight of the connection to 0 and forbidding further adaption afterwards. Equally, adding new
 connections is the same as setting a weight of 0 to something that is not 0. Changing the threshold values can also be
@@ -391,7 +389,7 @@ descent approach, I will refer to the works of \citet{russell2016artificial} as 
 
 %logistic regression + gradient descent on a unit based view
 
-The above described concept of learning from labeled examples is intuitive for single-layer \ac{NN}. The output can be
+The above described concept of learning from labeled examples is intuitive for single-layer neural network. The output can be
 directly compared to the labels provided by the training set and logistic regression applied to correct the weights of
 the network to reduce the loss. It becomes problematic though, when several layers are inserted between the input and
 the output. The weights of the hidden layers are not included in the labeled examples. This is where the concept of
@@ -413,8 +411,8 @@ responsible for a downstream error in relation to its weight in the target neuro
 \subsection{Recurrent Neural Networks}%
 \label{sec:recurrent_neural_networks}
 
-As was already noted in the previous chapter, \ac{NN} can be both acyclic and cyclic graphs. The
-\emph{vanilla} \ac{NN} is usually considered to be an acyclic feed-forward network, as it has no internal state and is
+As was already noted in the previous chapter, neural networks can be both acyclic and cyclic graphs. The
+\emph{vanilla} neural network is usually considered to be an acyclic feed-forward network, as it has no internal state and is
 therefore more suited to describe the concepts of how the networks operate. Especially in translation and text to speech
 applications though, \ac{RNN} are popular as they are able to act on previously seen information in a sequence of
 data. Generally they are suitable for many applications where the data has some kind of time-dependent embedding
@@ -460,9 +458,10 @@ increases performance and allows for distributed calculation.
 
 \section{Reinforcement Learning}
 
-The previous chapters have introduced concepts of \ac{SL} , \ac{NN}, backpropagation and \ac{RNN} for time-embedded
+The previous chapters have introduced concepts of supervised learning, neural networks, backpropagation and recurrent
+neural networks for time-embedded
 learning tasks. \ac{RL} can be described as an intersection between supervised and unsupervised learning concepts and
-Deep \ac{RL} is the usage of \ac{NN}, especially those with many layers, to perform \ac{RL}.
+Deep \ac{RL} is the usage of neural networks, especially those with many layers, to perform \ac{RL}.
 
 On the one hand \ac{RL}  does not require large amounts of labeled data to enable successful systems which is
 beneficial for areas where such data is either expensive to acquire or difficult to clearly label. On the other hand it
@@ -474,7 +473,7 @@ corresponding reward $r$ is given to the agent. The reward gives the agent infor
 \citep[p.830f.]{russell2016artificial}.
 
 This section will first introduce the concepts of a \ac{MDP}, then introduce different concepts of \ac{RL} agents,
-describe approaches to encourage exploration of its options and finally describe how \ac{NN} can be used to create
+describe approaches to encourage exploration of its options and finally describe how neural networks can be used to create
 state-of-the-art agents that can solve complex tasks. The majority of the chapter is based on
 chapters 17 and 21 of \citet[]{russell2016artificial} unless otherwise marked.
 
@@ -525,7 +524,7 @@ and the other way around. Further, the \emph{max} operator creates non linearity
 intractable quickly which is the reason for an iterative approach called \emph{Value Iteration}.
 
 %In a discrete action space this would be a selection over all possible actions, in a continuous action space it however
-%can become more complex. \ac{NN} based \ac{RL} agents simply invoke their policy network to retrieve the action which
+%can become more complex. neural network based \ac{RL} agents simply invoke their policy network to retrieve the action which
 %the agent believes it the one with the highest utility \citep{mnih2013playing}.
 
 
@@ -697,7 +696,7 @@ a specific action (derived from the policy) in that state \citep{mnih2016asynchr
 
 The previous sections have outlined the conceptual approaches for designing learning agents based on various approaches
 for what is essentially a system that tries to act intelligently in respect to its environment. Especially in recent
-years, many breakthroughs have been driven by using \ac{NN} in \ac{RL} settings. \ac{NN} have proven effective as
+years, many breakthroughs have been driven by using neural networks in \ac{RL} settings. Neural networks have proven effective as
 parameterized Q-Value estimators, state-value estimators and as policy functions. Most approaches suffer similar
 problems: Data efficiency in respect to the trial number required to learn a desired skill, scalability and robustness
 \citep{proximalpolicyopt}. The reasons for these challenges are obvious: The agents receives minimal feedback and it has
@@ -709,10 +708,10 @@ learning of a policy by imitating a trusted expert, allowing faster learning rat
 \citep{NG2000InvReinf}. \citet{brockman2016openai} have created the \emph{gym} which allows for coherent benchmarking of
 various approaches against a common set of challenges. \citet{hafner2017agents} have created a setup that allows for
 massive parallel processing of several environments which all contribute to the improvement of a central policy
-function. The implemented algorithm uses \ac{NN} and an advanced form of the advantage based policy methods introduced
+function. The implemented algorithm uses neural networks and an advanced form of the advantage based policy methods introduced
 earlier. By this time, the research groups were usually referring to their agents learning progress in the range of
 millions of time slots \citep{proximalpolicyopt}. One common argument for the benefit of \ac{AI} is the ability to
-transfer knowledge learned by one agent to many agents. The structure of \ac{NN} however makes it difficult to transfer
+transfer knowledge learned by one agent to many agents. The structure of neural networks however makes it difficult to transfer
 knowledge between agents with varying hyperparameters. The weights for the neurons cannot simply be copied between
 networks with different structures and due to the complexity of the systems, learning them again from scratch is
 resource intensive.
@@ -1035,7 +1034,7 @@ similar to that of the COLDPower agent \cite[]{peters2013reinforcement}. As COLD
 the problem domain that the agent cannot overcome. As an example, the two actions \emph{LowMargin} (10\% margin) and
 \emph{HighMargin} (20\% margin) restrict the profitablity of the agent to two points in the overall action space. Maybe
 the optimum is at 14.25\% or maybe it is even higher than 20\%. A discrete action agent cannot discover nor act upon
-these possible improvements. \ac{NN} may help overcome this limitation because they can both handle large state spaces
+these possible improvements. Neural networks may help overcome this limitation because they can both handle large state spaces
 and act successfully in continuous state spaces.
 
 
@@ -1182,8 +1181,8 @@ TensorFlow is a library developed by Google to facilitate machine learning algor
 and \ac{GPU} computing power which can significantly increase performance. It is Open Source, used in various
 technologies and serves as a base technology for many higher level frameworks \citep{tensorflow2015-whitepaper}.
 
-Keras is one of these higher level frameworks that focuses on \ac{NN}. It offers a intuitive \ac{API}, oriented towards
-\ac{NN} terminology, to quickly develop and iterate on various \ac{NN} architectures. It integrates TensorFlow and its
+Keras is one of these higher level frameworks that focuses on neural networks. It offers a intuitive \ac{API}, oriented towards
+neural network terminology, to quickly develop and iterate on various neural network architectures. It integrates TensorFlow and its
 accompanying \ac{UI} Tensorboard, which visualizes training, network structure and activation patterns. It also supports
 other base technologies beside TensorFlow, but these will not be discussed. A simple example for a 2 layer Dense \ac
 {NN} written in Keras is shown in Listing~\ref{lst:kerasbasic}.
@@ -1645,7 +1644,7 @@ store. For later analysis, all messages can be logged to the local file system e
 %competitive environment. Similar work has been done by \citep{cuevas2015distributed} who discretized the tariff market
 %in four variables describing the relationships between the competitors and their broker.
 %
-%For my broker, because \ac{NN} can handle a large state spaces, I create a more detailed description of the
+%For my broker, because neural network can handle a large state spaces, I create a more detailed description of the
 %environment. I still have to ensure the number of input features is fixed though, so a simple copy of all competing
 %tariffs is not a valid input for the environment description. Instead I create the following features from the tariff
 %market:
@@ -1699,8 +1698,8 @@ translatable into tariff market actions because some customers are actually just
 thousand individuals. Usage is not reported as individuals but rather as a sum. These models may create contracts with a
 number of brokers, breaking the demand of these large models down into several small transactions spread across tariffs.
 
-This section describes the development of the demand estimator using \ac{NN} technologies. It also describes the issues
-I ran into when designing this model, which are common issues when designing prediction models using \ac{NN}.
+This section describes the development of the demand estimator using neural networks. It also describes the issues
+I ran into when designing this model, which are common issues when designing prediction models using neural networks.
 
 \subsection{Preprocessing existing data}
 \label{sub:preprocessing}
@@ -1749,7 +1748,7 @@ broker-python repository.}.
 %
 %After the translation, the data is usually structured in a multi-dimensional array which can be read by numpy and
 %processed with Keras. First, some preprocessing can be applied with scikit-learn to analyze the structure of the data as
-%well as ensure the values that are fed to the \ac{NN} don't negatively impact the learning progress. The overall
+%well as ensure the values that are fed to the neural network don't negatively impact the learning progress. The overall
 %approach follows the recommendations of \citep{Goodfellow-et-al-2016}.
 
 \subsection{Model design phase}%
@@ -1797,7 +1796,7 @@ allows for clearer signals to be received by the network.
 \end{figure}
 
 Ultimately, the predictor model that seemed most successful in terms of average error and robustness against repetitive
-training against various types of usage patterns was a dense vanilla feed-forward \ac{NN} with
+training against various types of usage patterns was a dense vanilla feed-forward neural network with
 \texttt{168,100,100,50,50,24} units, using stochastic gradient descent as its optimization function and mostly using
 \ac{ReLu} activation function except for the last layer which is a linear activation. To overcome the problem of
 catastrophic forgetting, a common phenomenon observed when networks have been trained on several tasks in sequence
@@ -1851,7 +1850,7 @@ delay for predicting 200 customers, which would almost cover the entire games cu
 %feature-label pairs that include: Customer, tariff, weather, time and demand information. The realized demand is the
 %label while all other components are part of the features that are used to train the model. The intuitive model class
 %for demand patterns prediction are \ac{RNN} due to the sequential nature of the problem \citep[]{EvalGRU2014}. However,
-%as will be shown later, the implementation of relatively shallow dense classic \ac{NN} also results in decent results.
+%as will be shown later, the implementation of relatively shallow dense classic neural network also results in decent results.
 
 \begin{figure}[h]
     %TODO export new variant in drawio
@@ -1913,10 +1912,10 @@ handle_timeslot():
 \label{sec:wholesale_market}
 
 To approach the wholesale trading problem, a subset of the definition of the trading problem developed by
-\citet{tactexurieli2016mdp} is assumed. More specifically, the agent only concerns itself with the activities in the
+\citet{tactexurieli2016mdp} was assumed. More specifically, the agent only concerns itself with the activities in the
 wholesale market and does not act or evaluate tariff market or balancing market activities. This is due to the
 separation of concern approach described earlier. It is therefore a \ac{MDP} that can be solved with \ac{RL} techniques.
-The goal was the ability to apply current and future \ac{NN} implementations to the \ac{PowerTAC} problem set. For this,
+The goal was the ability to apply current and future neural network implementations to the \ac{PowerTAC} problem set. For this,
 many of the previously described implementations were necessary. Now that a Python based broker is possible, application
 of \ac{PPO}, \ac{DQN} and other modern \ac{RL} agent implementations seems reasonable. All required messages can be
 subscribed to via the publish-subscribe pattern. What is missing are the following components which are explained in
@@ -1930,7 +1929,7 @@ detail in this section:
     \item A way to learn quickly from offline data
     \item Suitable reward functions
     \item Input preprocessing
-    \item An initial implementation of a \ac{RL} agent using modern deep \ac{NN} frameworks
+    \item An initial implementation of a \ac{RL} agent using modern deep neural network frameworks
 \end{itemize}
 
 \subsection{\ac{MDP} design}%
@@ -1954,7 +1953,7 @@ Both approaches have advantages and disadvantages. The former creates short, fix
 match the concepts of contemporary \ac{RL} problems such as the locomotion examples described in
 Chapter~\ref{cha:background}. However, because \ac{PowerTAC} allows for trading up to 24 hours into the future, 24
 environments would have to be stepped in parallel. Approaches for parallel asynchronous stepping of multiple
-environments with a \ac{NN} based policy function approximator exist \cite{mnih2016asynchronous,hafner2017agents}
+environments with a neural network based policy function approximator exist \cite{mnih2016asynchronous,hafner2017agents}
 but require more complex architectures that update a central policy function based on experiences from all environments.
 The latter avoids this, allowing a fairly simple off-the-shelf algorithm to be applied to the problem. Problems appear
 with the compatibility to the action spaces this agent requires as well as the increased signal noise. Common algorithms
@@ -2043,7 +2042,8 @@ sequence of observation-action inputs.
 
 Learning quickly from historical data may be facilitated for off-policy algorithms that can learn from historical
 records of other agents or, if the approach introduced in
-Section~\ref{ssub:offline_record_based_wholesale_environment_approximation} is applied, also for on-policy algorithms.
+Section~\ref{ssub:offline_record_based_wholesale_environment_approximation} is applied, also for on-policy algorithms by
+approximating the real environment based on the historical data.
 To allow reuse of existing algorithm implementations, I wrote the \texttt{LogEnvManagerAdapter.py} class which
 parses historical files and sends events via the event dispatcher as if they originated from the server. This way, the
 same code may be used to train online in a competition or offline from historical data. It iterates over the existing
@@ -2069,7 +2069,7 @@ To calculate this reward, all the purchases of the agent as well as all market c
 time slot.
 
 \begin{equation}
-    r = \left\{
+    r_{rel} = \left\{
         \begin{array}{lr}
             \bar{p_b} / \bar{p_m}, & \text{for } sum(q) \leq 0 \\
             \bar{p_m} / \bar{p_b}, & \text{for } sum(q) > 0
@@ -2130,110 +2130,93 @@ similar to $\alpha$ above once the balancing amounts are reduced.
 \subsection{Input preprocessing}%
 \label{sub:input_preprocessing}
 
-% ... selection
-% normalization / scaling
+The inputs can be preprocessed in a number of ways. Because each \ac{RL} agent implementation may be interested in a
+different subset of the environment to base its decision on, the agent implementation gets passed the entire environment
+object. 
+My agent implementation (\texttt{tensorforce.py})
+expects the previous 168 time slot price averages, all prior forecasts as well as all prior purchases for the
+target time slot. In a first attempt, these 216 values were flattened into a one-dimensional input array and fed
+to the agent as an observation. Without any preprocessing, this implementation was not able to converge towards a good
+reward that indicated learning progress. Preprocessing was introduced based on the already described MinMaxScaler,
+scaling all prices and prediction amounts to a fixed scale. To permit easily extending the agent with new preprocessing
+functions, a CLI parameter was introduced. The parameter value has to correspond to a function in the
+\texttt{agent\_components/wholesale/learning/preprocessor.py} file. 
 
 \subsection{Tensorforce agent}%
 \label{sub:tensorforce_agent}
 
-% what works, what doesn't
-% preliminary results
-
-%\begin{listing}
-%    \begin{minted}[linenos,numbersep=5pt,frame=lines,framesep=2mm]{python}
-    %def fuzz_forecast_for_training(self, customer_data):
-    %    """fuzzes the data a bit according to configured noise factor"""
-    %    for i in range(len(customer_data)):
-    %        err_mult = random.uniform(-cfg.WHOLESALE_FORECAST_ERROR_PER_TS, cfg.WHOLESALE_FORECAST_ERROR_PER_TS)
-    %        # fuzz them increasingly much
-    %        customer_data[i:] = customer_data[i:] + err_mult * customer_data[i:]
-    %    return customer_data
-    %    \end{minted}
-%    \caption{Basic Keras 2 layer dense NN example}
-%    \label{lst:kerasbasic}
-%\end{listing}
+Now to pull the components together, the agent receives \texttt{forward} and \texttt{backward} calls from
+the environment, returns actions and learns when passed the required information. The development of \ac{RL} agents
+includes a lot of trial and error which is why I created another \ac{CLI} endpoint called \texttt{wholesale}. The
+\ac{CLI} allows the custom selection of the reward function, action type, network structure, agent type and tagging the
+trial with custom strings. It starts an instance of the \texttt{LogEnvManagerAdapter} which runs through all recorded
+games and simulates the necessary events. The following trials were executed:
 
 
+\begin{table}[]
+\resizebox{\textwidth}{!}{%
+    \begin{tabular}{l|l|l|l|l|l}
+        \textbf{Agent Type} & \textbf{Preprocessing} & \textbf{Action T} & \textbf{NW} & \textbf{r type} & \textbf{r after 30 games} \\ \hline
+DQN                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+DQN                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+VPG                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & none                   & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & bandit            & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & discrete          & vnn32x2     & $r_{rel}$       &                           \\
+PPO                         & MinMax                 & continuous        & vnn32x2     & $r_{rel}$       &                           \\
 
-%%TODO what implements?
-%implements the \ac{API} proposed by the OpenAI gym project \cite[]{brockman2016openai}.  Each time slot is
-%processed sequentially, before the next is started. The process is therefore changed from the competitions 24 parallel
-%trades paradigm to 24 sequential trades for ts $x$ followed by 24 trades for ts $x+1$. For each step per episode, an
-%observation is created from the historical trade data as well as the current forecast and returned to the agent. It
-%in return is answered by the agent with a call to \texttt{step} which is passed an action. The action is mapped to
-%real-world \ac{mWh} and price per \ac{mWh} amounts and evaluated. If the action would result in a clearing in the
-%recorded market prices (i.e.\ if the agent offered cheap energy or bought for a high bid), the action gets logged as a
-%purchase. Once the target time slot trading is completed, the reward is calculated, the environment is reset and the
-%next time stop is traded. The high-level flow is depicted in Figure~\ref{fig:imgWholesaleEnvironment}
-%
-%\begin{figure}[]
-%    \centering
-%    \includegraphics[width=0.6\linewidth]{img/WholesaleEnvironment.png}
-%    \label{fig:imgWholesaleEnvironment}
-%    \caption{fig:Wholesale TODO REPLACE WITH UP TO DATE}
+\end{tabular}}
+\end{table}
+
+
+%\begin{figure}
+%\centering
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%  \includegraphics[width=.8\linewidth]{src/}
+%  \caption{A subfigure}
+%  \label{fig:sub1}
+%\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%  \includegraphics[width=.8\linewidth]{image1}
+%  \caption{A subfigure}
+%  \label{fig:sub2}
+%\end{subfigure}
+%\caption{A figure with two subfigures}
+%\label{fig:test}
 %\end{figure}
 
 
-
-\subsection{Agent design experimentation}%
-\label{sub:agent_design_experimentation}
-
-%TODO remove?
-%In tensorforce, architectures for the neural networks are defined in \texttt{.json} files which allows the creation
-%of several agent types without changing the execution code. The configurations that come with the framework have been
-%copied to the brokers project.
-The \ac{RL} agent implementation is responsible for preprocessing the observation data. This enables developers to act
-on more or less information according to their chosen technology without having to remodify the \ac{MDP} code or the
-\texttt{WholesaleEnvironmentManager}. The agents \texttt{forward} and \texttt{backward} functions both take the entire
-known data of the \ac{MDP} as parameters. In the agent, the observation data gets reduced and normalized to avoid common
-issues with \ac{NN} such as slow learning or gradient explosions.
-
-The tensorforce implementation (which is my main attempt to implement a successful \ac{NN} based \ac{RL} trading agent)
-expects the previous 168 time slot price averages, all prior forecasts as well as all prior purchases for the
-target time slot. In a first attempt, these 216 values were flattened into a one-dimensional input array and fed
-to the agent as an observation. Without any preprocessing, this implementation was not able to converge towards a good
-reward that indicated learning progress.
-
-\begin{markdown}
-    %TODO turn into text after exam in july
-    #### SOME NOTES
-
-    - large part is both the choosing of the input and how to normalize it so the agent can work with it.
-    - framework allows passing agent anything (the entire env) and then the individual agent can select and preprocess
-    as it sees fit
-    - utility functions hold cross-agent-impl preprocessing tools
-    - started with offline learning to increase development turnaround rate. Simulation assumes the agent doesn't
-    influence the prices of the market, clearing is just dependent on the action of the agent and the market price that
-    is recorded.
-    - tried intuitive agent impl but didnt work: some environment data input and output is the direct action
-    - next tried output action being mapped: relative to forecast / current market prices > didn't work
-    - next tried simple "two armed bandit": random action or on spot like the prediction with generous money offering.
-    - >> worked after a few hundred steps
-    - TODO: try bandit style: agent just learns what price to bid, not how much.
-    - TODO: "walk backwards" from bandit to continuous action space
-    - TODO: try with more input types / preprocess better
-    - TODO: draw.io graphic on wholesale components
-
-%NOTES AFTER IMPROVING ON DEMAND PREDICTOR
-
-- need to solve the multiple \ac{MDP} for one agent problem
-- no off the shelf algorithms that do continuous multi agent mdp stuff
-- applying \ac{NAF} / \ac{DDPG} to problem possible. But may need to rewrite \ac{NAF} agent myself. Take stuff from
-Keras though.
-- doing a simple "always order demand prediction" baseline should be helpful
-\
-
-\end{markdown}
-
-
-
-%\begin{markdown}
-%
-%    ### WIP
-%
-%    - adapting the wholesale environment to be  compatible to the OpenAI Gym "Environment" which allows for
-%
-%\end{markdown}
 
 
 %Using \ac{MDP}
@@ -2263,18 +2246,18 @@ Keras though.
 \chapter{Conclusion}%
 \label{cha:conclusion}
 
-In the beginning of this work, I have described the research progress in \ac{AI} and how new \ac{NN} based systems are able to solve
+In the beginning of this work, I have described the research progress in \ac{AI} and how new neural network based systems are able to solve
 problems, previously only solvable by humans. I have also indicated the obvious incentive to apply these new
 techniques to important contemporary problems, focusing on future energy markets as one such problem. \ac{PowerTAC}, a
 simulation of these markets was introduced as a core research initiative that attempts to explore this problem field by
 letting many researchers compete in a competitive setting and simulate profit-oriented market participants. Because
 future market participants will not shy away from using \ac{AI} technologies to improve their competitiveness,
 \ac{PowerTAC} contenders must also be enabled to pursue these technologies to realistically represent future markets. To
-enable new competition participants to quickly catch up and to generally enable the use of \ac{NN} technologies, I
+enable new competition participants to quickly catch up and to generally enable the use of neural networks, I
 decided to pursue the question whether imitation based \ac{RL} may be deployable in the \ac{PowerTAC} setting.
 
 When reviewing my work, it is obvious that I have not fully answered my original research question. Several researchers
-have shown that learning from other agents is possible with \ac{NN} in \ac{RL} environments as described in
+have shown that learning from other agents is possible with neural networks in \ac{RL} environments as described in
 Chapter~\ref{cha:background}. During the course of my thesis, new research by \citet{schmitt2018kickstarting}  has also
 shown how significant learning performance can be improved when allowing new agent implementations to learn from
 existing agents.
@@ -2294,7 +2277,7 @@ to quickly train an \ac{RL} agent for several thousand steps. The container abst
 of several competitions at once with different or equal configuration parameters. It also allows for easy portability of
 competing brokers.
 
-Participants can add a number of technologies to their docker image as well as binary files such as \ac{NN} weights and
+Participants can add a number of technologies to their docker image as well as binary files such as neural network weights and
 configurations. This allows the entire competition to expand beyond the realms of Java without placing a burden on other
 teams to manage not only their own dependencies but also those of the other brokers. It also permits the simulation
 organizers to easily host the entire competition runtime on a central server cluster instead of every team connecting to
@@ -2311,26 +2294,21 @@ Finally, my Python based broker implementation may be used as a base for future 
 new technologies in their brokers. It serves as base implementation that may be extended and improved by others to build
 better and more sophisticated brokers that make use of all the \ac{AI} technologies that are continuously created by
 researchers. I have shown the ability to build a broker using TensorFlow, Keras and TensorForce technologies. The
-broker, albeit not exhibiting outstanding performance yet, acts based on decisions derived from \ac{NN} based \ac{RL}
+broker, albeit not exhibiting outstanding performance yet, acts based on decisions derived from neural network based \ac{RL}
 policies and usage predictors. Clearly, a lot of work remains to be done to see if these technologies can exceed current
 performances.
 
 % FUTURE OUTLOOK / research
 
-Future research may now look at using the \ac{NN} technologies of recent years to compete in the \ac{PowerTAC}
-competition. The \ac{PowerTAC} competition server itself may be adapted to incorporate the \ac{GRPC} based communication
+Future research may now look at using the neural network technologies of recent years to compete in the \ac{PowerTAC}
+competition and more importantly, to develop well performing networks. The \ac{PowerTAC} competition server itself may be adapted to incorporate the \ac{GRPC} based communication
 as a secondary protocol available to brokers. This would eliminate the need for the intermediate adapter. Because
-\ac{NN} are able to incorporate large input data into their functions, all components of a broker may now make use of a
+neural networks are able to incorporate large input data into their functions, all components of a broker may now make use of a
 larger number of input dimensions to improve their performance. The initial demand predictor already showed promising
 results, completely ignoring weather, customer metadata, market data etc.
 
 In summary, this work offers a large contribution to bringing together the socially and economically important field of
 energy markets and recent developments in \ac{AI} research. While a breakthrough has not been achieved, nothing suggests
-that future work won't be able to show great success with the path laid out. \ac{NN} keep succeeding in a variety of
+that future work won't be able to show great success with the path laid out. Neural networks keep succeeding in a variety of
 contexts and smart energy markets will not succeed without smart participants and components, carefully embedded in a
 market model that incentivizes everyone to cooperate in a way that benefits the population as a whole.
-
-
-
-
-

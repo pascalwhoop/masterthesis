@@ -7,7 +7,7 @@ pkill latexmk
 #zathura src/main.pdf &
 
 inotifywait -rm --exclude "aux|bib~|tex~|toc|log|bbl|blg|fdb_latexmk|fls|glo|ist|out|pdf|swp|git\/" -e modify ./src | while read change; do
-    ./compile.sh
+    #./compile.sh
     echo "change detected"
     echo $change
 done

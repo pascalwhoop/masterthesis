@@ -1,11 +1,8 @@
 # TODO Thesis last 3 weeks
 
 ## Reviewing
-- Send to Peter and Christian
 - Get feedback from Lukas
 - Let Giorgia read
-- what about the printing? call the printing service
-- 
 
 ## Writing
 - discussing the reward functions for RL agents in wholesale?
@@ -26,3 +23,34 @@
 ## DONE
 
 - draw.io graphic on wholesale components
+- Send to Peter and Christian
+- what about the printing? call the printing service
+
+
+
+
+\begin{markdown}
+    %TODO turn into text after exam in july
+    #### SOME NOTES
+    - large part is both the choosing of the input and how to normalize it so the agent can work with it.
+    - framework allows passing agent anything (the entire env) and then the individual agent can select and preprocess
+    as it sees fit
+    - utility functions hold cross-agent-impl preprocessing tools
+    - started with offline learning to increase development turnaround rate. Simulation assumes the agent doesn't
+    influence the prices of the market, clearing is just dependent on the action of the agent and the market price that
+    is recorded.
+    - tried intuitive agent impl but didnt work: some environment data input and output is the direct action
+    - next tried output action being mapped: relative to forecast / current market prices > didn't work
+    - next tried simple "two armed bandit": random action or on spot like the prediction with generous money offering.
+    - >> worked after a few hundred steps
+
+%NOTES AFTER IMPROVING ON DEMAND PREDICTOR
+
+- need to solve the multiple \ac{MDP} for one agent problem
+- no off the shelf algorithms that do continuous multi agent mdp stuff
+- applying \ac{NAF} / \ac{DDPG} to problem possible. But may need to rewrite \ac{NAF} agent myself. Take stuff from
+Keras though.
+- doing a simple "always order demand prediction" baseline should be helpful
+\
+
+\end{markdown}

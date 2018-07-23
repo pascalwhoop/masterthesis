@@ -1,0 +1,10 @@
+handle_timeslot():
+   X,Y,X_PRED = prep_data()
+   if not X or Y or X_PRED:
+       return
+   pred = model.predict(X_PRED)
+   pred = scaler.inverse_transform(pred)
+   pred = correct_customer_count(pred)
+   # dispatch to pubsub
+   dispatcher.send(pred)
+   model.fit(X,Y)
