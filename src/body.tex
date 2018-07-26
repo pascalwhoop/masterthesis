@@ -59,26 +59,26 @@ In recent years, \ac{AI} research saw a steady rise in publications and overall 
 It has been discussed as a key future challenge for nation states and companies alike
 \cite[]{mozur_markoff_2017, faznetchina_2018}. Researchers have produced a large corpus of research focusing on visual
 data learning such as image recognition, audio and text based language recognition and robotics. In the field of
-\ac{RL}, recent breakthroughs were achieved in robotics as well as common game challenges like solving Atari games or
+\ac{RL}, recent breakthroughs were achieved by applying it to robotics as well as common game challenges like solving Atari games or
 playing Go
 \cite[]{arulkumaran2017brief}.
 
 There are other important problem fields that can also benefit from these technologies, one of them being global energy markets.
 These are expected to shift radically in the upcoming decades, adapting to new problems related to global warming,
-distributed and alternative energy sources, intelligent coordination systems, cybersecurity  and electric vehicles\cite[p.10ff.]{mitei2011}. New problem solving techniques are required to solve such \emph{wicked problems}, because
+distributed and alternative energy sources, lack of intelligently coordinated systems, cybersecurity  and electric vehicles\cite[p.10ff.]{mitei2011}. New problem solving techniques are required to solve such \emph{wicked problems}, because
 they depend on numerous factors such as economic, social, political and technical factors.
 \cite[]{ketter2015competitive}.
 
-On a local scale, and much more prominent in day-to-day life, appliance manufacturers continuously need to improve their
-efficiency and machines need to deliver their performance with minimal energy requirements. Cars, fridges, water heating
+On a local scale, and much more prominent in day-to-day life, machines need to deliver their performance with minimal energy requirements. Cars, fridges, water heating
 appliances, dishwashers and entertainment systems alike have all shown improvements in their efficiency and it has
-become a key component of a customers purchasing choice.  Similarly, large distributed IT systems as well as building
-management systems are adapted to more efficiently make use of the energy they require
+become a key component of a customer's purchasing choice.  Similarly, large distributed IT systems as well as building
+management systems are adapted to make more efficient use of the energy they consume 
 \cite[]{Orgerie:2014:STI:2597757.2532637, DePaola:2014:IMS:2620784.2611779}.
 
 On a macro scale, the problem is just as complex, albeit less salient.  Electricity grids were conventionally not built
 to contain \emph{energy buffers}. Electricity always needed to be produced to match demand. This is expected to change
-over the coming years due to an increasing number of electric vehicles and smart appliances. In addition, decentralized
+over the coming years due to an increasing number of electric vehicles and smart appliances. These can serve as buffers
+by offering their storage capacity to the grid. This is needed, because decentralized
 solar energy production changes the demand curve of macro-level energy supply. California is currently facing a large
 supply of energy during sunny summer days while lacking energy when wind and solar energy output less due to lack of
 wind or sunshine. This puts previously unseen stress on the grid systems which were constructed to deliver steady amounts
@@ -93,20 +93,21 @@ interests. The interaction of a variety of market participants using different t
 profit is explored in a competitive game environment. Researchers are invited to participate in this simulation by
 supplying usage models for appliances and developing \emph{brokers} that participate in the game.  Brokers trade energy,
 offer contracts and coordinate storage capacities within their own customer network as well as with the overall market.
-The simulation offers opportunities for several fields of research: Game design, energy demand forecasting,
+The simulation offers opportunities for several fields of research: game design, energy demand forecasting,
 intelligent contract design, commodity trading and general simulation and software design questions
 \cite[]{ketter2015competitive, ketter2018powertac}.
 
 Brokers can be developed by anyone and the competition has been organized for several years now. This means that some
 broker developers have years of experience while others have not participated in a single competition. Each simulation
-takes approximately two to three hours to complete and each time slot takes five seconds. Previous researchers have
+takes approximately two to three hours to complete and each time slot, a slot in which energy is produced, consumed and
+traded, takes five seconds. Previous researchers have
 identified the problem as a \ac{POMDP}, a common model of \ac {RL} literature \cite[]{tactexurieli2016mdp}. Deep neural network
 architectures have proven to be successful in solving games in a variety of instances. It is therefore intuitive to
 attempt to apply such architectures to the problems posed by the \ac{PowerTAC} simulation. Unfortunately, most such
 implementations are only available in Python \cite[]{baselines, plappert2016kerasrl, schaarschmidt2017tensorforce}  and
 \ac{PowerTAC} is almost exclusively based on Java. An extension of the current communication protocols to other
 languages may therefore benefit the reach of the simulation and motivate newcomers to join the competition with
-their Python based neural network architectures.
+their Python-based neural network architectures.
 
 Finally, a sub field of \ac{RL} research has identified a problem in the transfer of knowledge from previously trained
 networks to newly developed iterations. Because neural networks are mostly black boxes to researchers
@@ -117,7 +118,7 @@ Agents with access to previously developed models may pass their observations to
 attempt to align their decisions to those that their teacher would do \cite[]{schmitt2018kickstarting}. High level 
 problem solving agents may be trained by first training several small narrow focus agent networks on sub problems and
 then applying transfer learning to transfer the knowledge from the narrow focus agents to the generic high level
-agent\cite[]{parisotto2015actor}. For problems where a reward function is difficult to construct, \emph{inverse
+https://itsfoss.com/pdf-editors-linux/agent\cite[]{parisotto2015actor}. For problems where a reward function is difficult to construct, \emph{inverse
 reinforcement learning} can be used to train an agent to behave similar to an observable expert. The policy function of
 the agent shows good performance despite lacking a specific reward function \cite[]{NG2004Apprentice}.
 
@@ -149,7 +150,7 @@ necessary components to bridge the gap. The implemented source code is often tes
 functioning of the different components. Once all components are developed to connect the two areas, machine learning
 approaches need to be applied to create solutions for the demand prediction problem and the wholesale trading problem. 
 
-This document is structured as follows: First, I will perform a literature research into the fields of \ac{AI}, \ac{RL}
+This document is structured as follows: first, I will perform a literature research into the fields of \ac{AI}, \ac{RL}
 and the \ac{PowerTAC} competitive simulation for energy markets. In the field of AI its sub fields of supervised learning and
 unsupervised learning will be introduced. Here,  I will focus on the area of neural networks and a way to let them learn through
 Backpropagation. In the field of \ac{RL} I will focus on the \ac{MDP} framework as well as the \ac{POMDP} subclass.
@@ -176,7 +177,7 @@ Finally, a conclusion is drawn and the limits and weaknesses as well as recommen
 \label{cha:background}
 
 This chapter will introduce the two underlying research fields, \ac{AI} and the \ac{PowerTAC} simulation. The broad
-field of \ac{AI} will be separated into three sections: An introduction to the fields of \ac{AI}, neural networks and \ac{RL}. 
+field of \ac{AI} will be separated into three sections: an introduction to the fields of \ac{AI}, neural networks and \ac{RL}. 
 \ac{PowerTAC} will be discussed by introducing it, comparing it to similar work and analyzing its
 components and some dominant past broker implementations.
 
@@ -190,14 +191,14 @@ components and some dominant past broker implementations.
 The field of \ac{AI} is both old and yet quiet contemporary.
 Right with the advent of computers around the middle of the 20th century, research has started to aim for artificial
 intelligence. Generally, defining \ac{AI} in a single sentence is hard. \citet{russell2016artificial} structures
-historical definitions along two dimensions: The grade of how \emph{human} a system is \emph{thinks} or \emph{behaves}
+historical definitions along two dimensions: the grade of how \emph{human} a system is \emph{thinks} or \emph{behaves}
 and how \emph{rational} it thinks or behaves. These four directions are all pursued by researchers. In this thesis, the
 goal of \emph{acting rationally} is most appropriate sub fields of research in the larger field of \ac{AI}.
 
 Today, some 70 years later, \ac{AI} is again extensively discussed by both researchers and main-stream media
 \citep[p.24ff.]{russell2016artificial, arulkumaran2017brief}. The reasons for this are diverse but it can be argued that
 the combination of easily available computing power through cloud computing and advances in the mathematical
-underpinnings have allowed for fast-paced advances in recent years. Also, the currently popular \acf {NN}
+underpinnings have allowed for fast-paced advances in recent years. Also, the currently popular neural network 
 architectures often require large amounts of data to learn which have lately been readily available for companies and
 researchers through the adoption of online technologies by the majority of the population
 \citep[p.27]{russell2016artificial}.
@@ -222,10 +223,10 @@ the difference between the actual utility of the right actions versus the result
 exact loss function might be a mean squared error function or an absolute loss depending on the learning algorithm that
 is used or whether the researcher intends to emphasize large deviations from the target \cite[p.710]{russell2016artificial}.
 
-Computational learning theory looks at different problems of learning: How to learn through a large number of
+Computational learning theory looks at different problems of learning: how to learn through a large number of
 examples, the effects of learning when the agent already knows something, how to learn without examples, how to learn
 through feedback from the environment and how to learn if the origin of the feedback is not deterministic
-\cite[]{russell2016artificial}. In this work, two of those problems are of special interest: The ability to learn from
+\cite[]{russell2016artificial}. In this work, two of those problems are of special interest: the ability to learn from
 previously labeled examples and the ability to learn through feedback from the environment. The former is called \acl
 {SL}  and the latter is referred to as \acl {RL}. To understand the difference, it is also important to
 understand algorithms that don't have access to labels for existing data, yet are still able to derive value from the
@@ -286,11 +287,11 @@ inner workings of it.
 %-------------------------------------------------------------------------------
 % done unless professor adds notes
 %-------------------------------------------------------------------------------
-\acl {UL}  suffers one key difference: The set of data that is used to learn from does not include labels or
+\acl {UL}  suffers one key difference: the set of data that is used to learn from does not include labels or
 classifications to learn from. In other words, there are no examples present to know what it is that needs to be
 learned. Common examples of unsupervised learning are \emph{clustering} or \emph{principal components analysis}. The
 overall goal of unsupervised learning is therefore not to predict but to learn information about the underlying distributions and
-reasons as to why the values that have been measured were measured as such. unsupervised learning is also used during pre-processing
+reasons as to why the values that have been measured were measured as such. Unsupervised learning is also used during pre-processing
 data for supervised learning problems to improve the later results of the regression or classification problems
 \cite[p.373f.]{james2013introduction}.
 Additional features can be constructed from results of unsupervised learning such as distances to cluster centers. These
@@ -346,7 +347,7 @@ $h^n$ feeds into the next until finally the output layer is reached.
 
 Neural networks can therefore represent complex non-linear and discontinuous functions
 \cite[p.732]{russell2016artificial} even with small numbers of layers or neurons. Such \emph{deep} networks however long
-suffered from a large issue: It was unclear how to train them, i.e.\ how to make them learn. The next section describes
+suffered from a large issue: it was unclear how to train them, i.e.\ how to make them learn. The next section describes
 a solution to this problem.
 
 \subsection{Learning Neural Networks and Backpropagation}
@@ -438,22 +439,22 @@ shows this concept.
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\linewidth]{img/rnn_concept.png}
-    \caption[Recurrent Neural Network conceptualized]{. \emph{Left}: Circuit diagram where the black square represents a
+    \caption[Recurrent Neural Network conceptualized]{. \emph{Left}: circuit diagram where the black square represents a
         1 time slot delay. \emph{Right:} The same network unfolded where each node represents a particular time instance.
     Taken from \citet{Goodfellow-et-al-2016}.}
     \label{fig:rnn_concept}
 \end{figure}
 
-The network structure has two benefits: Firstly, it allows for arbitrary sequence length, as the network size is
+The network structure has two benefits: firstly, it allows for arbitrary sequence length, as the network size is
 dependent on the time slot specific input and not on the number of previous time slots. Secondly, the same network with
 the same weights (or in mathematical terms the same transition function $f$) can be used during each time slot. This
-means: When a \ac{RNN} is fed a sequence of data, the weights will stay the same throughout the sequence. They can be
+means: when a \ac{RNN} is fed a sequence of data, the weights will stay the same throughout the sequence. They can be
 updated after the entire sequence has been processed.
 
 Such recurrent systems, while theoretically able to hold information across inputs, suffer from an issue called the
 \emph{vanishing gradient problem}. A network that sequentially processes 20 samples is not easily capable to hold useful
 information within its state from the early beginning to then act upon it later in the sequence. This is a common
-problem for translation: Sentences often have structures where the first word influences the meaning of the final one.
+problem for translation: sentences often have structures where the first word influences the meaning of the final one.
 The network processes each word at a time, diluting the information that is representing the first word because it
 is covered with noise from the other (potentially irrelevant) words. \citet{Hochreiter:1997:LSM:1246443.1246450}
 developed the \ac{LSTM} model to solve this problem. Each unit in the network is actually a group of gates that act in
@@ -605,7 +606,7 @@ continuously reduced appropriately, this will converge to the correct value.
 \subsection{Exploration}%
 \label{sub:exploration}
 
-The above learning approach has one weakness: It is only based on observed utilities. If $\pi$ follows the pattern of
+The above learning approach has one weakness: it is only based on observed utilities. If $\pi$ follows the pattern of
 always choosing the action that leads to the highest expected $U_{i+1}$, i.e.\
 \begin{equation}
     \pi(s) = \max_{a \in \mathcal{A}(s)}P(s' \mid s, a)U(s')
@@ -618,7 +619,7 @@ probability of choosing a random action at each step.
 A more advanced variant is to add a term to the loss function that corresponds to negative entropy of the policy $-\beta
 H(\pi(a \mid s ))$ where $H$ measures the entropy of a series of actions. This encourages randomness in the policy but
 it permits the policy function to determine how this randomness gets to occur \citep{schmitt2018kickstarting}. This
-entropy based loss also automatically regulates itself: When the agent is not at all able of choosing rewarding actions
+entropy based loss also automatically regulates itself: when the agent is not at all able of choosing rewarding actions
 it reduces its loss through high entropy choices, i.e.\ lots of exploration. Once the agent finds actions for certain
 states that lead to high rewards, choosing other random actions negatively outweighs following the best action.
 Therefore, it becomes less random and the entropy reduces. If $\beta$ is progressively lowered, the impact on the loss
@@ -654,7 +655,7 @@ operator
 An alternative version is the reduction of the above equation by removing the $\max$ operator. This results in the
 \emph{actual} action being considered instead of the one that the policy believes to be the best. Q-Learning is
 \emph{off-policy} while the latter version, called \ac{SARSA}, is \emph{on-policy}. The distinction has a significant
-consequence: While Q-Learning may be used to learn the Q-Values from recorded state-action pairs, \ac{SARSA} requires
+consequence: while Q-Learning may be used to learn the Q-Values from recorded state-action pairs, \ac{SARSA} requires
 the action taken to be derived from the current policy function.
 
 \subsection{Policy Search and Policy Gradient Methods}%
@@ -704,8 +705,8 @@ The previous sections have outlined the conceptual approaches for designing lear
 for what is essentially a system that tries to act intelligently in respect to its environment. Especially in recent
 years, many breakthroughs have been driven by using neural networks in \ac{RL} settings. Neural networks have proven effective as
 parameterized Q-Value estimators, state-value estimators and as policy functions. Most approaches suffer similar
-problems: Data efficiency in respect to the trial number required to learn a desired skill, scalability and robustness
-\citep{proximalpolicyopt}. The reasons for these challenges are obvious: The agents receives minimal feedback and it has
+problems: data efficiency in respect to the trial number required to learn a desired skill, scalability and robustness
+\citep{proximalpolicyopt}. The reasons for these challenges are obvious: the agents receives minimal feedback and it has
 a hard time mapping its received reward to specific alterations in its behavior (aka credit assignment problem)
 \citep{arulkumaran2017brief}.
 
@@ -738,7 +739,7 @@ in rapid development and to construct able agents, it is beneficial to leverage 
 structure and the available resources.
 
 
-\section{PowerTAC: A Competitive Simulation}%
+\section{PowerTAC: a Competitive Simulation}%
 \label{sec:powertac_a_competitive_simulation}
 
 % Simulating the effect on the energy efficiency of smart grid technologies.pdf
@@ -763,7 +764,7 @@ this ecosystem.
 
 \begin{figure}[h]%!h \centering
     \includegraphics[width=1.0\textwidth]{powerTACScenarioOverview.png}
-    \caption{PowerTAC overview of markets}
+    \caption{An overview of the markets simulated in PowerTAC}
     \label{fig:powertacoverview}
 \end{figure}
 
@@ -799,7 +800,7 @@ energy consumption which was not noted in the survey by \citet{zhou2007agent}.
 
 \ac{PowerTAC} follows a distributed approach as a technical but as research approach. Several teams can create their own
 agents and compete with each other. This creates a rich landscape of solution approaches from researchers based in a
-number of countries and with diverse backgrounds \cite[]{ketter2015competitive}. One drawback: Few teams have opened
+number of countries and with diverse backgrounds \cite[]{ketter2015competitive}. There is one drawback: few teams have opened
 their agents implementations to others which increases the entry barrier and may lead to duplicate efforts that could
 have been reused.
 
@@ -1124,7 +1125,7 @@ Keras high-level abstraction library \citep{plappert2016kerasrl}.
 %been constructed in a way to allow for future developers to leverage it as a framework for developing a fully capable
 %agent that acts in all markets.
 
-The overall architecture of the broker is composed of 5 main components: The communication abstraction, wholesale market
+The overall architecture of the broker is composed of 5 main components: the communication abstraction, wholesale market
 agent, balancing market agent, tariff market agent and demand predictor. In this implementation, only the wholesale
 market and demand predictor are actively making decisions. Future researchers can make use of the component structure however.
 The architecture is visualized in Figure~\ref{fig:agentframework}.
@@ -1162,7 +1163,7 @@ trading agent.
 \begin{figure}[]
     \centering
     \includegraphics[width=0.8\linewidth]{img/Agent.png}
-    \caption{Python Broker framework}
+    \caption{Architecture of the python broker framework}
     \label{fig:agentframework}
 \end{figure}
 
@@ -1207,7 +1208,7 @@ model.compile(loss='categorical_crossentropy',
 model.fit(x_train, y_train, epochs=5, batch_size=32)
 loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
     \end{minted}
-    \caption{Basic Keras 2 layer dense NN example}
+    \caption{Basic Keras 2 layer dense neural network example}
     \label{lst:kerasbasic}
 \end{listing}
 
@@ -1308,7 +1309,7 @@ An example is given in Section~\ref{sub:implementing_the_communication_with_ac_g
 
 
 
-\section{Connecting Python agents to PowerTAC}%
+\section{Connecting python agents to PowerTAC}%
 \label{sec:connecting_python_agents_to_powertac}
 
 
@@ -1481,7 +1482,7 @@ public abstract class OrderbookMapper{
 To ensure the mapping works as expected, the tests for the mapper classes perform a \emph{round trip test}. This takes a
 Java class as commonly found in the simulation, converts it into \ac{XML} using the current XStream systems, then
 performs a translation into protobuf  and back. Finally, this resulting object is serialized into \ac{XML} again and
-both \ac{XML} strings are asserted to be equal. By doing this several things are tested at once: Is the translation
+both \ac{XML} strings are asserted to be equal. By doing this several things are tested at once: is the translation
 working as expected, i.e.\ does it retain all information of the original objects? Is the mapping of IDs to objects
 still working as expected? Are any values such as dates or time values misrepresented? Are any values missing? The round
 trip test allows for a generic testing of all object types that covers a large number of possible errors. It also avoids
@@ -1516,7 +1517,7 @@ shared with all subscribed components through the publish-subscribe event system
 time slot for example may trigger the broker to learn on the newly observed usage patterns, improve its predictions on
 the expected usages of its customers and evaluate its next steps in the wholesale trading market.
 
-\section{Creating Containers from competition components}
+\section{Creating containers from competition\\ components}
 \label{sec:creating_containers_from_competition_components}
 
 To run a competition on a local machine, one must install several components: Maven, Java 8 and all of the brokers and
@@ -1570,13 +1571,13 @@ CMD "/powertac/init.sh"
     \label{lst:servertodocker}
 \end{listing}
 
-This offers another advantage that may become increasingly attractive in the long-term: Tools like Kubernetes or Docker
+This offers another advantage that may become increasingly attractive in the long-term: tools like Kubernetes or Docker
 Swarm, both being open source enterprise level container management software, seamlessly allow for the creation of 1, 10
 or 1000 instances. OpenAI, a deep learning research company, has successfully scaled Kubernetes to 2500 nodes to run
 their deep \ac{RL} learning systems \citep{openai2500}. Such scalability can greatly improve the experiment
 opportunities based on the simulation.
 
-\section{Inner Python communication}%
+\section{Inner python communication}%
 \label{sub:inner_python_communication}
 
 Once the competition environment is running and messages start streaming into the python environment, the various
@@ -1611,7 +1612,7 @@ store. For later analysis, all messages can be logged to the local file system e
 %    \item[Balancing Market]: The balancing market component has not been implemented, but it is part of the
 %developed framework for possible future extension.  \end{description}
 
-\section{Usage Estimator}
+\section{Usage estimator}
 \label{sec:usage_estimator}
 
 %The customer market component covers the tariff market and the demand prediction tasks. In my implementation, the
@@ -1765,7 +1766,7 @@ broker-python repository.}.
 From a dependency perspective, this component has no dependencies onto the other learning components and can easily be
 trained using historical data. It is therefore a supervised learning algorithm, matching known information in time slot
 $t-n$ to a prediction for the expected energy usage at time slot $t$. Because there are several games on record, the
-historical realized usages are the labels for the supervised learning problem. Known information includes: Weather
+historical realized usages are the labels for the supervised learning problem. Known information includes: weather
 forecasts, historical usages, time, tariff and customer metadata. A simplest approach and therefore a baseline to
 measure against is to predict the customer to consume the same amount as in the previous time slot. All demand
 prediction loss is measured in mean squared error.
@@ -1797,13 +1798,13 @@ allows for clearer signals to be received by the network.
 \begin{figure}[]
     \centering
     \includegraphics[width=1.0\linewidth]{img/frosty_scaled.png}
-    \caption{Scaled with unique scaler (yellow) or global (blue)}
+    \caption{Comparison of scaled data with unique scaler (yellow) or global scaler (blue)}
     \label{fig:imgfrosty}
 \end{figure}
 
 Ultimately, the predictor model that seemed most successful in terms of average error and robustness against repetitive
 training against various types of usage patterns was a dense vanilla feed-forward neural network with
-\texttt{168,100,100,50,50,24} units, using stochastic gradient descent as its optimization function and mostly using
+\texttt{168,100,50,24} units, using stochastic gradient descent (LR=0.01) as its optimization function and mostly using
 \ac{ReLu} activation function except for the last layer which is a linear activation. To overcome the problem of
 catastrophic forgetting, a common phenomenon observed when networks have been trained on several tasks in sequence
 \cite[]{french1999catastrophic}, all input data is shuffled instead of processed in sequence per customer. While this
@@ -1914,7 +1915,7 @@ handle_timeslot():
 
 %TODO write final model structure and plot against intuitive -24h baselines
 
-\section{Wholesale Market}
+\section{Wholesale market}
 \label{sec:wholesale_market}
 
 To approach the wholesale trading problem, a subset of the definition of the trading problem developed by
@@ -1944,7 +1945,7 @@ detail in this section:
 \subsubsection{\ac{MDP} design comparison}%
 \label{ssub:mdp_design_comparison}
 
-There are two possible ways of modelling the \ac{MDP}: Per time slot or per game. Per time slot is aligned to the
+There are two possible ways of modelling the \ac{MDP}: per time slot or per game. Per time slot is aligned to the
 definition by \citet{tactexurieli2016mdp}. Per game considers each game a unified \ac{MDP} where the agent acts in all
 time slots and therefore has an action space of 48 values per time slot.
 
@@ -2030,7 +2031,7 @@ architectures. I also created a \texttt{BaselineAgent} which simply trades the p
 market prices. This is useful to compare performance of a learned algorithm with a very intuitive trading scheme and to
 serve, as the name suggests, as a baseline.
 
-The reversal of flow control has another benefit: While other approaches had to create specific designs that allow for
+The reversal of flow control has another benefit: while other approaches had to create specific designs that allow for
 several agents to act in several environments with one \emph{main agent} to adopt those network changes, this is not
 required because the environments are calling the agent. The environments are all using one agent instance to learn and
 act and the environment manager is triggering the environments in sequence. \citet{mnih2016asynchronous} discuss the
@@ -2091,7 +2092,7 @@ Defines the reward, where $\bar{p}$ is determined by
 for both the market averages and the broker averages. This encourages the agent to buy for low prices and sell for high
 prices where possible. $sum(q)$ is the net purchasing amount after the 24 trading opportunities are completed, i.e.\ did
 the broker end up with a positive or negative net flow of energy in the wholesale market. This reward function has one
-one immediate drawback: It can only be calculated once the market for the target time slot is closed. The agent
+one immediate drawback: it can only be calculated once the market for the target time slot is closed. The agent
 therefore doesn't get any feedback during any step except the terminal state.
 
 While \ac{RL} research has stated sparse reward as a core part of \ac{RL}, many of the recent algorithms do
@@ -2125,7 +2126,7 @@ prices) while the second puts emphasis on purchasing energy in accordance with t
     \right\}
 \end{equation}
 
-This function has another benefit that became obvious during the experiments: If the offline trading approximation
+This function has another benefit that became obvious during the experiments: if the offline trading approximation
 assumes the broker has no influence on the market price and if the reward function does not punish large orders, the
 broker quickly started ordering energy several orders of magnitude larger than the overall market size. It basically
 learned that there is virtually free leverage to use to make use of the market price fluctuations. By adding the
@@ -2172,100 +2173,115 @@ run during the development and a set of
 roughly 200.000 learning steps and the average reward of the last game is considered the final performance of that run.
 The following table summarizes all trials executed. 
 
-
 \begin{table}[]
-        \caption{Wholesale offline trading results overview for various hyperparameters}
+    \caption{Wholesale offline trading results overview  for various hyperparameters}
         \label{fig:wstable}
+
     \resizebox{\textwidth}{0.48\textheight}{
         \begin{tabular}{l|l|l|l|l|l}
-            \textbf{Network} & \textbf{r\_type} & \textbf{Preprocessing} & \textbf{Action\_T} & \textbf{agent\_type} & \textbf{r after 30 games} \\ \hline
-            vnn32x2          & $r_{comb}$      & simple                 & continuous         & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & continuous         & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & continuous         & random              & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & discrete           & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & discrete           & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & discrete           & random              & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & twoarmedbandit     & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & twoarmedbandit     & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simple                 & twoarmedbandit     & random              & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & continuous         & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & continuous         & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & continuous         & random              & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & discrete           & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & discrete           & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & discrete           & random              & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & twoarmedbandit     & dqn                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & twoarmedbandit     & vpg                 & 0.0 \\
-            vnn32x2          & $r_{comb}$      & simplenorm             & twoarmedbandit     & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & continuous         & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & continuous         & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & continuous         & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & discrete           & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & discrete           & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & discrete           & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & twoarmedbandit     & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & twoarmedbandit     & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simple                 & twoarmedbandit     & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & continuous         & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & continuous         & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & continuous         & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & discrete           & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & discrete           & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & discrete           & random              & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & twoarmedbandit     & dqn                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & twoarmedbandit     & vpg                 & 0.0 \\
-            vnn32x2          & $r_{rel}$       & simplenorm             & twoarmedbandit     & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & continuous         & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & continuous         & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & continuous         & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & discrete           & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & discrete           & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & discrete           & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & twoarmedbandit     & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & twoarmedbandit     & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simple                 & twoarmedbandit     & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & continuous         & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & continuous         & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & continuous         & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & discrete           & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & discrete           & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & discrete           & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & twoarmedbandit     & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & twoarmedbandit     & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{comb}$      & simplenorm             & twoarmedbandit     & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & continuous         & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & continuous         & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & continuous         & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & discrete           & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & discrete           & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & discrete           & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & twoarmedbandit     & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & twoarmedbandit     & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simple                 & twoarmedbandit     & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & continuous         & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & continuous         & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & continuous         & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & discrete           & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & discrete           & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & discrete           & random              & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & twoarmedbandit     & dqn                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & twoarmedbandit     & vpg                 & 0.0 \\
-            bn\_vnn32x2      & $r_{rel}$       & simplenorm             & twoarmedbandit     & random              & 0.0 \\
+            \textbf{Network} &       \textbf{r\_type} &       \textbf{Preprocessing} &   \textbf{Action\_T} & \textbf{agent\_type} & \textbf{average r after 5 games} \\ \hline
+            vnn32x2          &       $r_{rel}$        &       simple                 &   continuous         & vpg                  & -39        \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   continuous         & vpg                  & -39        \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   continuous         & vpg                  & -39        \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   discrete           & vpg                  & -46        \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & dqn                  & -83        \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   continuous         & random               & -110       \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   discrete           & dqn                  & -120       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   continuous         & dqn                  & -157       \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   twoarmedbandit     & vpg                  & -225       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   discrete           & dqn                  & -297       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   discrete           & random               & -445       \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   continuous         & random               & -474       \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   twoarmedbandit     & random               & -508       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   continuous         & dqn                  & -673       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   continuous         & random               & -840       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   twoarmedbandit     & random               & -899       \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & vpg                  & -1077      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   discrete           & vpg                  & -1297      \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   discrete           & vpg                  & -1959      \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   twoarmedbandit     & vpg                  & -2289      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   continuous         & vpg                  & -2396      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   discrete           & dqn                  & -3229      \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   discrete           & vpg                  & -3434      \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   discrete           & dqn                  & -3836      \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   continuous         & dqn                  & -4567      \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   discrete           & dqn                  & -5460      \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   discrete           & random               & -5560      \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   continuous         & vpg                  & -6078      \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simple                 &   twoarmedbandit     & dqn                  & -6809      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   continuous         & random               & -7791      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   discrete           & random               & -7907      \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   continuous         & random               & -8694      \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   discrete           & dqn                  & -9376      \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   discrete           & vpg                  & -11102     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   discrete           & dqn                  & -12175     \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   continuous         & dqn                  & -12531     \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   discrete           & random               & -13147     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   discrete           & random               & -13511     \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   continuous         & random               & -25061     \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   continuous         & dqn                  & -25762     \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   continuous         & dqn                  & -27761     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   continuous         & random               & -35308     \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   continuous         & random               & -36619     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   continuous         & dqn                  & -44376     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   continuous         & dqn                  & -52547     \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   twoarmedbandit     & dqn                  & -60246     \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   discrete           & random               & -60473     \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   continuous         & vpg                  & -95084     \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   discrete           & dqn                  & -127978    \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & dqn                  & -276400    \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & vpg                  & -296235    \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   twoarmedbandit     & dqn                  & -299472    \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   discrete           & random               & -394223    \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & random               & -543207    \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & random               & -592135    \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   discrete           & vpg                  & -722341    \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   twoarmedbandit     & vpg                  & -939824    \\
+            vnn32x2          &       $r_{rel}$        &       simple                 &   discrete           & vpg                  & -1035320   \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simple                 &   twoarmedbandit     & random               & -1060802   \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   discrete           & random               & -1083496   \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & vpg                  & -1188154   \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & random               & -1311061   \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & dqn                  & -1608152   \\
+            bn\_vnn32x2      &       $r_{rel}$        &       simplenorm             &   discrete           & vpg                  & -1644698   \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   twoarmedbandit     & dqn                  & -2018251   \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & random               & -3127925   \\
+            vnn32x2          &       $r_{rel}$        &       simplenorm             &   twoarmedbandit     & vpg                  & -4188259   \\
+            bn\_vnn32x2      &       $r_{comb}$       &       simplenorm             &   twoarmedbandit     & dqn                  & -43697734  \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   twoarmedbandit     & vpg                  & -129692147 \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   twoarmedbandit     & random               & -351135515 \\
+            vnn32x2          &       $r_{comb}$       &       simple                 &   continuous         & vpg                  & nan        \\
+            vnn32x2          &       $r_{comb}$       &       simplenorm             &   continuous         & vpg                  & nan        \\
 
         \end{tabular}
     }
 \end{table}
+The reward function shown in the table were received by multiplying the results of the original reward functions by 1000
+to improve signal strength. Forecasting error was set at 2\% per time slot, the network configurations can be seen in
+the \texttt{broker-python} repository\footnote{All trials were recorded using tensorboard and are included in the
+attached DVD}.
+As a frame of reference, the benchmark agent which always orders exactly what is forecast at every time step and offers
+very generous prices achieves an average reward of 63 with a 2\% forecasting error per time slot and an average reward
+of 1500 with a 0\% forecasting error.
 
 Unfortunately, none of the trials lead to a typical asymptotic growth of the reward towards a saturation limit. Most
 trials lead to a fairly stable, albeit not improving reward range. Some trials caused negatively exploding rewards. 
-%TODO analyze which parts perform better, which worse
-%TODO brainstorm reasons for the failure
+It is also not clearly visible what caused the wide range of rewards. One hypothesis is that the reward functions tried
+were not describing the problem appropriately enough for the agent to make good decisions. The reward in the
+\ac{PowerTAC} setting differs significantly from the reward functions in other research as it doesn't have a "way
+forward". Atari game rewards are directly taken from the games high scores and the Mujoco locomotion rewards are based
+on distance traveled \cite[]{heess2017emergence}. The wholesale trading reward described above in contrast offers no
+such progress forward. The actions of the agent, depending on the action type configured, allow for "easy" highly
+negative rewards but to achieve a good positive reward, the agent needs to find the right chain of trades that balances
+the portfolio at a good price. It may be that the agents get caught in local optima or that some other parameter setting
+was overlooked by me. Another hypothesis is the lack of memory of the agent. The wholesale trader
+implementations tried were all based on acyclic feed-forward networks and therefore contained no sense of memory. A
+\ac{LSTM} based approach may lead to better results, but an initial trial did not lead to an immediate improvement.
 
 In summary, I was not yet able to create a learning neural network based algorithm that showed any significant level of
 competency in the wholesale trading environment. Several reward function schemes, implementations and hyperparameters
 have been tried but further investigation is required to determine why the performance of the agent variants is as
 unsatisfying as it is. 
-
 
 %\begin{figure}
 %\centering
@@ -2315,15 +2331,16 @@ unsatisfying as it is.
 \chapter{Conclusion}%
 \label{cha:conclusion}
 
-In the beginning of this work, I have described the research progress in \ac{AI} and how new neural network based systems are able to solve
-problems, previously only solvable by humans. I have also indicated the obvious incentive to apply these new
-techniques to important contemporary problems, focusing on future energy markets as one such problem. \ac{PowerTAC}, a
-simulation of these markets was introduced as a core research initiative that attempts to explore this problem field by
-letting many researchers compete in a competitive setting and simulate profit-oriented market participants. Because
-future market participants will not shy away from using \ac{AI} technologies to improve their competitiveness,
-\ac{PowerTAC} contenders must also be enabled to pursue these technologies to realistically represent future markets. To
-enable new competition participants to quickly catch up and to generally enable the use of neural networks, I
-decided to pursue the question whether imitation based \ac{RL} may be deployable in the \ac{PowerTAC} setting.
+In the beginning of this work, I have described the research progress in \ac{AI} and how new neural network based
+systems are able to solve problems, previously only solvable by humans. I have also indicated the obvious incentive to
+apply these new techniques to important contemporary problems, focusing on future energy markets as one such problem.
+\ac{PowerTAC}, a simulation of these markets was introduced as a core research initiative that attempts to explore this
+problem field by letting many researchers compete in a competitive setting and simulate profit-oriented market
+participants. Because future market participants will not shy away from using \ac{AI} technologies to improve their
+competitiveness, \ac{PowerTAC} contenders must also be enabled to pursue these technologies to realistically represent
+future markets. To enable new competition participants to quickly catch up and to generally enable the use of neural
+networks, I decided to pursue the question whether imitation based \ac{RL} may be deployable in the \ac{PowerTAC}
+setting.
 
 When reviewing my work, it is obvious that I have not fully answered my original research question. Several researchers
 have shown that learning from other agents is possible with neural networks in \ac{RL} environments as described in
@@ -2331,9 +2348,9 @@ Chapter~\ref{cha:background}. During the course of my thesis, new research by \c
 shown how significant learning performance can be improved when allowing new agent implementations to learn from
 existing agents.
 To adapt the \ac{PowerTAC} environment to a state where these research results can be applied however, required large
-amounts of software engineering work. This caused me to not reach the ultimate goal, the application of these \ac{SOTA}
-algorithms to the \ac{PowerTAC} wholesale trading environment. While I have not answered the original question, I have
-contributed a large amount of the work required to make answering it possible.
+amounts of software engineering work. This caused me to not reach the ultimate goal, the application of these state of
+the art algorithms to the \ac{PowerTAC} wholesale trading environment. While I have not fully answered the original
+question, I have contributed to the work required to make answering it possible.
 
 \ac{PowerTAC} uses different base technologies than contemporary \ac{RL} research problems and I have extended this to
 Python and other languages through the \ac{GRPC} message adapter. This new communication layer also offers some
