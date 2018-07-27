@@ -1,10 +1,10 @@
 # TODO Thesis last 3 weeks
 
 ## Reviewing
-- Get feedback from Lukas
-- Let Giorgia read
 
 ## Writing
+- also --> synonyms
+- therefore --> synonyms
 - discussing the reward functions for RL agents in wholesale?
 - moving the reward functions into a separate subchapter
 - learning from historical data describing the three stages (bandit arm, discrete preselected actions, continuous
