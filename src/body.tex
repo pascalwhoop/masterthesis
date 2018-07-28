@@ -102,7 +102,7 @@ broker developers have years of experience while others have not participated in
 takes approximately two to three hours to complete and each time slot, a slot in which energy is produced, consumed and
 traded, takes five seconds. Previous researchers have
 identified the problem as a \ac{POMDP}, a common model of \ac {RL} literature \cite[]{tactexurieli2016mdp}. Deep neural network
-architectures have proven to be successful in solving games in a variety of instances. It is therefore intuitive to
+architectures have proven to be successful in solving games in a variety of instances. It is intuitive to
 attempt to apply such architectures to the problems posed by the \ac{PowerTAC} simulation. Unfortunately, most such
 implementations are only available in Python \cite[]{baselines, plappert2016kerasrl, schaarschmidt2017tensorforce}  and
 \ac{PowerTAC} is almost exclusively based on Java. An extension of the current communication protocols to other
@@ -118,7 +118,7 @@ Agents with access to previously developed models may pass their observations to
 attempt to align their decisions to those that their teacher would do \cite[]{schmitt2018kickstarting}. High level 
 problem solving agents may be trained by first training several small narrow focus agent networks on sub problems and
 then applying transfer learning to transfer the knowledge from the narrow focus agents to the generic high level
-https://itsfoss.com/pdf-editors-linux/agent \cite[]{parisotto2015actor}. For problems where a reward function is difficult to construct, \emph{inverse
+agent \cite[]{parisotto2015actor}. For problems where a reward function is difficult to construct, \emph{inverse
 reinforcement learning} can be used to train an agent to behave similar to an observable expert. The policy function of
 the agent shows good performance despite lacking a specific reward function \cite[]{NG2004Apprentice}.
 
@@ -1922,7 +1922,7 @@ To approach the wholesale trading problem, a subset of the definition of the tra
 \citet{tactexurieli2016mdp} was assumed. More specifically, the agent only concerns itself with the activities in the
 wholesale market and does not act or evaluate tariff market or balancing market activities. This is due to the
 separation of concern approach described earlier. It is therefore a \ac{MDP} that can be solved with \ac{RL} techniques.
-The goal was the ability to apply current and future neural network implementations to the \ac{PowerTAC} problem set. For this,
+The goal was the ability to apply current and future deep \ac{RL} implementations to the \ac{PowerTAC} problem set. For this,
 many of the previously described implementations were necessary. Now that a Python based broker is possible, application
 of \ac{PPO}, \ac{DQN} and other modern \ac{RL} agent implementations seems reasonable. All required messages can be
 subscribed to via the publish-subscribe pattern. What is missing are the following components which are explained in
@@ -1945,7 +1945,7 @@ detail in this section:
 \subsubsection{\ac{MDP} design comparison}%
 \label{ssub:mdp_design_comparison}
 
-There are two possible ways of modelling the \ac{MDP}: per time slot or per game. Per time slot is aligned to the
+There are two possible ways of modeling the \ac{MDP}: per time slot or per game. Per time slot is aligned to the
 definition by \citet{tactexurieli2016mdp}. Per game considers each game a unified \ac{MDP} where the agent acts in all
 time slots and therefore has an action space of 48 values per time slot.
 
@@ -1967,10 +1967,10 @@ with the compatibility to the action spaces this agent requires as well as the i
 such as \ac{DQN}, \ac{SARSA} or \ac{A3C} are not easily applied to such large action spaces. They are written to be
 applied to discrete action spaces \cite[]{baselines}. \ac{PowerTAC} trading is in its purest form a continuous action
 space, allowing the agent to define both amount and price for a target time slot. Furthermore, the agent would observe
-24 environments in parallel and generate 24 largely independent trading decisions. The network would have to learn to
-match each input block to an output action, as the input for time slot 370 has little effect on the action that should
-be taken in time slot 380. In a separated \ac{MDP}, each environment observation would only hold the data needed for the
-specific time slot rather than information about earlier and later slots.
+information for 24 open time slots in parallel and generate 24 largely independent trading decisions. The network would
+have to learn to match each input block to an output action, as the input for time slot 370 has little effect on the
+action that should be taken in time slot 380. In a separated \ac{MDP}, each environment observation would only hold the
+data needed for the specific time slot rather than information about earlier and later slots.
 
 \subsubsection{\ac{MDP} implementation}%
 \label{sub:mdp_design_and_implementation}
@@ -2021,7 +2021,7 @@ depicted in Figure~\ref{fig:ws_msg_flow}.
 
 The environment expects the agent to expose an \ac{API} that includes two calls: \texttt{forward} and
 \texttt{backward}. This pattern has been adopted from the keras-rl and Tensorforce libraries. The reason is simple:
-While most libraries put the agent control of the program flow, the \ac{PowerTAC} broker will be stepped by the
+While most libraries put the agent in control of the program flow, the \ac{PowerTAC} broker will be stepped by the
 server and the \ac{RL} agent itself has no control of the flow. The forward and backward methods are
 directly aligned with the keras-rl framework and easily applicable to the Tensorforce \texttt{act()} and
 \texttt{atomic\_observe()} methods of their agent implementations. The abstract \texttt{PowerTacWholesaleAgent} class just defines a
@@ -2065,12 +2065,13 @@ Well crafted reward functions are elementary for any non-trivial \ac{RL}
 environment \cite[p.469ff.]{amodei2016concrete, sutton2018reinforcement}. While the Atari agents often receive their reward directly from the
 game as many games include a game point counter \cite[]{mnih2013playing}, \ac{PowerTAC} technically simulates a
 real-world energy market which means the score equals the brokers profit. Nonetheless, the profit is dependent on a number of
-factors and therefore hardly a good choice for a reward proxy. Using the purchase prices of the energy purchased is also
-noisy, as it depends on the supply and demand of the entire market. Generally, the broker attempts to purchase energy at
-a good price and a good price can be defined as one that is better than that of other participants in the market. A
-reward function based on the relation between the average price paid by the broker and the average price paid by the
-overall market hence describes how well the agent did in comparison to the others and consequently removes the market
-price fluctuation noise from the reward values.
+factors, where the wholesale trading component only makes up a comparatively small part and thus it is hardly a
+good choice for a reward proxy. Using the purchase prices of the energy purchased is also noisy, as it depends on the
+supply and demand of the entire market. Generally, the broker attempts to trade energy at a good price and a good
+price can be defined as one that is better than that of other participants in the market. A reward function based on the
+relation between the average price paid by the broker and the average price paid by the overall market hence describes
+how well the agent did in comparison to the others and consequently removes the market price fluctuation noise from the
+reward values.
 
 To calculate this reward, all the purchases of the agent as well as all market clearings are averaged for a given target
 time slot.
@@ -2090,10 +2091,11 @@ Defines the reward, where $\bar{p}$ is determined by
 \end{equation}
 
 for both the market averages and the broker averages. This encourages the agent to buy for low prices and to sell for high
-prices when possible. $sum(q)$ is the net purchasing amount after the 24 trading opportunities are completed, i.e.\ did
-the broker end up with a positive or negative net flow of energy in the wholesale market. This reward function has one
-one immediate drawback: it can only be calculated once the market for the target time slot is closed. The agent
-therefore doesn't get any feedback during any step except the terminal state.
+prices when possible. $sum(q)$ is the net purchasing amount after the 24 trading opportunities are completed, i.e.\ it
+describes if 
+the broker ended up with a positive or negative net flow of energy in the wholesale market. This reward function has one
+immediate drawback: it can only be calculated once the market for the target time slot is closed. The agent therefore
+doesn't get any feedback during any step except the terminal state.
 
 While \ac{RL} research has stated sparse reward as a core part of \ac{RL}, many of the recent algorithms do
 not deal well with such sparse rewards. Experience replay partially works so well in the Atari domain due to the dense
@@ -2136,11 +2138,11 @@ determines the closing prices which don't depend on the agents orders. This is d
 where the price is influenced by any market participant.
 
 Other reward functions are present in the \texttt{reward\_functions.py} file such as an automatically adjusting one that
-punishes balancing strongly at first and disregards the price but shifts towards the price based reward using a factor
-similar to $\alpha$ above once the balancing amounts are reduced. Generally, a lot of work is still required to
-construct a more ideal reward function. Reward functions are difficult to design, because systems tend to overfit on the
-reward function in a way that the results do not intuitively make sense but optimize towards the slightly misdefined
-reward function \cite[]{amodei2016concrete}.  
+punishes balancing strongly at first and disregards the price but shifts towards the price based reward once the
+balancing amounts are reduced. Generally, more work is required to construct a better reward function.
+Reward functions are difficult to design, because systems tend to overfit on the reward function in a way that the
+results do not intuitively make sense but optimize towards the slightly misdefined reward function
+\cite[]{amodei2016concrete}.  
 
 \subsection{Input preprocessing}%
 \label{sub:input_preprocessing}
@@ -2164,18 +2166,17 @@ Now to pull the components together, the agent receives \texttt{forward} and \te
 the environment, returns actions and learns when passed the required information. The development of \ac{RL} agents
 includes a lot of trial and error which is why I created another \ac{CLI} endpoint called \texttt{wholesale}. The
 \ac{CLI} allows the custom selection of the reward function, action type, network structure, agent type and tagging the
-trial with custom strings. It starts an instance of the \texttt{LogEnvManagerAdapter} which runs through all recorded
+trial with custom strings. It starts an instance of the \texttt{LogEnvManagerAdapter} which runs through recorded
 games and simulates the necessary events. To run several trials, I created a helper tool that automatically generates
 these CLI calls and runs all variations of them in sequence. In total, dozens of offline simulation approximations were
-run during the development and a set of 
-%TODO or more?
-72 configurations were run with a variety of hyperparameters. Each run included 5 simulated games which result in
-roughly 200.000 learning steps and the average reward of the last game is considered the final performance of that run.
-The following table summarizes all trials executed. 
+run during the development and a set of 72 configurations were run as a final analysis with a variety of
+hyperparameters. Each run included 5 simulated games which result in roughly 200.000 learning steps and the average
+reward of the last game is considered the final performance of that run. Table~\ref{tab:trading} summarizes all trials
+executed. 
 
 \begin{table}[]
     \caption{Wholesale offline trading results overview  for various hyperparameters}
-        \label{fig:wstable}
+        \label{tab:trading}
 
     \resizebox{\textwidth}{0.48\textheight}{
         \begin{tabular}{l|l|l|l|l|l}
@@ -2256,8 +2257,8 @@ The following table summarizes all trials executed.
         \end{tabular}
     }
 \end{table}
-The reward function shown in the table were received by multiplying the results of the original reward functions by 1000
-to improve signal strength. Forecasting error was set at 2\% per time slot, the network configurations can be seen in
+The reward values shown in the table were received by multiplying the results of the original reward functions by 1000
+to improve signal strength. The forecasting error was set at 2\% per time slot, the network configurations can be seen in
 the \texttt{broker-python} repository\footnote{All trials were recorded using tensorboard and are included in the
 attached DVD}.
 As a frame of reference, the benchmark agent which always orders exactly what is forecast at every time step and offers
@@ -2269,16 +2270,17 @@ trials lead to a fairly stable, albeit not improving reward range. Some trials c
 It is also not clearly visible what caused the wide range of rewards. One hypothesis is that the reward functions tried
 were not describing the problem appropriately enough for the agent to make good decisions. The reward in the
 \ac{PowerTAC} setting differs significantly from the reward functions in other research as it doesn't have a "way
-forward". Atari game rewards are directly taken from the games high scores and the Mujoco locomotion rewards are based
-on distance traveled \cite[]{heess2017emergence}. The wholesale trading reward described above in contrast offers no
-such progress forward. The actions of the agent, depending on the action type configured, allow for "easy" highly
+forward". Atari game rewards are directly taken from the games high scores and the Mujoco based locomotion rewards are 
+describing the distance traveled \cite[]{heess2017emergence}. The wholesale trading reward described above in contrast offers no
+such \emph{progressing} forward. The actions of the agent, depending on the action type configured, allow for "easy" highly
 negative rewards but to achieve a good positive reward, the agent needs to find the right chain of trades that balances
-the portfolio at a good price. It may be that the agents get caught in local optima or that some other parameter setting
-was overlooked by me. Another hypothesis is the lack of memory of the agent. The wholesale trader
-implementations tried were all based on acyclic feed-forward networks and therefore contained no sense of memory. A
-\ac{LSTM} based approach may lead to better results, but an initial trial did not lead to an immediate improvement.
+the portfolio at a good price. All good actions of the first 23 steps can be ruined with a terrible trade at the end.
+This doesn't apply to the formerly mentioned environments. It may also be that the agents get caught in local optima or that
+some other parameter setting was overlooked by me. Another hypothesis is the lack of memory of the agent. The wholesale
+trader implementations tried were all based on acyclic feed-forward networks and therefore contained no sense of memory.
+A \ac{LSTM} based approach may lead to better results, but an initial trial did not lead to an immediate improvement.
 
-In summary, I was not yet able to create a learning neural network based algorithm that showed any significant level of
+In summary, I was not able to create a learning neural network based algorithm that showed any significant level of
 competency in the wholesale trading environment. Several reward function schemes, implementations and hyperparameters
 have been tried but further investigation is required to determine why the performance of the agent variants is as
 unsatisfying as it is. 
