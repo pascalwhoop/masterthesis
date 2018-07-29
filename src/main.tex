@@ -6,13 +6,18 @@
 
 \input{cover.tex}
 \pagenumbering{Roman}
-\input{abstract.tex}
 \input{preface.tex}
+\newpage
 %\printacronyms
 \listoffigures
-%\listoftables
+\newpage
+\listoftables
+\newpage
 \listoflistings
+\newpage
 \input{acronyms.tex}
+\newpage
+
 \input{content.tex}
 \pagenumbering{arabic}
 \input{body.tex}
@@ -21,6 +26,7 @@
 \input{appendix.tex}
 \newpage
 %Bibliography
+\addcontentsline{toc}{section}{Bibliography}
 \bibliographystyle{apalike}
 \bibliography{bibliography}
 %\printbibliography
