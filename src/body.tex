@@ -307,7 +307,7 @@ implicit biases of the data analyst.
 % done unless professor adds notes
 %-------------------------------------------------------------------------------
 
-\acl {NN} are a technology that is used to approach problems from both supervised learning and unsupervised learning problems. The original
+Neural networks are a technology that is used to approach problems from both supervised learning and unsupervised learning problems. The original
 concept can be dated back as far as 1943 \cite[p.727]{russell2016artificial} and the mathematical description of a
 neuron is a linear combination of many input variables $a_i$ and their weights $w_i$. If the linear combination of the
 input variables exceeds a threshold, defined by an activation function $g$, the neuron activates or \emph{fires}. When
@@ -333,7 +333,7 @@ the input in some form of memory. An alternative is a \emph{\acl {RNN} } which i
 hold state. The former network is often used for image classification problems while the latter is used for
 time-series analysis and natural language processing.
 
-When looking at neural networks one important decision is the number of layers. In fact, the history of \acl{NN} has shown
+When looking at neural networks one important decision is the number of layers. In fact, the history of neural networks has shown
 three key phases of progress, the first phase which included simple single-layer networks, the second which included one
 \emph{hidden layer} and the third phase, today, which uses networks that benefit of several hidden layers. A hidden
 layer is a number of neurons between the input layer and the output layer. This allows the network to generate complex
@@ -1193,8 +1193,7 @@ technologies and serves as a base technology for many higher level frameworks \c
 Keras is one of these higher level frameworks that focuses on neural networks. It offers a intuitive \ac{API}, oriented towards
 neural network terminology, to quickly develop and iterate on various neural network architectures. It integrates TensorFlow and its
 accompanying \ac{UI} Tensorboard, which visualizes training, network structure and activation patterns. It also supports
-other base technologies beside TensorFlow, but these will not be discussed. A simple example for a 2 layer Dense \ac
-{NN} written in Keras is shown in Listing~\ref{lst:kerasbasic}.
+other base technologies beside TensorFlow, but these will not be discussed. A simple example for a 2 layer Dense neural network written in Keras is shown in Listing~\ref{lst:kerasbasic}.
 
 
 \begin{listing}
@@ -1929,6 +1928,7 @@ subscribed to via the publish-subscribe pattern. What is missing are the followi
 detail in this section:
 
 \begin{itemize}
+    \itemsep0em
     \item A mapping from the 24 parallel environments to a single \ac{MDP} environment
     \item A correction of the common paradigm where the agent is in control of the program flow
     \item A solution to the problem that one agent is supposed to be in control of and learn from several

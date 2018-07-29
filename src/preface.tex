@@ -1,42 +1,62 @@
-\section*{Preface}
+\section*{Acknowledgements}
 
-This thesis was planned and discussed in the winter of 17/18. On February 1st, the work phase of six months started.
-Within these six months, I discovered many previously unknown or unforeseen complexities. These include the
-communication technologies developed to permit a complete python based broker and a large variety of API approaches
-within the RL agent libraries currently available. While I invested a significant amount of effort into the
-development of the required components, I always intended to build something that may be reused in the future instead of
-being discarded after my thesis was graded. This lead me to the decision of implementing a best practice based
-communication instead of a minimal approach and lead me to try to write my python code in a way that will let
-future broker developers reuse it as a framework for their broker implementations. 
+I'd like to express my gratitude to my supervisor Prof. Wolfgang Ketter who has invited me to join the research
+community around PowerTAC and in doing so showed me an exciting new field of research. This gratitude needs to be
+extended to John Collins and Nastaran Naseri who have answered many questions of mine and guided me during this work.
 
-Why not just write another broker in Java? I believe PowerTAC answers an important question of our time. But I also
-believe there are not enough people working on this field and it doesn't receive the attention it should. Thousands of
-researchers and those who want to become one are working on getting AI agents to become better at Atari games or playing
-Doom. While the underlying technology advancements are fantastic, the application area is of no use to humanity. I
-wanted to apply these new technologies to a problem that matters and do so in a way that will create artifacts that
-others can build upon to outperform my solutions quickly. I wanted to create a bridge between the researchers of RL
-implementations of recent years and their large community and the exciting field of energy markets. PowerTAC offers
-another "game" to play with, another environment to let agents compete in. But it is an environment which actually
-generates value when explored and improved.
+Thanks to any contributor of the numerous Open Source projects for sharing their work free of charge that allowed me to
+bring together PowerTAC and current RL research.
 
-As of July, I was not able to complete my research question and reach the intended target of evaluating a variety of
-neural network architectures that let a RL learn from other agents in its environment. Because of university
-regulations, changing a thesis title is not permitted. And while my research question was not answered, I believe I
-still contributed something valuable to the PowerTAC community. With my implementation, current state-of-the-art neural
-network algorithms and especially reinforcement agent implementations can be used to act in the PowerTAC competition.
-Any interested researcher with python skills can easily join the competition. And while I was not able to create a well
-performing broker in time and compete with the current participants of the competition, it is nonetheless now possible
-for others to work on a broker that deploys neural network technologies and to focus on the core problems of RL learning
-problems: Environment observation filtering, NN input preprocessing, reward function definition, neural network
-architecture experimentation etc. Using the created Docker images, developers are quickly able to start a competition
-with multiple brokers and future participants may be encouraged to adopt the Docker based distribution of their agents
-to include more advanced technologies in their broker implementations without placing a burden on others to manage these
-dependencies.  The new communication layer may be adopted by the competition maintainers to improve performance and to
-enable other platforms to be used for writing brokers.   
+Thanks to my parents Gudrun and Heiko for sparking and fostering my curiosity and for allowing me to pursue my education for years while
+always supporting me and believing in me. 
 
-When reading the thesis, please be aware that the title does not match the contents as one would expect. Adding a simple
-"Towards" at the beginning of the title would make it a perfect fit again. Unfortunately, I fell into the same trap that
-many software engineers and entire project teams fall into: Underestimating the complexity of the project which leads to
-either loss in quality, time overruns or budget overruns. I chose quality of the work I completed over making it work
-once but being useless for anyone else afterwards. I hope the thesis is still valuable to anyone who reads it and maybe
-upcoming graduate theses will continue where I left off. 
+Thanks to my partner Giorgia for supporting me mentally throughout these months and helping me survive Naples, my home
+for the duration of this work and a city with many interesting and confusing customs. I must also thank her for
+introducing me to so many fantastic Pizzaoli of Naples for their creative and nourishing Pizze that fed me
+week after week. 
+
+And now that I am back in Germany, I should probably also thank the creative mechanics that repaired my overloaded car
+after breaking down somewhere in the foothills of the alps, 4 days before the deadline on my way back to Cologne. It
+takes a special kind of character to fix a 22 year old Toyota on a saturday morning without any spare parts for some
+young academic trying to make his way up north to complete his graduate studies. 
+
+%This thesis was planned and discussed in the winter of 17/18. On February 1st, the work phase of six months started.
+%Within these six months, I discovered many previously unknown or unforeseen complexities. These include the
+%communication technologies developed to permit a complete python based broker and a large variety of API approaches
+%within the RL agent libraries currently available. I invested a significant amount of effort into the
+%development of the required components,and I always intended to build something that may be reused in the future instead of
+%being discarded after my thesis was graded. This lead me to the decision of implementing a best practice based
+%communication instead of a minimal approach and lead me to try to write my python code in a way that will let
+%future broker developers reuse it as a framework for their broker implementations. 
+%
+%Why not just write another broker in Java? I believe PowerTAC answers an important question of our time. But I also
+%believe there are not enough people working on this field and it doesn't receive the attention it should. Thousands of
+%researchers and those who want to become one are working on getting AI agents to become better at Atari games or playing
+%Doom. While the underlying technology advancements are fantastic, the application area is of no use to humanity. I
+%wanted to apply these new technologies to a problem that matters and do so in a way that will create artifacts that
+%others can build upon to outperform my solutions quickly. I wanted to create a bridge between the researchers of RL
+%implementations of recent years and their large community and the exciting field of energy markets. PowerTAC offers
+%another "game" to play with, another environment to let agents compete in. But it is an environment which actually
+%generates value when explored and improved.
+%
+%As of July, I was not able to complete my research question and reach the intended target of evaluating a variety of
+%neural network architectures that let a RL learn from other agents in its environment. Because of university
+%regulations, changing a thesis title is not permitted. And while my research question was not answered, I believe I
+%still contributed something valuable to the PowerTAC community. With my implementation, current state-of-the-art neural
+%network algorithms and especially reinforcement agent implementations can be used to act in the PowerTAC competition.
+%Any interested researcher with python skills can easily join the competition. And while I was not able to create a well
+%performing broker in time and compete with the current participants of the competition, it is nonetheless now possible
+%for others to work on a broker that deploys neural network technologies and to focus on the core problems of RL learning
+%problems: Environment observation filtering, NN input preprocessing, reward function definition, neural network
+%architecture experimentation etc. Using the created Docker images, developers are quickly able to start a competition
+%with multiple brokers and future participants may be encouraged to adopt the Docker based distribution of their agents
+%to include more advanced technologies in their broker implementations without placing a burden on others to manage these
+%dependencies.  The new communication layer may be adopted by the competition maintainers to improve performance and to
+%enable other platforms to be used for writing brokers.   
+%
+%When reading the thesis, please be aware that the title does not match the contents as one would expect. Adding a simple
+%"Towards" at the beginning of the title would make it a perfect fit again. Unfortunately, I fell into the same trap that
+%many software engineers and entire project teams fall into: Underestimating the complexity of the project which leads to
+%either loss in quality, time overruns or budget overruns. I chose quality of the work I completed over making it work
+%once but being useless for anyone else afterwards. I hope the thesis is still valuable to anyone who reads it and maybe
+%upcoming graduate theses will continue where I left off. 
